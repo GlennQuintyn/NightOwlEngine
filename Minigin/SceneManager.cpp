@@ -1,13 +1,19 @@
-#include "MiniginPCH.h"
+#include "NightOwlEnginePCH.h"
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update()
+void dae::SceneManager::Update(float deltaT)
 {
-	for(auto& scene : m_Scenes)
+	UNREFERENCED_PARAMETER(deltaT);
+	for (auto& scene : m_Scenes)
 	{
 		scene->Update();
 	}
+}
+
+void dae::SceneManager::FixedUpdate(float deltaT)
+{
+	UNREFERENCED_PARAMETER(deltaT);
 }
 
 void dae::SceneManager::Render()

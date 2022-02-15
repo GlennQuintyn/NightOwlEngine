@@ -1,5 +1,5 @@
-#include "MiniginPCH.h"
-#include "Minigin.h"
+#include "NightOwlEnginePCH.h"
+#include "NightOwlEngine.h"
 #include <thread>
 #include "InputManager.h"
 #include "SceneManager.h"
@@ -24,11 +24,11 @@ void PrintSDLVersion()
 		linked.major, linked.minor, linked.patch);
 }
 
-void dae::Minigin::Initialize()
+void dae::NightOwlEngine::Initialize()
 {
 	PrintSDLVersion();
-	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -41,7 +41,8 @@ void dae::Minigin::Initialize()
 		480,
 		SDL_WINDOW_OPENGL
 	);
-	if (m_Window == nullptr) 
+
+	if (m_Window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -52,7 +53,7 @@ void dae::Minigin::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void dae::Minigin::LoadGame() const
+void dae::NightOwlEngine::LoadGame() const
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
@@ -71,7 +72,7 @@ void dae::Minigin::LoadGame() const
 	scene.Add(to);
 }
 
-void dae::Minigin::Cleanup()
+void dae::NightOwlEngine::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
@@ -79,7 +80,7 @@ void dae::Minigin::Cleanup()
 	SDL_Quit();
 }
 
-void dae::Minigin::Run()
+void dae::NightOwlEngine::Run()
 {
 	Initialize();
 
@@ -88,19 +89,39 @@ void dae::Minigin::Run()
 
 	LoadGame();
 
-	{
-		auto& renderer = Renderer::GetInstance();
-		auto& sceneManager = SceneManager::GetInstance();
-		auto& input = InputManager::GetInstance();
 
-		// todo: this update loop could use some work.
-		bool doContinue = true;
-		while (doContinue)
+	auto& renderer = Renderer::GetInstance();
+	auto& sceneManager = SceneManager::GetInstance();
+	auto& input = InputManager::GetInstance();
+
+	bool doContinue = true;
+	auto prevTime = chrono::high_resolution_clock::now();
+	float lag = 0.0f;
+
+	while (doContinue)
+	{
+		const auto currentTime = chrono::high_resolution_clock::now();
+		const float deltaT = chrono::duration<float>(currentTime - prevTime).count();
+		prevTime = currentTime;
+		lag += deltaT;
+
+		doContinue = input.ProcessInput();
+		sceneManager.Update(deltaT);
+
+		//used for physics 
+		while (lag >= m_MsPerFrame)
 		{
-			doContinue = input.ProcessInput();
-			sceneManager.Update();
-			renderer.Render();
+			sceneManager.FixedUpdate(m_MsPerFrame);
+			lag -= m_MsPerFrame;
 		}
+
+		//todo: add some form of late update function
+
+		renderer.Render();
+
+		//make thread sleep to save on PC resources
+		const auto sleepTime = currentTime + chrono::milliseconds(m_MsPerFrame) - chrono::high_resolution_clock::now();
+		this_thread::sleep_for(sleepTime);
 	}
 
 	Cleanup();
