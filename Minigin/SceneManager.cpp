@@ -4,21 +4,25 @@
 
 void dae::SceneManager::Update(float deltaT)
 {
-	UNREFERENCED_PARAMETER(deltaT);
-	for (auto& scene : m_Scenes)
+	//UNREFERENCED_PARAMETER(deltaT);
+	for (auto& scene : m_pScenes)
 	{
-		scene->Update();
+		scene->Update(deltaT);
 	}
 }
 
 void dae::SceneManager::FixedUpdate(float deltaT)
 {
-	UNREFERENCED_PARAMETER(deltaT);
+	//UNREFERENCED_PARAMETER(deltaT);
+	for (const auto& scene : m_pScenes)
+	{
+		scene->FixedUpdate(deltaT);
+	}
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& scene : m_Scenes)
+	for (const auto& scene : m_pScenes)
 	{
 		scene->Render();
 	}
@@ -27,6 +31,6 @@ void dae::SceneManager::Render()
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_Scenes.push_back(scene);
+	m_pScenes.push_back(scene);
 	return *scene;
 }
