@@ -1,17 +1,19 @@
 #pragma once
 #include "Transform.h"
-#include "SceneObject.h"
+//#include "SceneObject.h"
 #include "BaseComponent.h"
 #include <vector>
 
+#include "Texture2DComponent.h"
+
 namespace dae
 {
-	class Texture2D;
+	//class Texture2D;
 
 	class GameObject final//: public SceneObject
 	{
 	public:
-		GameObject();
+		GameObject(const std::string_view& objectName = {});
 		virtual ~GameObject();
 
 		void Update(float deltaT);
@@ -24,14 +26,22 @@ namespace dae
 		template <typename T> T* GetComponent() const;
 		template <typename T> void RemoveComponent();
 
-		void SetParent(GameObject* parent);
-		GameObject* GetParent() const;
+		void SetParent(GameObject* parent) { m_pParent = parent; };
+		GameObject* GetParent() const { return m_pParent; };
 
 		size_t GetChildCount() const { return m_pChildren.size(); };
+
 		GameObject* GetChildAt(int index) const;
-		//todo: add func to remove child by name AND add string m_pName to all objects and static counter to make default name
-		void RemoveChild(int index);
+		GameObject* GetChildByName(const std::string_view& childName) const;
+
+		void RemoveChildAt(int index);
+		void RemoveChildByName(const std::string_view& childName);
+
 		void AddChild(GameObject* object);
+		GameObject* AddChild(const std::string_view& childName = {}) ;
+
+		const std::string& GetName() const { return m_Name; };
+		void SetName(const std::string_view& name) { m_Name = name; };
 
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -39,15 +49,16 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
-		Transform m_Transform;
+		std::string m_Name;
 
-		std::vector<std::unique_ptr<BaseComponent>> m_pComponents;
+		std::vector<std::pair<std::unique_ptr<BaseComponent>, const std::type_info*>> m_pComponents;
 		std::vector<std::unique_ptr<GameObject>> m_pChildren;
 
 		GameObject* m_pParent;
 
-		bool m_markForDelete;
-		//GameObject* m_pChild;
+		Transform m_Transform;
+
+		static unsigned int m_ObjIdCounter;
 
 		//  mmm, every gameobject has a texture? Is that correct?
 		//std::shared_ptr<Texture2D> m_Texture{};
@@ -56,21 +67,35 @@ namespace dae
 	template<typename T>
 	inline T* GameObject::AddComponent()
 	{
-		m_pComponents.push_back(std::make_unique<T>());
-		return m_pComponents.back();
+		auto newComponent = new T{};
+		m_pComponents.emplace_back(newComponent, &typeid(T));
+		return newComponent;
 	}
 
 	template<typename T>
 	inline T* GameObject::GetComponent() const
 	{
-		//todo: add loop to search for firt occerence of type
-		return nullptr;
+		//typeid is static so you can compare their pointers
+		auto it = std::find_if(m_pComponents.begin(), m_pComponents.end(), [](const auto& component)
+			{
+				return component.second == &typeid(T);
+			});
+
+		if (it != m_pComponents.end())
+			return static_cast<T*>(it->first.get());
+		else
+			return nullptr;
 	}
 
 	template<typename T>
 	inline void GameObject::RemoveComponent()
 	{
-		//todo: add loop to search for firt occerence of type
+		auto it = std::find_if(m_pComponents.begin(), m_pComponents.end(), [](const auto& component)
+			{
+				return component.second == &typeid(T);
+			});
 
+		if (it != m_pComponents.end())
+			it->first.reset();
 	}
 }

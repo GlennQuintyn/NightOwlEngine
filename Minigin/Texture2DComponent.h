@@ -8,8 +8,12 @@ namespace dae
 	class Texture2DComponent final : public BaseComponent
 	{
 	public:
-		Texture2DComponent();
-		~Texture2DComponent();
+		Texture2DComponent() = default;
+		~Texture2DComponent() = default;;
+
+		virtual void Update() override {};
+		virtual void Render() const override {};
+
 		void SetTexture(const std::string& filename);
 
 	private:

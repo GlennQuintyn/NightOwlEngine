@@ -55,9 +55,10 @@ void dae::NightOwlEngine::Initialize()
  */
 void dae::NightOwlEngine::LoadGame() const
 {
-	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-	auto fpsCounterObj = std::make_shared<GameObject>().;
+	//auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+	//auto fpsCounterObj = std::make_shared<GameObject>();
 	//fpsCounterObj->AddComponent<Tex>
+	
 	
 	//auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
