@@ -3,11 +3,15 @@
 #include <thread>
 #include "InputManager.h"
 #include "SceneManager.h"
+#include "Time.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "TextObject.h"
 #include "GameObject.h"
 #include "Scene.h"
+
+#include "Texture2DComponent.h"
+#include "TextComponent.h"
 
 using namespace std;
 
@@ -55,23 +59,35 @@ void dae::NightOwlEngine::Initialize()
  */
 void dae::NightOwlEngine::LoadGame() const
 {
-	//auto& scene = SceneManager::GetInstance().CreateScene("Demo");
-	//auto fpsCounterObj = std::make_shared<GameObject>();
-	//fpsCounterObj->AddComponent<Tex>
-	
-	
-	//auto& scene = SceneManager::GetInstance().CreateScene("Demo");
+	auto& scene = SceneManager::GetInstance().CreateScene("FPS Counter");
 
-	//auto go = std::make_shared<GameObject>();
-	//go->SetTexture("background.jpg");
-	//scene.Add(go);
+	auto backgroundObject = std::make_shared<GameObject>();
+	backgroundObject->AddComponent<dae::Texture2DComponent>()->SetTexture("background.jpg");
+	scene.Add(backgroundObject);
+
+	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	auto fpsCounterObj = std::make_shared<GameObject>();
+	auto textComponent = fpsCounterObj->AddComponent<dae::TextComponent>();
+	textComponent->SetFont(font);
+	//todo: change fps mode to a seperate component and add precision of float to as option and maybe add code to make fps more or less volatile
+	textComponent->SetFpsMode(true);
+	textComponent->SetPosition(35.0f, 35.f);
+	textComponent->SetTextColor({ 0, 255, 255 });
+
+	fpsCounterObj->AddComponent<TextComponent>(textComponent);
+	scene.Add(fpsCounterObj);
+
+	//auto textComponent = new TextComponent();
+	/*fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
+	fpsCounterObj->GetComponent<dae::TextComponent>()->SetFpsMode(true);
+	fpsCounterObj->GetComponent<dae::TextComponent>()->SetPosition(35.0f, 35.f);*/
+
 
 	//go = std::make_shared<GameObject>();
 	//go->SetTexture("logo.png");
 	//go->SetPosition(216, 180);
 	//scene.Add(go);
 
-	//auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	//auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
 	//to->SetPosition(80, 20);
 	//scene.Add(to);
@@ -97,6 +113,7 @@ void dae::NightOwlEngine::Run()
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
+	auto& time = Time::GetInstance();
 
 	bool doContinue = true;
 	auto prevTime = chrono::high_resolution_clock::now();
@@ -111,6 +128,7 @@ void dae::NightOwlEngine::Run()
 
 		doContinue = input.ProcessInput();
 		sceneManager.Update(deltaT);
+		time.Update(deltaT);
 
 		//used for physics 
 		while (lag >= m_MsPerFrame)

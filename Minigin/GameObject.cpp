@@ -17,6 +17,9 @@ dae::GameObject::GameObject(const std::string_view& objectName)
 		m_Name = "Object" + std::to_string(m_ObjIdCounter);
 	else
 		m_Name = objectName;
+
+	//int* idk = new int;
+	//idk;
 }
 
 dae::GameObject::~GameObject() = default;
@@ -50,7 +53,6 @@ void dae::GameObject::SetPosition(float x, float y)
 	m_Transform.SetPosition(x, y, 0.0f);
 }
 
-
 dae::GameObject* dae::GameObject::GetChildAt(int index) const
 {
 	//bound checking
@@ -82,7 +84,7 @@ void dae::GameObject::RemoveChildAt(int index)
 	m_pChildren.erase(m_pChildren.begin() + index);
 }
 
-void dae::GameObject::RemoveChildByName(const std::string_view& childName)
+void dae::GameObject::RemoveChildByName(const std::string_view & childName)
 {
 	auto it = std::find_if(m_pChildren.begin(), m_pChildren.end(), [&childName](const std::unique_ptr<GameObject>& child)
 		{
@@ -96,13 +98,14 @@ void dae::GameObject::RemoveChildByName(const std::string_view& childName)
 
 void dae::GameObject::AddChild(GameObject * object)
 {
-	//UNREFERENCED_PARAMETER(object);
+	object->SetParent(this);
 	m_pChildren.emplace_back(object);
 }
 
-dae::GameObject* dae::GameObject::AddChild(const std::string_view& childName)
+dae::GameObject* dae::GameObject::AddChild(const std::string_view & childName)
 {
-	auto newObject = new GameObject{childName};
-	m_pComponents.emplace_back(newObject);
+	auto newObject = new GameObject{ childName };
+	newObject->SetParent(this);
+	m_pChildren.emplace_back(newObject);
 	return newObject;
 }

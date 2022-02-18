@@ -1,2 +1,69 @@
 #include "NightOwlEnginePCH.h"
 #include "TextComponent.h"
+#include <SDL_ttf.h>
+#include "Renderer.h"
+#include "Font.h"
+#include "Texture2D.h"
+#include "Time.h"
+#include <iostream>
+#include <format>
+
+dae::TextComponent::TextComponent()
+	: m_Text{ "Lorem Ipsum" }
+	, m_Font{ nullptr }
+	, m_TextTexture{ nullptr }
+	, m_Transform{}
+	, m_NeedsUpdate{ true }
+	, m_FpsCounterMode{}
+{
+
+}
+
+void dae::TextComponent::SetText(const std::string_view& text)
+{
+	m_Text = text;
+	m_NeedsUpdate = true;
+}
+
+void dae::TextComponent::SetTextColor(const SDL_Color& color)
+{
+	m_TextColor = color;
+	m_NeedsUpdate = true;
+}
+
+void dae::TextComponent::Update()
+{
+	if (m_FpsCounterMode)
+	{
+		m_Text = std::format("{:.2f}", Time::GetInstance().GetFPS());
+
+		m_NeedsUpdate = true;
+	}
+
+	if (m_NeedsUpdate)
+	{
+		//const SDL_Color color = { 255,255,255 }; // only white text is supported now
+		const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_TextColor);
+		if (surf == nullptr)
+		{
+			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
+		}
+		auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
+		if (texture == nullptr)
+		{
+			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
+		}
+		SDL_FreeSurface(surf);
+		m_TextTexture = std::make_shared<Texture2D>(texture);
+		m_NeedsUpdate = false;
+	}
+}
+
+void dae::TextComponent::Render() const
+{
+	if (m_TextTexture != nullptr)
+	{
+		const auto& pos = m_Transform.GetPosition();
+		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
+	}
+}

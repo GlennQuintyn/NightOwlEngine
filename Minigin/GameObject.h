@@ -4,7 +4,7 @@
 #include "BaseComponent.h"
 #include <vector>
 
-#include "Texture2DComponent.h"
+//#include "Texture2DComponent.h"
 
 namespace dae
 {
@@ -23,6 +23,7 @@ namespace dae
 		void SetPosition(float x, float y);
 
 		template <typename T> T* AddComponent();
+		template <typename T> void AddComponent(T* component);
 		template <typename T> T* GetComponent() const;
 		template <typename T> void RemoveComponent();
 
@@ -38,7 +39,7 @@ namespace dae
 		void RemoveChildByName(const std::string_view& childName);
 
 		void AddChild(GameObject* object);
-		GameObject* AddChild(const std::string_view& childName = {}) ;
+		GameObject* AddChild(const std::string_view& childName = {});
 
 		const std::string& GetName() const { return m_Name; };
 		void SetName(const std::string_view& name) { m_Name = name; };
@@ -70,6 +71,15 @@ namespace dae
 		auto newComponent = new T{};
 		m_pComponents.emplace_back(newComponent, &typeid(T));
 		return newComponent;
+	}
+
+	template<typename T>
+	void dae::GameObject::AddComponent(T* component)
+	{
+		if (component)
+		{
+			m_pComponents.emplace_back(component, &typeid(component));
+		}
 	}
 
 	template<typename T>
