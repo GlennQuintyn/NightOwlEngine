@@ -18,6 +18,7 @@ namespace dae
 		void SetPosition(float x, float y) { m_Transform.SetPosition(x, y, 0.0f); };
 		void SetFpsMode(bool state) { m_FpsCounterMode = state; };
 		void SetTextColor(const SDL_Color& color);
+		void SetTextColor(unsigned char r, unsigned char g, unsigned char b);
 
 		virtual void Update() override;
 		virtual void Render() const override;
@@ -38,22 +39,3 @@ namespace dae
 		bool m_NeedsUpdate;
 	};
 }
-
-
-//	class Texture2D;
-//
-//	class Texture2DComponent final : public BaseComponent
-//	{
-//	public:
-//		Texture2DComponent();
-//		~Texture2DComponent();
-//
-//		virtual void Update() override {};
-//		virtual void Render() const override {};
-//
-//		void SetTexture(const std::string& filename);
-//
-//	private:
-//		std::shared_ptr<Texture2D> m_Texture{};
-//	};
-//}

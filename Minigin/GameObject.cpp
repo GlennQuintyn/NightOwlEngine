@@ -56,7 +56,7 @@ void dae::GameObject::SetPosition(float x, float y)
 dae::GameObject* dae::GameObject::GetChildAt(int index) const
 {
 	//bound checking
-	if (index < 0 || index >= m_pChildren.size())
+	if (index < 0 || size_t(index) >= m_pChildren.size())
 		return nullptr;
 
 	return m_pChildren[index].get();
@@ -78,7 +78,7 @@ dae::GameObject* dae::GameObject::GetChildByName(const std::string_view & childN
 void dae::GameObject::RemoveChildAt(int index)
 {
 	//bound checking
-	if (index < 0 || index >= m_pChildren.size())
+	if (index < 0 || size_t(index) >= m_pChildren.size())
 		return;
 
 	m_pChildren.erase(m_pChildren.begin() + index);

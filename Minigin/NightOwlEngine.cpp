@@ -12,6 +12,7 @@
 
 #include "Texture2DComponent.h"
 #include "TextComponent.h"
+#include "FPSComponent.h"
 
 using namespace std;
 
@@ -65,17 +66,17 @@ void dae::NightOwlEngine::LoadGame() const
 	backgroundObject->AddComponent<dae::Texture2DComponent>()->SetTexture("background.jpg");
 	scene.Add(backgroundObject);
 
-	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	auto fpsFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
+	auto normalfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	auto fpsCounterObj = std::make_shared<GameObject>();
-	auto textComponent = fpsCounterObj->AddComponent<dae::TextComponent>();
-	textComponent->SetFont(font);
-	//todo: change fps mode to a seperate component and add precision of float to as option and maybe add code to make fps more or less volatile
-	textComponent->SetFpsMode(true);
-	textComponent->SetPosition(35.0f, 35.f);
-	textComponent->SetTextColor({ 0, 255, 255 });
-
-	fpsCounterObj->AddComponent<TextComponent>(textComponent);
+	auto fpsComponent = fpsCounterObj->AddComponent<dae::FPSComponent>();
+	fpsComponent->SetFont(fpsFont);
+	fpsComponent->SetPosition(5.0f, 5.f);
+	fpsComponent->SetTextColor({ 0, 255, 255 });
 	scene.Add(fpsCounterObj);
+
+	//fpsCounterObj->AddComponent<FPSComponent>(textComponent);
+	//fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
 
 	//auto textComponent = new TextComponent();
 	/*fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
@@ -83,14 +84,18 @@ void dae::NightOwlEngine::LoadGame() const
 	fpsCounterObj->GetComponent<dae::TextComponent>()->SetPosition(35.0f, 35.f);*/
 
 
-	//go = std::make_shared<GameObject>();
-	//go->SetTexture("logo.png");
-	//go->SetPosition(216, 180);
-	//scene.Add(go);
+	auto logoObject = std::make_shared<GameObject>();
+	auto textureComponent = logoObject->AddComponent<Texture2DComponent>();
+	textureComponent->SetTexture("logo.png");
+	textureComponent->SetPosition(216, 180);
+	scene.Add(logoObject);
 
-	//auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	//to->SetPosition(80, 20);
-	//scene.Add(to);
+	auto textObject = std::make_shared<GameObject>();
+	auto textComponent = logoObject->AddComponent<TextComponent>();
+	textComponent->SetText("Programming 4 Assignment");
+	textComponent->SetPosition(80, 20);
+	textComponent->SetFont(normalfont);
+	scene.Add(textObject);
 }
 
 void dae::NightOwlEngine::Cleanup()

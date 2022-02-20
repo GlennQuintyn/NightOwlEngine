@@ -16,6 +16,7 @@ namespace dae
 		virtual void Render() const override;
 
 		void SetTexture(const std::string& filename);
+		void SetPosition(float x, float y) { m_Transform.SetPosition(x, y, 0.0f); };
 
 	private:
 		std::shared_ptr<Texture2D> m_Texture{};

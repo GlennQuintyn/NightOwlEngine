@@ -24,6 +24,7 @@ namespace dae
 
 		template <typename T> T* AddComponent();
 		template <typename T> void AddComponent(T* component);
+		//void AddComponent(BaseComponent* component, const type_info* compTypeId) { component; compTypeId; };
 		template <typename T> T* GetComponent() const;
 		template <typename T> void RemoveComponent();
 
@@ -75,6 +76,7 @@ namespace dae
 
 	template<typename T>
 	void dae::GameObject::AddComponent(T* component)
+		//void dae::GameObject::AddComponent(BaseComponent* component, const std::type_info& compTypeId)
 	{
 		if (component)
 		{
