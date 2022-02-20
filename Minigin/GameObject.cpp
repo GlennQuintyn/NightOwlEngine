@@ -24,9 +24,8 @@ dae::GameObject::GameObject(const std::string_view& objectName)
 
 dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update(float deltaT)
+void dae::GameObject::Update()
 {
-	UNREFERENCED_PARAMETER(deltaT);
 	for (auto& component : m_pComponents)
 	{
 		component.first->Update();

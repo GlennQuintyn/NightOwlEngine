@@ -16,7 +16,7 @@ namespace dae
 		GameObject(const std::string_view& objectName = {});
 		virtual ~GameObject();
 
-		void Update(float deltaT);
+		void Update();
 		void FixedUpdate(float deltaT);
 		void Render() const;
 

@@ -21,7 +21,7 @@ void dae::FPSComponent::Update()
 	if (!m_Font)
 		return;
 
-	const std::string& frameRateText = std::format("{:.2f} FPS", Time::GetInstance().GetFPS());
+	const std::string& frameRateText = std::format("{:.1f} FPS", Time::GetInstance().GetFPS());
 
 	//const SDL_Color color = { 255,255,255 }; // only white text is supported now
 	const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), frameRateText.c_str(), m_TextColor);
@@ -34,6 +34,7 @@ void dae::FPSComponent::Update()
 	{
 		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 	}
+
 	SDL_FreeSurface(surf);
 	m_TextTexture = std::make_shared<Texture2D>(texture);
 }

@@ -119,6 +119,7 @@ void dae::NightOwlEngine::Run()
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
+	time.SetFPSVolatility(10);
 
 	bool doContinue = true;
 	auto prevTime = chrono::high_resolution_clock::now();
@@ -132,7 +133,7 @@ void dae::NightOwlEngine::Run()
 		lag += deltaT;
 
 		doContinue = input.ProcessInput();
-		sceneManager.Update(deltaT);
+		sceneManager.Update();
 		time.Update(deltaT);
 
 		//used for physics 

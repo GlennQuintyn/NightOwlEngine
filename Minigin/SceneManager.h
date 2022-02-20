@@ -10,7 +10,7 @@ namespace dae
 	public:
 		Scene& CreateScene(const std::string& name);
 
-		void Update(float deltaT);
+		void Update();
 		void FixedUpdate(float deltaT);
 		void Render();
 

@@ -2,12 +2,12 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void dae::SceneManager::Update(float deltaT)
+void dae::SceneManager::Update()
 {
 	//UNREFERENCED_PARAMETER(deltaT);
 	for (auto& scene : m_pScenes)
 	{
-		scene->Update(deltaT);
+		scene->Update();
 	}
 }
 
