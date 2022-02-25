@@ -13,6 +13,7 @@
 #include "Texture2DComponent.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
+#include "TrashTheCacheComponent.h"
 
 using namespace std;
 
@@ -96,6 +97,11 @@ void dae::NightOwlEngine::LoadGame() const
 	textComponent->SetPosition(80, 20);
 	textComponent->SetFont(normalfont);
 	scene.Add(textObject);
+
+	auto ImguiTestObject = std::make_shared<GameObject>();
+	ImguiTestObject->AddComponent<TrashTheCacheComponent>();
+	scene.Add(ImguiTestObject);
+
 }
 
 void dae::NightOwlEngine::Cleanup()
@@ -119,7 +125,7 @@ void dae::NightOwlEngine::Run()
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
-	time.SetFPSVolatility(10);
+	//time.SetFPSVolatility(10);
 
 	bool doContinue = true;
 	auto prevTime = chrono::high_resolution_clock::now();

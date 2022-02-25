@@ -11,7 +11,8 @@ namespace dae
 	{
 		SDL_Renderer* m_Renderer{};
 		SDL_Window* m_Window{};
-		SDL_Color m_clearColor{};	
+		SDL_Color m_clearColor{};
+
 	public:
 		void Init(SDL_Window* window);
 		void Render() const;
