@@ -45,11 +45,11 @@ inline void dae::TrashTheCacheComponent::TrashTheCache(std::vector<float>& graph
 	int uselessOperatorVariable{ 1 };
 	std::vector<T> arr{};
 	arr.resize(10'000'000);
-	int maxStepsize{ 2048 };
+	size_t maxStepsize{ 2048 };
 	//the max stepsize is 2048 so in 
 	graphData.resize(int(std::log2f(float(maxStepsize))));
 
-	for (size_t sample = 0; sample < m_SampleSize; sample++)
+	for (size_t sample = 0; sample < size_t(m_SampleSize); sample++)
 	{
 		int sampleIndex{};
 		for (size_t stepsize{ 1 }; stepsize < maxStepsize; stepsize *= 2)
@@ -72,6 +72,15 @@ inline void dae::TrashTheCacheComponent::TrashTheCache(std::vector<float>& graph
 
 	//simple func to use the varible so that the operations in the loop don't get removed for optimizations
 	putchar(uselessOperatorVariable);
+}
+
+dae::TrashTheCacheComponent::TrashTheCacheComponent(GameObject* pParentObject)
+	: m_pParentObject{ nullptr }
+{
+	if (pParentObject)
+	{
+		m_pParentObject = pParentObject;
+	}
 }
 
 void dae::TrashTheCacheComponent::Update()

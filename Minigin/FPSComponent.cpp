@@ -8,12 +8,17 @@
 #include <iostream>
 #include <format>
 
-dae::FPSComponent::FPSComponent()
+dae::FPSComponent::FPSComponent(GameObject* pParentObject)
 	: m_Font{ nullptr }
 	, m_TextTexture{ nullptr }
 	, m_Transform{}
 	, m_TextColor{ SDL_Color{255,255,255} }
+	, m_pParentObject{ nullptr }
 {
+	if (pParentObject)
+	{
+		m_pParentObject = pParentObject;
+	}
 }
 
 void dae::FPSComponent::Update()

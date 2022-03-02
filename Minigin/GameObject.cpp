@@ -5,7 +5,7 @@
 
 unsigned int dae::GameObject::m_ObjIdCounter = 0;
 
-dae::GameObject::GameObject(const std::string_view& objectName)
+dae::GameObject::GameObject(const std::string_view objectName)
 	: m_Name{}
 	, m_Transform{}
 	, m_pParent{ nullptr }
@@ -30,11 +30,15 @@ void dae::GameObject::Update()
 	{
 		component.first->Update();
 	}
+
+	for (auto& child : m_pChildren)
+	{
+		child->Update();
+	}
 }
 
-void dae::GameObject::FixedUpdate(float deltaT)
+void dae::GameObject::FixedUpdate(float)
 {
-	UNREFERENCED_PARAMETER(deltaT);
 }
 
 void dae::GameObject::Render() const
@@ -44,6 +48,11 @@ void dae::GameObject::Render() const
 	for (const auto& component : m_pComponents)
 	{
 		component.first->Render();
+	}
+
+	for (const auto& child : m_pChildren)
+	{
+		child->Render();
 	}
 }
 
@@ -61,7 +70,7 @@ dae::GameObject* dae::GameObject::GetChildAt(int index) const
 	return m_pChildren[index].get();
 }
 
-dae::GameObject* dae::GameObject::GetChildByName(const std::string_view & childName) const
+dae::GameObject* dae::GameObject::GetChildByName(const std::string_view childName) const
 {
 	auto it = std::find_if(m_pChildren.begin(), m_pChildren.end(), [&childName](const std::unique_ptr<GameObject>& child)
 		{
@@ -83,7 +92,7 @@ void dae::GameObject::RemoveChildAt(int index)
 	m_pChildren.erase(m_pChildren.begin() + index);
 }
 
-void dae::GameObject::RemoveChildByName(const std::string_view & childName)
+void dae::GameObject::RemoveChildByName(const std::string_view childName)
 {
 	auto it = std::find_if(m_pChildren.begin(), m_pChildren.end(), [&childName](const std::unique_ptr<GameObject>& child)
 		{
@@ -101,7 +110,7 @@ void dae::GameObject::AddChild(GameObject * object)
 	m_pChildren.emplace_back(object);
 }
 
-dae::GameObject* dae::GameObject::AddChild(const std::string_view & childName)
+dae::GameObject* dae::GameObject::AddChild(const std::string_view childName)
 {
 	auto newObject = new GameObject{ childName };
 	newObject->SetParent(this);

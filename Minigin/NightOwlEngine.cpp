@@ -102,6 +102,10 @@ void dae::NightOwlEngine::LoadGame() const
 	ImguiTestObject->AddComponent<TrashTheCacheComponent>();
 	scene.Add(ImguiTestObject);
 
+
+	//auto myComp = Texture2DComponent{ 0 };
+	//auto myCdomp = TextComponent{ 0 };
+
 }
 
 void dae::NightOwlEngine::Cleanup()
@@ -125,6 +129,7 @@ void dae::NightOwlEngine::Run()
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
+
 	//time.SetFPSVolatility(10);
 
 	bool doContinue = true;
@@ -138,9 +143,9 @@ void dae::NightOwlEngine::Run()
 		prevTime = currentTime;
 		lag += deltaT;
 
+		time.Update(deltaT);
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
-		time.Update(deltaT);
 
 		//used for physics 
 		while (lag >= m_MsPerFrame)

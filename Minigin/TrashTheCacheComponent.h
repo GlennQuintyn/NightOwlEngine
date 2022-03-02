@@ -6,10 +6,12 @@
 
 namespace dae
 {
+	class GameObject;
+
 	class TrashTheCacheComponent : public BaseComponent
 	{
 	public:
-		TrashTheCacheComponent() = default;
+		TrashTheCacheComponent(GameObject* pParentObject);
 		~TrashTheCacheComponent() = default;
 
 		virtual void Update() override;
@@ -28,6 +30,8 @@ namespace dae
 		std::vector<float> m_GraphData1{};
 		std::vector<float> m_GraphData2{};
 		std::vector<float> m_GraphData3{};
+
+		GameObject* m_pParentObject;
 
 		int m_SampleSize{ 10 };
 

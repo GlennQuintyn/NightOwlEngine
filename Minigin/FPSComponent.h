@@ -6,11 +6,16 @@ namespace dae
 {
 	class Font;
 	class Texture2D;
+	class GameObject;
 
 	class FPSComponent final : public BaseComponent
 	{
 	public:
-		FPSComponent();
+		FPSComponent(GameObject* pParentObject);
+
+		//make sure that component has a parent that isn't nullptr
+		FPSComponent(std::nullptr_t) = delete;
+
 		~FPSComponent() = default;
 
 		//todo: change fps mode to a seperate component and add precision of float to as option and maybe add code to make fps more or less volatile
@@ -32,5 +37,6 @@ namespace dae
 		std::shared_ptr<Texture2D> m_TextTexture;
 		SDL_Color m_TextColor;
 		Transform m_Transform;
+		GameObject* m_pParentObject;
 	};
 }

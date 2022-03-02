@@ -7,7 +7,7 @@ namespace dae
 
 	class Scene
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
+		friend Scene& SceneManager::CreateScene(const std::string_view name);
 	public:
 		void Add(const std::shared_ptr<GameObject>& object);
 
@@ -22,7 +22,7 @@ namespace dae
 		Scene& operator=(Scene&& other) = delete;
 
 	private:
-		explicit Scene(const std::string& name);
+		explicit Scene(const std::string_view name);
 
 		std::string m_Name;
 		std::vector<std::shared_ptr<GameObject>> m_Objects{};

@@ -8,7 +8,7 @@ namespace dae
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:
-		Scene& CreateScene(const std::string& name);
+		Scene& CreateScene(const std::string_view name);
 
 		void Update();
 		void FixedUpdate(float deltaT);

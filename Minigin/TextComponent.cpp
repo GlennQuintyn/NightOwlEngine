@@ -5,7 +5,7 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-dae::TextComponent::TextComponent()
+dae::TextComponent::TextComponent(GameObject* pParentObject)
 	: m_Text{ "Lorem Ipsum" }
 	, m_Font{ nullptr }
 	, m_TextTexture{ nullptr }
@@ -13,10 +13,15 @@ dae::TextComponent::TextComponent()
 	, m_NeedsUpdate{ true }
 	, m_FpsCounterMode{}
 	, m_TextColor{ SDL_Color{255,255,255} }
+	, m_pParentObject{nullptr}
 {
+	if (pParentObject)
+	{
+		m_pParentObject = pParentObject;
+	}
 }
 
-void dae::TextComponent::SetText(const std::string_view& text)
+void dae::TextComponent::SetText(const std::string_view text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;

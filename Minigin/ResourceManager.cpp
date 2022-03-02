@@ -7,7 +7,7 @@
 #include "Texture2D.h"
 #include "Font.h"
 
-void dae::ResourceManager::Init(const std::string& dataPath)
+void dae::ResourceManager::Init(const std::string_view dataPath)
 {
 	m_DataPath = dataPath;
 

@@ -6,7 +6,7 @@ using namespace dae;
 
 unsigned int Scene::m_IdCounter = 0;
 
-Scene::Scene(const std::string& name) : m_Name(name) {}
+Scene::Scene(const std::string_view name) : m_Name(name) {}
 
 Scene::~Scene() = default;
 
@@ -25,7 +25,6 @@ void Scene::Update()
 
 void dae::Scene::FixedUpdate(float deltaT)
 {
-	//UNREFERENCED_PARAMETER(deltaT);
 	for (auto& object : m_Objects)
 	{
 		object->FixedUpdate(deltaT);

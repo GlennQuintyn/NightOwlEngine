@@ -13,7 +13,7 @@ namespace dae
 	class GameObject final//: public SceneObject
 	{
 	public:
-		GameObject(const std::string_view& objectName = {});
+		GameObject(const std::string_view objectName = {});
 		virtual ~GameObject();
 
 		void Update();
@@ -34,16 +34,16 @@ namespace dae
 		size_t GetChildCount() const { return m_pChildren.size(); };
 
 		GameObject* GetChildAt(int index) const;
-		GameObject* GetChildByName(const std::string_view& childName) const;
+		GameObject* GetChildByName(const std::string_view childName) const;
 
 		void RemoveChildAt(int index);
-		void RemoveChildByName(const std::string_view& childName);
+		void RemoveChildByName(const std::string_view childName);
 
 		void AddChild(GameObject* object);
-		GameObject* AddChild(const std::string_view& childName = {});
+		GameObject* AddChild(const std::string_view childName = {});
 
 		const std::string& GetName() const { return m_Name; };
-		void SetName(const std::string_view& name) { m_Name = name; };
+		void SetName(const std::string_view name) { m_Name = name; };
 
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -69,7 +69,7 @@ namespace dae
 	template<typename T>
 	inline T* GameObject::AddComponent()
 	{
-		auto newComponent = new T{};
+		auto newComponent = new T{ this };
 		m_pComponents.emplace_back(newComponent, &typeid(T));
 		return newComponent;
 	}

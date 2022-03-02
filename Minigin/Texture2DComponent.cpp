@@ -4,6 +4,15 @@
 #include "Renderer.h"
 
 
+dae::Texture2DComponent::Texture2DComponent(GameObject* pParentObject)
+	:m_pParentObject{ nullptr }
+{
+	if (pParentObject)
+	{
+		m_pParentObject = pParentObject;
+	}
+}
+
 void dae::Texture2DComponent::Update()
 {
 }
