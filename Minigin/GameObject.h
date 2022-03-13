@@ -1,49 +1,62 @@
 #pragma once
-#include "Transform.h"
-//#include "SceneObject.h"
 #include "BaseComponent.h"
+#include "Transform.h"
 #include <vector>
-
-//#include "Texture2DComponent.h"
 
 namespace dae
 {
-	//class Texture2D;
+	class Scene;
 
-	class GameObject final//: public SceneObject
+	class GameObject final
 	{
 	public:
-		GameObject(const std::string_view objectName = {});
+		GameObject(const std::string_view objectName = {}, Scene* pScene = nullptr, GameObject* pParent = nullptr);
 		virtual ~GameObject();
 
+		void LateInit();
 		void Update();
 		void FixedUpdate(float deltaT);
+		void LateUpdate();
 		void Render() const;
 
-		void SetPosition(float x, float y);
-
-		template <typename T> T* AddComponent();
+		template <typename T> T& AddComponent();
 		template <typename T> void AddComponent(T* component);
-		//void AddComponent(BaseComponent* component, const type_info* compTypeId) { component; compTypeId; };
 		template <typename T> T* GetComponent() const;
 		template <typename T> void RemoveComponent();
 
-		void SetParent(GameObject* parent) { m_pParent = parent; };
+		void SetLocalTransform(const Transform& transform);
+		void SetLocalPosition(float x, float y);
+		void SetLocalPosition(const glm::vec2& position);
+		void SetLocalRotation(float radians);
+		void SetLocalScale(float x, float y);
+		void SetLocalScale(const glm::vec2& scale);
+		void SetLocalZDept(float z);
+
+		const Transform& GetWorldTransform() const { return m_WorldTransform; };
+		const glm::vec2& GetWorldPosition() const { return m_WorldTransform.position; };
+		const float GetWorldRotation() const { return m_WorldTransform.rotation; };
+		const glm::vec2& GetWorldScale() const { return m_WorldTransform.scale; };
+		const float GetWorldZDept() const { return m_WorldTransform.zDept; };
+
+		Scene* GetScene();
+
+		void SetParent(GameObject* parent, bool keepWorldPosition = true);
 		GameObject* GetParent() const { return m_pParent; };
 
 		size_t GetChildCount() const { return m_pChildren.size(); };
-
 		GameObject* GetChildAt(int index) const;
 		GameObject* GetChildByName(const std::string_view childName) const;
+		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const { return m_pChildren; };
 
-		void RemoveChildAt(int index);
-		void RemoveChildByName(const std::string_view childName);
+		std::unique_ptr<GameObject> RemoveChildAt(size_t index);
+		std::unique_ptr<GameObject> RemoveChildByName(const std::string_view childName);
 
-		void AddChild(GameObject* object);
-		GameObject* AddChild(const std::string_view childName = {});
+		GameObject* CreateAddChild(const std::string_view childName = {});
 
 		const std::string& GetName() const { return m_Name; };
-		void SetName(const std::string_view name) { m_Name = name; };
+		//void SetName(const std::string_view name) { m_Name = name; };//TODO: implement properly in future, so that duplicate child naming is not possible
+
+
 
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -51,27 +64,42 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
+
+		void AdoptChild(std::unique_ptr<GameObject> pObject);
+
+		void UpdateTransform();
+		void UpdatePosition();
+		void UpdateRotation();
+		void UpdateScale();
+		void UpdateZDept();
+
+		Transform m_LocalTransform;
+		Transform m_WorldTransform;
+
 		std::string m_Name;
 
 		std::vector<std::pair<std::unique_ptr<BaseComponent>, const std::type_info*>> m_pComponents;
 		std::vector<std::unique_ptr<GameObject>> m_pChildren;
 
 		GameObject* m_pParent;
-
-		Transform m_Transform;
+		Scene* m_pScene;
 
 		static unsigned int m_ObjIdCounter;
 
-		//  mmm, every gameobject has a texture? Is that correct?
-		//std::shared_ptr<Texture2D> m_Texture{};
+		bool m_TransformIsDirty;
+		bool m_PositionIsDirty;
+		bool m_RotationIsDirty;
+		bool m_ScaleIsDirty;
+		bool m_ZDeptIsDirty;
 	};
 
+#pragma region Templated Functions
 	template<typename T>
-	inline T* GameObject::AddComponent()
+	inline T& GameObject::AddComponent()
 	{
 		auto newComponent = new T{ this };
 		m_pComponents.emplace_back(newComponent, &typeid(T));
-		return newComponent;
+		return *newComponent;
 	}
 
 	template<typename T>
@@ -79,9 +107,7 @@ namespace dae
 		//void dae::GameObject::AddComponent(BaseComponent* component, const std::type_info& compTypeId)
 	{
 		if (component)
-		{
 			m_pComponents.emplace_back(component, &typeid(component));
-		}
 	}
 
 	template<typename T>
@@ -110,4 +136,5 @@ namespace dae
 		if (it != m_pComponents.end())
 			it->first.reset();
 	}
+#pragma endregion
 }

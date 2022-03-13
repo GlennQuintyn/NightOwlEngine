@@ -22,27 +22,21 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{860d347f-566a-40ef-8b0e-c6fe1ac810c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{ce1481e4-086c-40ac-94fd-1cba7dde9c9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{895232db-110d-44e4-bcaa-3a3fe43a0d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{62be3d9e-0e7d-482d-a577-066e58526c06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NightOwlEnginePCH.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Singleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextObject.h">
@@ -52,12 +46,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NightOwlEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture2DComponent.h">
@@ -108,42 +96,48 @@
     <ClInclude Include="TrashTheCacheComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PCController.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="NightOwlEngine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="NightOwlEnginePCH.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
     <ClInclude Include="Logger.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NightOwlEnginePCH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NightOwlEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseComponent.cpp">
@@ -191,8 +185,35 @@
     <ClCompile Include="TrashTheCacheComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="PCController.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="NightOwlEngine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="NightOwlEnginePCH.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
     <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

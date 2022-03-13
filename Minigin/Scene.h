@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneManager.h"
+//#include "SceneManager.h"
 
 namespace dae
 {
@@ -7,12 +7,17 @@ namespace dae
 
 	class Scene
 	{
-		friend Scene& SceneManager::CreateScene(const std::string_view name);
 	public:
-		void Add(const std::shared_ptr<GameObject>& object);
+		//explicit Scene(const std::string_view name);
 
+		GameObject& CreateObject(const std::string_view name/*const std::unique_ptr<GameObject>& object*/);
+		void TakeOwnership(std::unique_ptr<GameObject> pObject);
+		std::unique_ptr<GameObject> ReleaseOwnership(GameObject& pObject);
+
+		void LateInit();
 		void Update();
 		void FixedUpdate(float deltaT);
+		void LateUpdate();
 		void Render() const;
 
 		~Scene();
@@ -23,9 +28,11 @@ namespace dae
 
 	private:
 		explicit Scene(const std::string_view name);
+		//friend Scene& SceneManager::CreateScene(const std::string_view name);
+		friend class SceneManager;
 
 		std::string m_Name;
-		std::vector<std::shared_ptr<GameObject>> m_Objects{};
+		std::vector<std::unique_ptr<GameObject>> m_Objects{};
 
 		static unsigned int m_IdCounter;
 	};

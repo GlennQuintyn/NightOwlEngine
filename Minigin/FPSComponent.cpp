@@ -1,54 +1,38 @@
 #include "NightOwlEnginePCH.h"
 #include "FPSComponent.h"
-#include <SDL_ttf.h>
 #include "Renderer.h"
-#include "Font.h"
-#include "Texture2D.h"
-#include "Time.h"
-#include <iostream>
-#include <format>
+#include "TextComponent.h"
 
-dae::FPSComponent::FPSComponent(GameObject* pParentObject)
-	: m_Font{ nullptr }
-	, m_TextTexture{ nullptr }
-	, m_Transform{}
-	, m_TextColor{ SDL_Color{255,255,255} }
-	, m_pParentObject{ nullptr }
+using namespace dae;
+
+FPSComponent::FPSComponent(GameObject* pParentObject)
+	: m_pParentObject{ nullptr }
+	, m_pTextComponent{ nullptr }
 {
 	if (pParentObject)
-	{
 		m_pParentObject = pParentObject;
-	}
+	else
+		Logger::GetInstance().LogWarning("FPSComponent:\tPARENT OBJECT WAS NOT GIVEN!");
 }
 
-void dae::FPSComponent::Update()
+void FPSComponent::SetTextComponent(TextComponent& pTextComponent)
 {
-	if (!m_Font)
-		return;
-
-	const std::string& frameRateText = std::format("{:.1f} FPS", Time::GetInstance().GetFPS());
-
-	//const SDL_Color color = { 255,255,255 }; // only white text is supported now
-	const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), frameRateText.c_str(), m_TextColor);
-	if (surf == nullptr)
-	{
-		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
-	}
-	auto texture = SDL_CreateTextureFromSurface(Renderer::GetInstance().GetSDLRenderer(), surf);
-	if (texture == nullptr)
-	{
-		throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
-	}
-
-	SDL_FreeSurface(surf);
-	m_TextTexture = std::make_shared<Texture2D>(texture);
+	m_pTextComponent = &pTextComponent;
 }
 
-void dae::FPSComponent::Render() const
+void FPSComponent::LateInit()
 {
-	if (m_TextTexture != nullptr)
-	{
-		const auto& pos = m_Transform.GetPosition();
-		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
-	}
+	if (!m_pTextComponent)
+		Logger::GetInstance().LogError("FPSComponent:\tTEXTCOMPONENT WAS NOT GIVEN!");
+}
+
+void FPSComponent::Update()
+{
+	if (m_pTextComponent)
+		m_pTextComponent->SetText(std::to_string(int(Time::GetInstance().GetFPS())) + " FPS");
+	//m_pTextComponent->SetText(std::format("{:.1f} FPS", Time::GetInstance().GetFPS()));
+}
+
+void FPSComponent::Render() const
+{
 }

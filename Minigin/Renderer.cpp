@@ -4,8 +4,14 @@
 #include "Texture2D.h"
 
 //#include "imgui.h"
+#pragma warning(push)
+#pragma warning( disable : 33010 )
+#pragma warning( disable : 6387 )
 #include "../imgui-1.87/backends/imgui_impl_sdl.h"
 #include "../imgui-1.87/backends/imgui_impl_opengl2.h"
+#pragma warning (pop)
+
+using namespace dae;
 
 int GetOpenGLDriverIndex()
 {
@@ -21,7 +27,7 @@ int GetOpenGLDriverIndex()
 	return openglIndex;
 }
 
-void dae::Renderer::Init(SDL_Window* window)
+void Renderer::Init(SDL_Window* window)
 {
 	m_Window = window;
 	m_Renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -42,12 +48,13 @@ void dae::Renderer::Init(SDL_Window* window)
 	ImGui::NewFrame();
 }
 
-void dae::Renderer::Render() const
+void Renderer::Render() const
 {
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_Renderer);
 
+	//TODO: change rendere to render objects according to their Z value
 	SceneManager::GetInstance().Render();
 
 	//IMGUI TEST
@@ -65,7 +72,7 @@ void dae::Renderer::Render() const
 	ImGui::NewFrame();
 }
 
-void dae::Renderer::Destroy()
+void Renderer::Destroy()
 {
 	//DESTROY IMGUI
 	ImGui_ImplOpenGL2_Shutdown();
@@ -79,7 +86,7 @@ void dae::Renderer::Destroy()
 	}
 }
 
-void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
+void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 {
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);
@@ -88,7 +95,7 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
-void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
+void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
 {
 	SDL_Rect dst{};
 	dst.x = static_cast<int>(x);

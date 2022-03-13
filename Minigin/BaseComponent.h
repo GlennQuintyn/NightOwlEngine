@@ -8,7 +8,9 @@ namespace dae
 		BaseComponent() = default;
 		virtual ~BaseComponent() = default;
 
+		virtual void LateInit() = 0;
 		virtual void Update() = 0;
+		virtual void LateUpdate() = 0;
 		virtual void Render() const = 0;
 
 		//virtual void MarkForDelete() = 0;

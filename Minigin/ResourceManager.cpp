@@ -7,8 +7,16 @@
 #include "Texture2D.h"
 #include "Font.h"
 
-void dae::ResourceManager::Init(const std::string_view dataPath)
+using namespace dae;
+
+void ResourceManager::Init(const std::string_view dataPath)
 {
+	if (dataPath.empty())
+	{
+		Logger::GetInstance().LogError("ResourceManager:\tNO DATA PATH WAS GIVEN!");
+		return;
+	}
+
 	m_DataPath = dataPath;
 
 	// load support for png and jpg, this takes a while!
@@ -29,7 +37,7 @@ void dae::ResourceManager::Init(const std::string_view dataPath)
 	}
 }
 
-std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::string& file) const
+std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file) const
 {
 	const auto fullPath = m_DataPath + file;
 	auto texture = IMG_LoadTexture(Renderer::GetInstance().GetSDLRenderer(), fullPath.c_str());
@@ -40,7 +48,7 @@ std::shared_ptr<dae::Texture2D> dae::ResourceManager::LoadTexture(const std::str
 	return std::make_shared<Texture2D>(texture);
 }
 
-std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& file, unsigned int size) const
+std::shared_ptr<Font> ResourceManager::LoadFont(const std::string& file, unsigned int size) const
 {
 	return std::make_shared<Font>(m_DataPath + file, size);
 }

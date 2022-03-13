@@ -1,6 +1,5 @@
 #pragma once
 #include "GameObject.h"
-#include "Transform.h"
 
 namespace dae
 {
@@ -25,7 +24,6 @@ namespace dae
 	private:
 		bool m_NeedsUpdate;
 		std::string m_Text;
-		Transform m_Transform;
 		std::shared_ptr<Font> m_Font;
 		std::shared_ptr<Texture2D> m_TextTexture;
 	};

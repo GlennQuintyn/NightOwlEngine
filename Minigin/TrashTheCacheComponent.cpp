@@ -5,6 +5,8 @@
 #include "../imgui-1.87/backends/imgui_impl_sdl.h"
 #include "../imgui-1.87/backends/imgui_impl_opengl2.h"
 
+using namespace dae;
+
 struct Transform
 {
 	float matrix[16] = {
@@ -40,7 +42,7 @@ public:
 };
 
 template<typename T>
-inline void dae::TrashTheCacheComponent::TrashTheCache(std::vector<float>& graphData)
+inline void TrashTheCacheComponent::TrashTheCache(std::vector<float>& graphData)
 {
 	int uselessOperatorVariable{ 1 };
 	std::vector<T> arr{};
@@ -74,16 +76,16 @@ inline void dae::TrashTheCacheComponent::TrashTheCache(std::vector<float>& graph
 	putchar(uselessOperatorVariable);
 }
 
-dae::TrashTheCacheComponent::TrashTheCacheComponent(GameObject* pParentObject)
+TrashTheCacheComponent::TrashTheCacheComponent(GameObject* pParentObject)
 	: m_pParentObject{ nullptr }
 {
 	if (pParentObject)
-	{
 		m_pParentObject = pParentObject;
-	}
+	else
+		Logger::GetInstance().LogWarning("TrashTheCacheComponent:\tPARENT OBJECT WAS NOT GIVEN!");
 }
 
-void dae::TrashTheCacheComponent::Update()
+void TrashTheCacheComponent::Update()
 {
 	ImGui::Begin("Trash The cache!");
 
@@ -156,6 +158,6 @@ void dae::TrashTheCacheComponent::Update()
 	ImGui::End();
 }
 
-void dae::TrashTheCacheComponent::Render() const
+void TrashTheCacheComponent::Render() const
 {
 }

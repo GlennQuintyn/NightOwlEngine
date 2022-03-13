@@ -4,42 +4,48 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "GameObject.h"
 
-dae::TextComponent::TextComponent(GameObject* pParentObject)
+using namespace dae;
+
+TextComponent::TextComponent(GameObject* pParentObject)
 	: m_Text{ "Lorem Ipsum" }
 	, m_Font{ nullptr }
 	, m_TextTexture{ nullptr }
-	, m_Transform{}
 	, m_NeedsUpdate{ true }
-	, m_FpsCounterMode{}
 	, m_TextColor{ SDL_Color{255,255,255} }
-	, m_pParentObject{nullptr}
+	, m_pParentObject{ nullptr }
 {
+	//Logger::GetInstance().LogWarning("TEXTCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
+	//Logger::GetInstance().LogInfo("TEXTCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
+	//Logger::GetInstance().LogError("TEXTCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
+	//Logger::GetInstance().Log(Logger::LogLevel::Info, "TEXTCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
+
 	if (pParentObject)
-	{
 		m_pParentObject = pParentObject;
-	}
+	else
+		Logger::GetInstance().LogWarning("TEXTCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
 }
 
-void dae::TextComponent::SetText(const std::string_view text)
+void TextComponent::SetText(const std::string_view text)
 {
 	m_Text = text;
 	m_NeedsUpdate = true;
 }
 
-void dae::TextComponent::SetTextColor(const SDL_Color& color)
+void TextComponent::SetTextColor(const SDL_Color& color)
 {
 	m_TextColor = color;
 	m_NeedsUpdate = true;
 }
 
-void dae::TextComponent::SetTextColor(unsigned char r, unsigned char g, unsigned char b)
+void TextComponent::SetTextColor(unsigned char r, unsigned char g, unsigned char b)
 {
 	m_TextColor = SDL_Color{ r, g, b };
 	m_NeedsUpdate = true;
 }
 
-void dae::TextComponent::Update()
+void TextComponent::Update()
 {
 	if (m_NeedsUpdate)
 	{
@@ -63,11 +69,11 @@ void dae::TextComponent::Update()
 	}
 }
 
-void dae::TextComponent::Render() const
+void TextComponent::Render() const
 {
 	if (m_TextTexture != nullptr)
 	{
-		const auto& pos = m_Transform.GetPosition();
+		const auto& pos = m_pParentObject->GetWorldPosition();//m_Transform.GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
 	}
 }

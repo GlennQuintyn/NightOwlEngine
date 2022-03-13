@@ -1,16 +1,25 @@
 #include "NightOwlEnginePCH.h"
 #include "SceneManager.h"
-#include "Scene.h"
 
-void dae::SceneManager::Update()
+using namespace dae;
+
+void SceneManager::LateInit()
 {
-	for (auto& scene : m_pScenes)
+	for (const auto& scene : m_pScenes)
+	{
+		scene->LateInit();
+	}
+}
+
+void SceneManager::Update()
+{
+	for (const auto& scene : m_pScenes)
 	{
 		scene->Update();
 	}
 }
 
-void dae::SceneManager::FixedUpdate(float deltaT)
+void SceneManager::FixedUpdate(float deltaT)
 {
 	for (const auto& scene : m_pScenes)
 	{
@@ -18,7 +27,15 @@ void dae::SceneManager::FixedUpdate(float deltaT)
 	}
 }
 
-void dae::SceneManager::Render()
+void SceneManager::LateUpdate()
+{
+	for (const auto& scene : m_pScenes)
+	{
+		scene->LateUpdate();
+	}
+}
+
+void SceneManager::Render()
 {
 	for (const auto& scene : m_pScenes)
 	{
@@ -26,9 +43,8 @@ void dae::SceneManager::Render()
 	}
 }
 
-dae::Scene& dae::SceneManager::CreateScene(const std::string_view name)
+Scene& SceneManager::CreateScene(const std::string_view name)
 {
-	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
-	m_pScenes.push_back(scene);
-	return *scene;
+	m_pScenes.push_back(std::unique_ptr<Scene>(new Scene{ name }));
+	return *m_pScenes.back();
 }

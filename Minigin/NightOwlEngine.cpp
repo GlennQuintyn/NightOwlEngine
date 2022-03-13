@@ -3,7 +3,6 @@
 #include <thread>
 #include "InputManager.h"
 #include "SceneManager.h"
-#include "Time.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "TextObject.h"
@@ -59,53 +58,76 @@ void dae::NightOwlEngine::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void dae::NightOwlEngine::LoadGame() const
+void dae::NightOwlEngine::LoadGame() /*const*/
 {
 	auto& scene = SceneManager::GetInstance().CreateScene("FPS Counter");
 
-	auto backgroundObject = std::make_shared<GameObject>();
-	backgroundObject->AddComponent<dae::Texture2DComponent>()->SetTexture("background.jpg");
-	scene.Add(backgroundObject);
+	auto& backgroundObject = scene.CreateObject("backgroundObject");
+	backgroundObject.AddComponent<dae::Texture2DComponent>().SetTexture("background.jpg");
 
 	auto fpsFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
 	auto normalfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto fpsCounterObj = std::make_shared<GameObject>();
-	auto fpsComponent = fpsCounterObj->AddComponent<dae::FPSComponent>();
-	fpsComponent->SetFont(fpsFont);
-	fpsComponent->SetPosition(5.0f, 5.f);
-	fpsComponent->SetTextColor({ 0, 255, 255 });
-	scene.Add(fpsCounterObj);
 
-	//fpsCounterObj->AddComponent<FPSComponent>(textComponent);
-	//fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
+	auto& fpsCounterObj = scene.CreateObject("fpsCounterObj");
+	auto& fpstextComponent = fpsCounterObj.AddComponent<TextComponent>();
+	auto& fpsComponent = fpsCounterObj.AddComponent<FPSComponent>();
+	fpsComponent.SetTextComponent(fpstextComponent);
+	fpsCounterObj.SetLocalPosition(5.f, 5.f);
+	fpstextComponent.SetFont(fpsFont);
+	fpstextComponent.SetTextColor({ 0, 255, 255 });
+	//scene.Add(fpsCounterObj);
 
-	//auto textComponent = new TextComponent();
-	/*fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
+	/*fpsCounterObj->AddComponent<FPSComponent>(textComponent);
+	fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
+	auto textComponent = new TextComponent();
+	fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
 	fpsCounterObj->GetComponent<dae::TextComponent>()->SetFpsMode(true);
 	fpsCounterObj->GetComponent<dae::TextComponent>()->SetPosition(35.0f, 35.f);*/
 
+	auto& logoObject = scene.CreateObject("logoObject");
+	auto& textureComponent = logoObject.AddComponent<Texture2DComponent>();
+	textureComponent.SetTexture("logo.png");
+	logoObject.SetLocalPosition(216, 180);
+	//scene.Add(logoObject);
 
-	auto logoObject = std::make_shared<GameObject>();
-	auto textureComponent = logoObject->AddComponent<Texture2DComponent>();
-	textureComponent->SetTexture("logo.png");
-	textureComponent->SetPosition(216, 180);
-	scene.Add(logoObject);
+	auto& textObject = scene.CreateObject("textObject");
+	auto& textComponent = textObject.AddComponent<TextComponent>();
+	textComponent.SetText("Programming 4 Assignment");
+	textObject.SetLocalPosition(80, 20);
+	textComponent.SetFont(normalfont);
+	//scene.Add(textObject);
 
-	auto textObject = std::make_shared<GameObject>();
-	auto textComponent = logoObject->AddComponent<TextComponent>();
-	textComponent->SetText("Programming 4 Assignment");
-	textComponent->SetPosition(80, 20);
-	textComponent->SetFont(normalfont);
-	scene.Add(textObject);
+	//Test code for input and transfrom code
+	//temp = &logoObject;
+	//scene.CreateObject("test")
+	//temp = new GameObject();
 
-	auto ImguiTestObject = std::make_shared<GameObject>();
-	ImguiTestObject->AddComponent<TrashTheCacheComponent>();
-	scene.Add(ImguiTestObject);
+	//auto ImguiTestObject = std::make_unique<GameObject>();
+	//ImguiTestObject->AddComponent<TrashTheCacheComponent>();
+	//scene.Add(ImguiTestObject);
+	//return;
+
+	//testing area [[maybe_unused]]
+	//auto& rootobj = scene.CreateObject("rootobj");
+	//auto child1 = rootobj.CreateAddChild("child1");
+	//auto child2 = rootobj.CreateAddChild("child2");
+	//auto child3 = rootobj.CreateAddChild("child3");
+	//[[maybe_unused]] auto child4 = rootobj.CreateAddChild("child3");//should give dupplicate child name warning and rename it to smt new
+	//
+	//[[maybe_unused]] auto grandchild1 = child1->CreateAddChild("grandchild1");
+	//[[maybe_unused]] auto grandchild2 = child1->CreateAddChild("grandchild1");//should give same duplicate child name warning
+	//[[maybe_unused]] auto grandchild3 = child2->CreateAddChild("grandchild1");
+	//
+	//grandchild3->SetParent(child1);//should give error of duplicate child name
+	//grandchild3->SetParent(child3);
+	////grandchild3->RemoveParent();//object should now be part of the scene and not float free
+	////grandchild3->SetName("");
+	//grandchild3->SetParent(nullptr);
 
 
-	//auto myComp = Texture2DComponent{ 0 };
-	//auto myCdomp = TextComponent{ 0 };
-
+	//auto yesyes = std::make_unique<GameObject>("grandchild1", &scene);
+	//child1->AdoptChild(child2);//should create error (childing twice)
+	//child1->AdoptChild(std::move(yesyes));
 }
 
 void dae::NightOwlEngine::Cleanup()
@@ -130,11 +152,13 @@ void dae::NightOwlEngine::Run()
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
 
-	//time.SetFPSVolatility(10);
+	sceneManager.LateInit();
 
 	bool doContinue = true;
 	auto prevTime = chrono::high_resolution_clock::now();
 	float lag = 0.0f;
+
+
 
 	while (doContinue)
 	{
@@ -147,6 +171,26 @@ void dae::NightOwlEngine::Run()
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
 
+		/*Test code for input and transfrom code
+		auto pos = temp->GetWorldPosition();
+		if (input.IsPressed(PCController::ControllerButton::Button_Cross))
+		{
+			pos += glm::vec2{ 0,1 };
+		}
+		if (input.IsPressed(PCController::ControllerButton::Button_Circle))
+		{
+			pos += glm::vec2{ 1,0 };
+		}
+		if (input.IsPressed(PCController::ControllerButton::Button_Triangle))
+		{
+			pos += glm::vec2{ 0, -1 };
+		}
+		if (input.IsPressed(PCController::ControllerButton::Button_Square))
+		{
+			pos += glm::vec2{ -1,0 };
+		}
+		temp->SetLocalPosition(pos);*/
+
 		//used for physics 
 		while (lag >= m_MsPerFrame)
 		{
@@ -154,7 +198,7 @@ void dae::NightOwlEngine::Run()
 			lag -= m_MsPerFrame;
 		}
 
-		//todo: add some form of late update function
+		sceneManager.LateUpdate();
 
 		renderer.Render();
 
