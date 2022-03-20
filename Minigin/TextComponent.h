@@ -22,12 +22,11 @@ namespace dae
 		void SetTextColor(const SDL_Color& color);
 		void SetTextColor(unsigned char r, unsigned char g, unsigned char b);
 
-		virtual void LateInit() override {};
+		virtual void LateInit() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override {};
 		virtual void Render() const override;
 
-		//void SetTexture(const std::string& filename);
 		TextComponent(const TextComponent& other) = delete;
 		TextComponent(TextComponent&& other) = delete;
 		TextComponent& operator=(const TextComponent& other) = delete;

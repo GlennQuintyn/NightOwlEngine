@@ -5,14 +5,23 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
-#include "TextObject.h"
 #include "GameObject.h"
 #include "Scene.h"
+
+#pragma warning(push)
+#pragma warning( disable : 26812 )
+#pragma warning( disable : 4996 )
+#include <steam_api.h>
+#pragma warning (pop)
 
 #include "Texture2DComponent.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "TrashTheCacheComponent.h"
+#include "SubjectComponent.h"
+#include "LivesComponent.h"
+#include "PeterPepper.h"
+#include "ScoreComponent.h"
 
 using namespace std;
 
@@ -60,6 +69,9 @@ void dae::NightOwlEngine::Initialize()
  */
 void dae::NightOwlEngine::LoadGame() /*const*/
 {
+	std::cout << "\n\n-player 1:\n\tButton Y: Lose a life\n\tButton R1: add 25 to score\n\tButton R3: add 50 to score\n\n";
+	std::cout << "-player 2:\n\tButton X: Lose a life\n\tButton L1: add 25 to score\n\tButton L3: add 50 to score\n\n";
+
 	auto& scene = SceneManager::GetInstance().CreateScene("FPS Counter");
 
 	auto& backgroundObject = scene.CreateObject("backgroundObject");
@@ -75,7 +87,6 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	fpsCounterObj.SetLocalPosition(5.f, 5.f);
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
-	//scene.Add(fpsCounterObj);
 
 	/*fpsCounterObj->AddComponent<FPSComponent>(textComponent);
 	fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
@@ -88,14 +99,76 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	auto& textureComponent = logoObject.AddComponent<Texture2DComponent>();
 	textureComponent.SetTexture("logo.png");
 	logoObject.SetLocalPosition(216, 180);
-	//scene.Add(logoObject);
 
 	auto& textObject = scene.CreateObject("textObject");
 	auto& textComponent = textObject.AddComponent<TextComponent>();
 	textComponent.SetText("Programming 4 Assignment");
 	textObject.SetLocalPosition(80, 20);
 	textComponent.SetFont(normalfont);
-	//scene.Add(textObject);
+
+
+	//TODO: write intro message showing buttons
+
+	//
+	//onbserver testing code
+	//
+
+	//1st "player"
+	auto& livesObject1 = scene.CreateObject("livesObject1");
+	auto& livestextcomp1 = livesObject1.AddComponent<TextComponent>();
+	auto& livescomp1 = livesObject1.AddComponent<LivesComponent>();
+	livestextcomp1.SetFont(fpsFont);
+	livestextcomp1.SetTextColor(255, 255, 0);
+	livescomp1.SetTextComponent(livestextcomp1);
+	livesObject1.SetLocalPosition(5, 300);
+
+	auto& scoreObject1 = scene.CreateObject("scoreObject1");
+	auto& scoretextcomp1 = scoreObject1.AddComponent<TextComponent>();
+	auto& scorecomp1 = scoreObject1.AddComponent<ScoreComponent>();
+	scoretextcomp1.SetFont(fpsFont);
+	scoretextcomp1.SetTextColor(255, 255, 0);
+	scorecomp1.SetTextComponent(scoretextcomp1);
+	scoreObject1.SetLocalPosition(5, 325);
+
+
+	auto& peterPepperObj1 = scene.CreateObject("peterPepperObj1");
+	peterPepperObj1.AddComponent<PeterPepper>();
+	auto& subje1 = peterPepperObj1.AddComponent<SubjectComponent>();
+	subje1.AddObserver(livescomp1);
+	subje1.AddObserver(scorecomp1);
+
+
+
+
+
+	//2nd "player"
+	auto& livesObject2 = scene.CreateObject("livesObject2");
+	auto& livestextcomp2 = livesObject2.AddComponent<TextComponent>();
+	auto& livescomp2 = livesObject2.AddComponent<LivesComponent>();
+	livestextcomp2.SetFont(fpsFont);
+	livestextcomp2.SetTextColor(0, 255, 0);
+	livescomp2.SetTextComponent(livestextcomp2);
+	livesObject2.SetLocalPosition(5, 400);
+
+	auto& scoreObject2 = scene.CreateObject("scoreObject2");
+	auto& scoretextcomp2 = scoreObject2.AddComponent<TextComponent>();
+	auto& scorecomp2 = scoreObject2.AddComponent<ScoreComponent>();
+	scoretextcomp2.SetFont(fpsFont);
+	scoretextcomp2.SetTextColor(0, 255, 0);
+	scorecomp2.SetTextComponent(scoretextcomp2);
+	scoreObject2.SetLocalPosition(5, 425);
+
+	auto& peterPepperObj2 = scene.CreateObject("peterPepperObj2");
+	auto& peterPepperComp = peterPepperObj2.AddComponent<PeterPepper>();
+	peterPepperComp.SetDeathButton(PCController::ControllerButton::Button_Square);
+	peterPepperComp.SetObjectFellButton(PCController::ControllerButton::Button_L_SHOULDER);
+	peterPepperComp.SetPepperEnemyButton(PCController::ControllerButton::Button_L_THUMB);
+	auto& subje2 = peterPepperObj2.AddComponent<SubjectComponent>();
+	subje2.AddObserver(livescomp2);
+	subje2.AddObserver(scorecomp2);
+
+
+
 
 	//Test code for input and transfrom code
 	//temp = &logoObject;
@@ -158,10 +231,10 @@ void dae::NightOwlEngine::Run()
 	auto prevTime = chrono::high_resolution_clock::now();
 	float lag = 0.0f;
 
-
-
 	while (doContinue)
 	{
+		SteamAPI_RunCallbacks();
+
 		const auto currentTime = chrono::high_resolution_clock::now();
 		const float deltaT = chrono::duration<float>(currentTime - prevTime).count();
 		prevTime = currentTime;

@@ -15,6 +15,12 @@ Texture2DComponent::Texture2DComponent(GameObject* pParentObject)
 		Logger::GetInstance().LogWarning("Texture2DComponent:\tPARENT OBJECT WAS NOT GIVEN!");
 }
 
+void Texture2DComponent::LateInit()
+{
+	if (!m_Texture)
+		Logger::GetInstance().LogError("TEXTURE2DCOMPONENT:\tTEXTURE WAS NOT GIVEN!");
+}
+
 void Texture2DComponent::Update()
 {
 }

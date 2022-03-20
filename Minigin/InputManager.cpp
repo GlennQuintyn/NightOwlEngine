@@ -33,23 +33,19 @@ bool InputManager::ProcessInput()
 	{
 		m_pPCControllers[index]->Update();
 
-		//m_MapOfCommands.at(ControllerButton(m_CurrentState.Gamepad.wButtons))->Execute();
 		for (auto& pCommandPair : m_MapOfCommands)
 		{
 			switch (pCommandPair.first.pressState)
 			{
 			case PCController::PCController::ButtonPressState::PressedContinuous:
-				//if (WORD(pCommandPair.first.button) & m_CurrentState.Gamepad.wButtons)
 				if (IsPressed(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
 			case PCController::ButtonPressState::OnPressed:
-				//if (WORD(pCommandPair.first.button) & m_ButtonsPressedThisFrame)
 				if (IsPressedThisFrame(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
 			case PCController::ButtonPressState::Released:
-				//if (WORD(pCommandPair.first.button) & m_ButtonsReleasedThisFrame)
 				if (IsReleasedThisFrame(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
@@ -68,7 +64,7 @@ bool InputManager::ProcessInput()
 		}
 		if (e.type == SDL_KEYDOWN)
 		{
-
+			//e.key.keysym
 		}
 		if (e.type == SDL_MOUSEBUTTONDOWN)
 		{
@@ -81,15 +77,33 @@ bool InputManager::ProcessInput()
 
 bool InputManager::IsPressed(PCController::ControllerButton controllerButton, size_t contollerIndex) const
 {
+	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
+	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
+	{
+		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		return false;
+	}
 	return m_pPCControllers[contollerIndex]->IsPressed(controllerButton);
 }
 
 bool InputManager::IsPressedThisFrame(PCController::ControllerButton controllerButton, size_t contollerIndex) const
 {
+	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
+	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
+	{
+		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		return false;
+	}
 	return m_pPCControllers[contollerIndex]->IsPressedThisFrame(controllerButton);
 }
 
 bool InputManager::IsReleasedThisFrame(PCController::ControllerButton controllerButton, size_t contollerIndex) const
 {
+	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
+	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
+	{
+		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		return false;
+	}
 	return m_pPCControllers[contollerIndex]->IsReleasedThisFrame(controllerButton);
 }

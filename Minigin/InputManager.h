@@ -36,6 +36,7 @@ namespace dae
 		bool IsPressedThisFrame(PCController::ControllerButton controllerButton, size_t contollerIndex = 0) const;
 		bool IsReleasedThisFrame(PCController::ControllerButton controllerButton, size_t contollerIndex = 0) const;
 
+		//adds a new controller up to 4, when the input manager gets constructed a controller gets added automatically
 		void AddController();
 
 		template<typename CommandType>

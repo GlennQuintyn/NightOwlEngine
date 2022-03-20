@@ -12,10 +12,10 @@ namespace dae
 		TrashTheCacheComponent(GameObject* pParentObject);
 		~TrashTheCacheComponent() = default;
 
-		virtual void LateInit() override {};
-		virtual void Update() override;
-		virtual void LateUpdate() override {};
-		virtual void Render() const override;
+		void LateInit() override {};
+		void Update() override;
+		void LateUpdate() override {};
+		void Render() const override;
 
 		TrashTheCacheComponent(const TrashTheCacheComponent& other) = delete;
 		TrashTheCacheComponent(TrashTheCacheComponent&& other) = delete;

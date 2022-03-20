@@ -16,10 +16,10 @@ namespace dae
 
 		~Texture2DComponent() = default;
 
-		virtual void LateInit() override {};
-		virtual void Update() override;
-		virtual void LateUpdate() override {};
-		virtual void Render() const override;
+		void LateInit() override;
+		void Update() override;
+		void LateUpdate() override {};
+		void Render() const override;
 
 		void SetTexture(const std::string& filename);
 

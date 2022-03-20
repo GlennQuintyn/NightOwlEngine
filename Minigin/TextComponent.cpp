@@ -45,6 +45,12 @@ void TextComponent::SetTextColor(unsigned char r, unsigned char g, unsigned char
 	m_NeedsUpdate = true;
 }
 
+void dae::TextComponent::LateInit()
+{
+	if (!m_Font)
+		Logger::GetInstance().LogError("TEXTCOMPONENT:\tFONT WAS NOT GIVEN!");
+}
+
 void TextComponent::Update()
 {
 	if (m_NeedsUpdate)
