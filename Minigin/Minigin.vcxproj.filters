@@ -109,9 +109,6 @@
     <ClInclude Include="PeterPepper.h">
       <Filter>Components\Charachters</Filter>
     </ClInclude>
-    <ClInclude Include="SubjectComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -133,7 +130,12 @@
     <ClInclude Include="LivesComponent.h">
       <Filter>Components\Specific Components</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="Subject.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Components\Specific Components</Filter>
+    </ClInclude>
     <ClInclude Include="SteamAchievements.h" />
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +214,6 @@
     <ClCompile Include="PeterPepper.cpp">
       <Filter>Components\Charachters</Filter>
     </ClCompile>
-    <ClCompile Include="SubjectComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
@@ -233,7 +232,12 @@
     <ClCompile Include="LivesComponent.cpp">
       <Filter>Components\Specific Components</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp" />
+    <ClCompile Include="Subject.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Components\Specific Components</Filter>
+    </ClCompile>
     <ClCompile Include="SteamAchievements.cpp" />
   </ItemGroup>
 </Project>

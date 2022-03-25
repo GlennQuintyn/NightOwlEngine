@@ -18,10 +18,10 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "TrashTheCacheComponent.h"
-#include "SubjectComponent.h"
 #include "LivesComponent.h"
 #include "PeterPepper.h"
 #include "ScoreComponent.h"
+#include "Subject.h"
 
 using namespace std;
 
@@ -132,8 +132,8 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 
 
 	auto& peterPepperObj1 = scene.CreateObject("peterPepperObj1");
-	peterPepperObj1.AddComponent<PeterPepper>();
-	auto& subje1 = peterPepperObj1.AddComponent<SubjectComponent>();
+	auto& peterPepperComp1 = peterPepperObj1.AddComponent<PeterPepper>();
+	auto& subje1 = peterPepperComp1.GetSubject();
 	subje1.AddObserver(livescomp1);
 	subje1.AddObserver(scorecomp1);
 
@@ -159,11 +159,11 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	scoreObject2.SetLocalPosition(5, 425);
 
 	auto& peterPepperObj2 = scene.CreateObject("peterPepperObj2");
-	auto& peterPepperComp = peterPepperObj2.AddComponent<PeterPepper>();
-	peterPepperComp.SetDeathButton(PCController::ControllerButton::Button_Square);
-	peterPepperComp.SetObjectFellButton(PCController::ControllerButton::Button_L_SHOULDER);
-	peterPepperComp.SetPepperEnemyButton(PCController::ControllerButton::Button_L_THUMB);
-	auto& subje2 = peterPepperObj2.AddComponent<SubjectComponent>();
+	auto& peterPepperComp2 = peterPepperObj2.AddComponent<PeterPepper>();
+	peterPepperComp2.SetDeathButton(PCController::ControllerButton::Button_Square);
+	peterPepperComp2.SetObjectFellButton(PCController::ControllerButton::Button_L_SHOULDER);
+	peterPepperComp2.SetPepperEnemyButton(PCController::ControllerButton::Button_L_THUMB);
+	auto& subje2 = peterPepperComp2.GetSubject();
 	subje2.AddObserver(livescomp2);
 	subje2.AddObserver(scorecomp2);
 

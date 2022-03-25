@@ -5,6 +5,8 @@
 namespace dae
 {
 	class GameObject;
+	class Subject;
+
 	class PeterPepper final : public BaseComponent
 	{
 	public:
@@ -24,12 +26,17 @@ namespace dae
 		void SetObjectFellButton(PCController::ControllerButton objFellButton);
 		void SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton);
 
+		Subject& GetSubject() const { return *m_pSubject; }
+
 		PeterPepper(const PeterPepper& other) = delete;
 		PeterPepper(PeterPepper&& other) = delete;
 		PeterPepper& operator=(const PeterPepper& other) = delete;
 		PeterPepper& operator=(PeterPepper&& other) = delete;
 	private:
 		GameObject* m_pParentObject;
+		std::unique_ptr<Subject> m_pSubject;
+		//TODO: Add subject ass class not as component (composition not inheritance)
+
 		PCController::ControllerButton m_DeahtButton;
 		PCController::ControllerButton m_ObjFellButton;
 		PCController::ControllerButton m_EnemyPepperedButton;

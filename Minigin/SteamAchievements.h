@@ -41,6 +41,10 @@ namespace dae
 		STEAM_CALLBACK(SteamAchievements, OnUserStatsStored, UserStatsStored_t, m_CallbackUserStatsStored);
 		STEAM_CALLBACK(SteamAchievements, OnAchievementStored, UserAchievementStored_t, m_CallbackAchievementStored);
 
+		static SteamAchievements* g_SteamAchievements;
+		static Achievement_t g_Achievements[];
+
+
 	private:
 		uint64 m_iAppID; // Our current AppID
 		Achievement_t* m_pAchievements; // Achievements data

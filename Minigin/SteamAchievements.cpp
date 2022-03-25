@@ -4,10 +4,10 @@
 using namespace dae;
 
 // Global access to Achievements object
-SteamAchievements* g_SteamAchievements = NULL;
+SteamAchievements* SteamAchievements::g_SteamAchievements = NULL;
 
 // Achievement array which will hold data about the achievements and their state
-Achievement_t g_Achievements[] =
+Achievement_t SteamAchievements::g_Achievements[] =
 {
 	_ACH_ID(ACH_WIN_ONE_GAME, "Winner"),
 	_ACH_ID(ACH_WIN_100_GAMES, "Champion"),
@@ -65,7 +65,10 @@ void SteamAchievements::OnUserStatsReceived(UserStatsReceived_t* pCallback)
 	// we may get callbacks for other games' stats arriving, ignore them
 	if (m_iAppID == pCallback->m_nGameID)
 	{
+#pragma warning(push)
+#pragma warning( disable : 26812 )
 		if (k_EResultOK == pCallback->m_eResult)
+#pragma warning (pop)
 		{
 			OutputDebugString("Received stats and achievements from Steam\n");
 			m_bInitialized = true;

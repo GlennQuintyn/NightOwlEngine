@@ -7,7 +7,7 @@
 
 using namespace dae;
 
-extern SteamAchievements* g_SteamAchievements;
+//extern SteamAchievements* g_SteamAchievements;
 
 ScoreComponent::ScoreComponent(GameObject* pParentObject)
 	: m_CurrentScore{}
@@ -41,8 +41,8 @@ void ScoreComponent::Notify(GameObject* pObject, int event)
 
 	if (m_CurrentScore >= 500)
 	{
-		if (g_SteamAchievements)
-			g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
+		if (dae::SteamAchievements::g_SteamAchievements)
+			dae::SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
 	}
 }
 
