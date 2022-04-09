@@ -89,8 +89,10 @@ void Renderer::Destroy()
 void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y) const
 {
 	SDL_Rect dst{};
+
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
+
 	SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
@@ -98,9 +100,30 @@ void Renderer::RenderTexture(const Texture2D& texture, const float x, const floa
 void Renderer::RenderTexture(const Texture2D& texture, const float x, const float y, const float width, const float height) const
 {
 	SDL_Rect dst{};
+
 	dst.x = static_cast<int>(x);
 	dst.y = static_cast<int>(y);
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
+
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+}
+
+void Renderer::RenderTexture(const Texture2D& texture, const float srcX, const float srcY, const float srcWidth, const float srcHeight,
+	const float dstX, const float dstY, const float dstWidth, const float dstHeight) const
+{
+	SDL_Rect src{};
+	SDL_Rect dst{};
+
+	src.x = static_cast<int>(srcX);
+	src.y = static_cast<int>(srcY);
+	src.w = static_cast<int>(srcWidth);
+	src.h = static_cast<int>(srcHeight);
+
+	dst.x = static_cast<int>(dstX);
+	dst.y = static_cast<int>(dstY);
+	dst.w = static_cast<int>(dstWidth);
+	dst.h = static_cast<int>(dstHeight);
+
+	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &src, &dst);
 }

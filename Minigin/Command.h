@@ -25,26 +25,26 @@ namespace dae
 
 
 	//user
-	class FireCommand final : public Command
-	{
-		void Execute() override { std::cout << "Fire\n";/*BLACK BOX THAT USER FLESHES OUT*/ };
-		//int* m_pPlayer;//example code
+	//class FireCommand final : public Command
+	//{
+	//	void Execute() override { std::cout << "Fire\n";/*BLACK BOX THAT USER FLESHES OUT*/ };
+	//	//int* m_pPlayer;//example code
 
-		//void SetPlayer(int* p) { m_pPlayer = p };
-	};
+	//	//void SetPlayer(int* p) { m_pPlayer = p };
+	//};
 
-	class DuckCommand final : public Command
-	{
-		void Execute() override { std::cout << "Duck\n"; };
-	};
+	//class DuckCommand final : public Command
+	//{
+	//	void Execute() override { std::cout << "Duck\n"; };
+	//};
 
-	class JumpCommand final : public Command
-	{
-		void Execute() override { std::cout << "Jump\n"; };
-	};
+	//class JumpCommand final : public Command
+	//{
+	//	void Execute() override { std::cout << "Jump\n"; };
+	//};
 
-	class FartCommand final : public Command
-	{
-		void Execute() override { std::cout << "Fart\n"; };
-	};
+	//class FartCommand final : public Command
+	//{
+	//	void Execute() override { std::cout << "Fart\n"; };
+	//};
 }

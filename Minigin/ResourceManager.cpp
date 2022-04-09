@@ -21,17 +21,17 @@ void ResourceManager::Init(const std::string_view dataPath)
 
 	// load support for png and jpg, this takes a while!
 
-	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG) 
+	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG)
 	{
 		throw std::runtime_error(std::string("Failed to load support for png's: ") + SDL_GetError());
 	}
 
-	if ((IMG_Init(IMG_INIT_JPG) & IMG_INIT_JPG) != IMG_INIT_JPG) 
+	if ((IMG_Init(IMG_INIT_JPG) & IMG_INIT_JPG) != IMG_INIT_JPG)
 	{
 		throw std::runtime_error(std::string("Failed to load support for jpg's: ") + SDL_GetError());
 	}
 
-	if (TTF_Init() != 0) 
+	if (TTF_Init() != 0)
 	{
 		throw std::runtime_error(std::string("Failed to load support for fonts: ") + SDL_GetError());
 	}
@@ -39,9 +39,11 @@ void ResourceManager::Init(const std::string_view dataPath)
 
 std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file) const
 {
+	//TODO: check member container if texture was already loaded before if not make new one if it does give copy of sharedptr
+
 	const auto fullPath = m_DataPath + file;
 	auto texture = IMG_LoadTexture(Renderer::GetInstance().GetSDLRenderer(), fullPath.c_str());
-	if (texture == nullptr) 
+	if (texture == nullptr)
 	{
 		throw std::runtime_error(std::string("Failed to load texture: ") + SDL_GetError());
 	}
@@ -50,5 +52,7 @@ std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file)
 
 std::shared_ptr<Font> ResourceManager::LoadFont(const std::string& file, unsigned int size) const
 {
+	//TODO: check member container if font was already loaded before if not make new one if it does give copy of sharedptr
+
 	return std::make_shared<Font>(m_DataPath + file, size);
 }

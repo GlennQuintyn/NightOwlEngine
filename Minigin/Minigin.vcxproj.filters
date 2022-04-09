@@ -97,7 +97,7 @@
     <ClInclude Include="Transform.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
+    <ClInclude Include="TimeSingleton.h">
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Singleton.h">
@@ -137,6 +137,9 @@
       <Filter>Components\Specific Components</Filter>
     </ClInclude>
     <ClInclude Include="SteamAchievements.h" />
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp">
@@ -184,9 +187,6 @@
     <ClCompile Include="PCController.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -202,7 +202,7 @@
     <ClCompile Include="NightOwlEnginePCH.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Time.cpp">
+    <ClCompile Include="TimeSingleton.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
@@ -239,5 +239,8 @@
       <Filter>Components\Specific Components</Filter>
     </ClCompile>
     <ClCompile Include="SteamAchievements.cpp" />
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

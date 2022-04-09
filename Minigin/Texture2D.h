@@ -8,15 +8,20 @@ namespace dae
 	class Texture2D
 	{
 	public:
-		SDL_Texture* GetSDLTexture() const;
-		explicit Texture2D(SDL_Texture* texture);
+		explicit Texture2D(SDL_Texture* pTexture);
 		~Texture2D();
 
-		Texture2D(const Texture2D &) = delete;
-		Texture2D(Texture2D &&) = delete;
-		Texture2D & operator= (const Texture2D &) = delete;
-		Texture2D & operator= (const Texture2D &&) = delete;
+		int GetWidth() const { return m_Width; };
+		int GetHeight() const { return m_Height; };
+		
+		SDL_Texture* GetSDLTexture() const;
+
+		Texture2D(const Texture2D&) = delete;
+		Texture2D(Texture2D&&) = delete;
+		Texture2D& operator= (const Texture2D&) = delete;
+		Texture2D& operator= (const Texture2D&&) = delete;
 	private:
-		SDL_Texture* m_Texture;
+		SDL_Texture* m_pTexture;
+		int m_Width, m_Height;
 	};
 }

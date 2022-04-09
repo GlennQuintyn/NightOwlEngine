@@ -35,7 +35,6 @@ namespace dae
 	private:
 		GameObject* m_pParentObject;
 		std::unique_ptr<Subject> m_pSubject;
-		//TODO: Add subject ass class not as component (composition not inheritance)
 
 		PCController::ControllerButton m_DeahtButton;
 		PCController::ControllerButton m_ObjFellButton;

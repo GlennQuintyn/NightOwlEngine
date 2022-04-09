@@ -1,5 +1,5 @@
 #include "NightOwlEnginePCH.h"
-#include "Time.h"
+#include "TimeSingleton.h"
 #include <numeric>
 
 void dae::Time::Update(float deltaT)

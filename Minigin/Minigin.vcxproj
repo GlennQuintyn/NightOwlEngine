@@ -28,26 +28,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -229,6 +229,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="PCController.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TextComponent.h" />
@@ -245,7 +246,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Texture2D.h" />
-    <ClInclude Include="Time.h" />
+    <ClInclude Include="TimeSingleton.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="TrashTheCacheComponent.h" />
   </ItemGroup>
@@ -292,7 +293,6 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Command.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="Logger.cpp" />
@@ -300,6 +300,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClCompile Include="PCController.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
+    <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextComponent.cpp" />
@@ -322,7 +323,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="Time.cpp" />
+    <ClCompile Include="TimeSingleton.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="TrashTheCacheComponent.cpp" />
   </ItemGroup>

@@ -28,7 +28,7 @@ namespace dae
 		Texture2DComponent& operator=(const Texture2DComponent& other) = delete;
 		Texture2DComponent& operator=(Texture2DComponent&& other) = delete;
 	private:
-		std::shared_ptr<Texture2D> m_Texture{};
+		std::shared_ptr<Texture2D> m_pTexture{};
 		GameObject* m_pParentObject;
 	};
 }

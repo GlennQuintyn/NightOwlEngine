@@ -67,7 +67,8 @@ void dae::NightOwlEngine::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void dae::NightOwlEngine::LoadGame() /*const*/
+/*
+void dae::NightOwlEngine::LoadGame()
 {
 	std::cout << "\n\n-player 1:\n\tButton Y: Lose a life\n\tButton R1: add 25 to score\n\tButton R3: add 50 to score\n\n";
 	std::cout << "-player 2:\n\tButton X: Lose a life\n\tButton L1: add 25 to score\n\tButton L3: add 50 to score\n\n";
@@ -88,12 +89,12 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
 
-	/*fpsCounterObj->AddComponent<FPSComponent>(textComponent);
-	fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
-	auto textComponent = new TextComponent();
-	fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
-	fpsCounterObj->GetComponent<dae::TextComponent>()->SetFpsMode(true);
-	fpsCounterObj->GetComponent<dae::TextComponent>()->SetPosition(35.0f, 35.f);*/
+	//fpsCounterObj->AddComponent<FPSComponent>(textComponent);
+	//fpsCounterObj->AddComponent(textComponent, &typeid(textComponent));
+	//auto textComponent = new TextComponent();
+	//fpsCounterObj->AddComponent<dae::TextComponent>()->SetFont(font);
+	//fpsCounterObj->GetComponent<dae::TextComponent>()->SetFpsMode(true);
+	//fpsCounterObj->GetComponent<dae::TextComponent>()->SetPosition(35.0f, 35.f);
 
 	auto& logoObject = scene.CreateObject("logoObject");
 	auto& textureComponent = logoObject.AddComponent<Texture2DComponent>();
@@ -106,8 +107,6 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	textObject.SetLocalPosition(80, 20);
 	textComponent.SetFont(normalfont);
 
-
-	//TODO: write intro message showing buttons
 
 	//
 	//onbserver testing code
@@ -197,11 +196,8 @@ void dae::NightOwlEngine::LoadGame() /*const*/
 	////grandchild3->SetName("");
 	//grandchild3->SetParent(nullptr);
 
-
-	//auto yesyes = std::make_unique<GameObject>("grandchild1", &scene);
-	//child1->AdoptChild(child2);//should create error (childing twice)
-	//child1->AdoptChild(std::move(yesyes));
 }
+*/
 
 void dae::NightOwlEngine::Cleanup()
 {
@@ -213,12 +209,12 @@ void dae::NightOwlEngine::Cleanup()
 
 void dae::NightOwlEngine::Run()
 {
-	Initialize();
+	//Initialize();
 
-	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance().Init("../Data/");
+	//// tell the resource manager where he can find the game data
+	//ResourceManager::GetInstance().Init("../Data/");
 
-	LoadGame();
+	//LoadGame();
 
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
@@ -279,6 +275,4 @@ void dae::NightOwlEngine::Run()
 		const auto sleepTime = currentTime + chrono::milliseconds(m_MsPerFrame) - chrono::high_resolution_clock::now();
 		this_thread::sleep_for(sleepTime);
 	}
-
-	Cleanup();
 }

@@ -32,6 +32,12 @@ namespace dae
 		void SetLocalScale(const glm::vec2& scale);
 		void SetLocalZDept(float z);
 
+		const Transform& GetLoacalTransform() const { return m_LocalTransform; };
+		const glm::vec2& GetLoacalPosition() const { return m_LocalTransform.position; };
+		const float GetLoacalRotation() const { return m_LocalTransform.rotation; };
+		const glm::vec2& GetLoacalScale() const { return m_LocalTransform.scale; };
+		const float GetLoacalZDept() const { return m_LocalTransform.zDept; };
+
 		const Transform& GetWorldTransform() const { return m_WorldTransform; };
 		const glm::vec2& GetWorldPosition() const { return m_WorldTransform.position; };
 		const float GetWorldRotation() const { return m_WorldTransform.rotation; };
