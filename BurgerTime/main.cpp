@@ -82,7 +82,8 @@ int main(int, char* [])
 	auto& peterPepperObj = scene.CreateObject("peterPepperObj");
 	peterPepperObj.AddComponent<PeterPepper>();
 	auto& peterSprite = peterPepperObj.AddComponent<SpriteComponent>();
-	peterSprite.SetTexture("Peter_Walking_Down.png");
+	//peterSprite.SetTexture("Peter_Walking_Down.png");
+	peterSprite.SetTexture("Peter_Walking_Up.png");
 	peterSprite.Setup(4, 1, 8, 64, 64);
 
 	peterPepperObj.SetLocalPosition(200, 200);
