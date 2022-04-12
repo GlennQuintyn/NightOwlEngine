@@ -1,4 +1,11 @@
 
+#if _DEBUG
+// ReSharper disable once CppUnusedIncludeDirective
+#if __has_include(<vld.h>)
+#include <vld.h>
+#endif
+#endif
+
 #include <iostream> // std::cout
 #include <sstream> // stringstream
 #include <memory> // smart pointers
@@ -51,7 +58,7 @@ int main(int, char* [])
 
 	engine->Initialize();
 
-	// tell the resource manager where he can find the game data
+	// tell the resource manager where it can find the game data
 	ResourceManager::GetInstance().Init("../Data/");
 
 #pragma region LoadGame
@@ -63,11 +70,13 @@ int main(int, char* [])
 	auto& inputmanager = InputManager::GetInstance();
 
 	auto fpsFont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
-	auto normalfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//auto normalfont = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
+	int windowW{}, windowH{};
+	SDL_GetWindowSize(engine->GetWindow(), &windowW, &windowH);
 
 	auto& backgroundObject = scene.CreateObject("backgroundObject");
-	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("background.jpg");
+	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("background_adj.jpg");
 
 
 	auto& fpsCounterObj = scene.CreateObject("fpsCounterObj");
@@ -84,13 +93,54 @@ int main(int, char* [])
 	auto& peterSprite = peterPepperObj.AddComponent<SpriteComponent>();
 	//peterSprite.SetTexture("Peter_Walking_Down.png");
 	peterSprite.SetTexture("Peter_Walking_Up.png");
-	peterSprite.Setup(4, 1, 8, 64, 64);
+	peterSprite.Setup(4, 1, 16, 32, 32);
 
 	peterPepperObj.SetLocalPosition(200, 200);
-	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, PCController::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, PCController::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, PCController::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, PCController::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	//inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::KEY_D,)
+
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+
+#pragma region UI/SCORE
+	int uiFontSize{ 20 };
+	auto uiFont = ResourceManager::GetInstance().LoadFont("BurgerTime_Font.otf", uiFontSize);
+
+	auto& pepperTextObject = scene.CreateObject("pepperTextObject");
+	auto& pepperTextcomp = pepperTextObject.AddComponent<TextComponent>();
+	pepperTextcomp.SetFont(uiFont);
+	pepperTextcomp.SetTextColor(0, 255, 0);
+	pepperTextcomp.SetText("PEPPER");
+	pepperTextObject.SetLocalPosition(float(windowW - (uiFontSize * 7)), 5);
+
+	auto& oneUpTextObject = scene.CreateObject("oneUpTextObject");
+	auto& oneUpTextcomp = oneUpTextObject.AddComponent<TextComponent>();
+	oneUpTextcomp.SetFont(uiFont);
+	oneUpTextcomp.SetTextColor(255, 0, 0);
+	oneUpTextcomp.SetText("1UP");
+	oneUpTextObject.SetLocalPosition(float(uiFontSize * 4), 5);
+
+	auto& hiScoreTextObject = scene.CreateObject("hiScoreTextObject");
+	auto& hiScoreTextcomp = hiScoreTextObject.AddComponent<TextComponent>();
+	hiScoreTextcomp.SetFont(uiFont);
+	hiScoreTextcomp.SetTextColor(255, 0, 0);
+	hiScoreTextcomp.SetText("HI-SCORE");
+	hiScoreTextObject.SetLocalPosition(float(uiFontSize * 4) + (uiFontSize * 5), 5);
+
+
+	//windowW
+	//windowH
+
+	//auto& pepperCountObject = scene.CreateObject("pepperCountObject");
+	//auto& scoretextcomp1 = pepperCountObject.AddComponent<TextComponent>();
+	//auto& scorecomp1 = scoreObject1.AddComponent<ScoreComponent>();
+	//pepperTextcomp. SetTextComponent(scoretextcomp1);
+#pragma endregion
+
+
 
 	/*
 		//

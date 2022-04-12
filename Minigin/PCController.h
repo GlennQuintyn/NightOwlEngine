@@ -34,13 +34,6 @@ namespace dae
 			Button_Triangle = 0x8000
 		};
 
-		enum class ButtonPressState
-		{
-			PressedContinuous,
-			OnPressed,
-			Released
-		};
-
 		void Update();
 
 		bool IsPressed(ControllerButton controllerButton) const;

@@ -10,8 +10,28 @@
 using namespace dae;
 
 InputManager::InputManager()
+	: m_pCurrenStates{ SDL_GetKeyboardState(nullptr) }
+	, m_pPrevStates{ new Uint8[SDL_NUM_SCANCODES] }
+	, m_KeysPressedThisFrame{ new Uint8[SDL_NUM_SCANCODES] }
+	, m_KeysReleasedThisFrame{ new Uint8[SDL_NUM_SCANCODES] }
+
+	, m_CurrentMouseButtons{}
+	, m_PrevMouseButtons{}
+	, m_ButtonsPressedThisFrame{}
+	, m_ButtonsReleasedThisFrame{}
 {
 	AddController();
+
+	ZeroMemory(m_pPrevStates, sizeof(Uint8)* SDL_NUM_SCANCODES);
+	ZeroMemory(m_KeysPressedThisFrame, sizeof(Uint8)* SDL_NUM_SCANCODES);
+	ZeroMemory(m_KeysReleasedThisFrame, sizeof(Uint8)* SDL_NUM_SCANCODES);
+}
+
+dae::InputManager::~InputManager()
+{
+	delete[] m_pPrevStates;
+	delete[] m_KeysPressedThisFrame;
+	delete[] m_KeysReleasedThisFrame;
 }
 
 void InputManager::AddController()
@@ -28,28 +48,88 @@ void InputManager::AddController()
 
 bool InputManager::ProcessInput()
 {
-	//controller input code
+	//byte copy all items from the SDL_GetKeyboardState(m_pKeyBoardStates) to current or smt
+	//DO that xor thingy and just make it like the controller
+
+	for (size_t index = 0; index < SDL_NUM_SCANCODES; index++)
+	{
+		char keysChanged = m_pCurrenStates[index] ^ m_pPrevStates[index];
+		m_KeysPressedThisFrame[index] = keysChanged & m_pCurrenStates[index];
+		m_KeysReleasedThisFrame[index] = keysChanged & (~m_pCurrenStates[index]);
+
+		m_pPrevStates[index] = m_pCurrenStates[index];
+	}
+
+	m_CurrentMouseButtons = SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
+
+	int buttonsChanged = m_CurrentMouseButtons ^ m_PrevMouseButtons;
+	m_ButtonsPressedThisFrame = buttonsChanged & m_CurrentMouseButtons;
+	m_ButtonsReleasedThisFrame = buttonsChanged & (~m_CurrentMouseButtons);
+
+	m_PrevMouseButtons = m_CurrentMouseButtons;
+
+	//controller command code
 	for (size_t index = 0; index < m_pPCControllers.size(); index++)
 	{
 		m_pPCControllers[index]->Update();
 
-		for (auto& pCommandPair : m_MapOfCommands)
+		for (auto& pCommandPair : m_MapOfControllerCommands)
 		{
 			switch (pCommandPair.first.pressState)
 			{
-			case PCController::PCController::ButtonPressState::PressedContinuous:
+			case ButtonPressState::PressedContinuous:
 				if (IsPressed(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
-			case PCController::ButtonPressState::OnPressed:
+			case ButtonPressState::OnPressed:
 				if (IsPressedThisFrame(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
-			case PCController::ButtonPressState::Released:
+			case ButtonPressState::Released:
 				if (IsReleasedThisFrame(pCommandPair.first.button, index))
 					pCommandPair.second->Execute();
 				break;
 			}
+		}
+	}
+
+	//keyboard command code
+	for (auto& keyboardCommand : m_MapOfKeyboardCommands)
+	{
+		switch (keyboardCommand.first.pressState)
+		{
+		case ButtonPressState::PressedContinuous:
+			if (IsPressed(keyboardCommand.first.key))
+				keyboardCommand.second->Execute();
+			break;
+		case ButtonPressState::OnPressed:
+			if (IsPressedThisFrame(keyboardCommand.first.key))
+				keyboardCommand.second->Execute();
+			break;
+		case ButtonPressState::Released:
+			if (IsReleasedThisFrame(keyboardCommand.first.key))
+				keyboardCommand.second->Execute();
+			break;
+		}
+	}
+
+	//keyboard command code
+	for (auto& mouseCommand : m_MapOfMouseCommands)
+	{
+		switch (mouseCommand.first.pressState)
+		{
+		case ButtonPressState::PressedContinuous:
+			if (IsPressed(mouseCommand.first.button))
+				mouseCommand.second->Execute();
+			break;
+		case ButtonPressState::OnPressed:
+			if (IsPressedThisFrame(mouseCommand.first.button))
+				mouseCommand.second->Execute();
+			break;
+		case ButtonPressState::Released:
+			if (IsReleasedThisFrame(mouseCommand.first.button))
+				mouseCommand.second->Execute();
+			break;
 		}
 	}
 
@@ -62,19 +142,19 @@ bool InputManager::ProcessInput()
 		{
 			return false;
 		}
-		if (e.type == SDL_KEYDOWN)
-		{
-			//e.key.keysym
-		}
-		if (e.type == SDL_MOUSEBUTTONDOWN)
-		{
-
-		}
+		//if (e.type == SDL_KEYDOWN)
+		//{
+		//	//e.key.keysym
+		//}
+		//if (e.type == SDL_MOUSEBUTTONDOWN)
+		//{
+		//}
 	}
 
 	return true;
 }
 
+#pragma region Controller Buttons
 bool InputManager::IsPressed(PCController::ControllerButton controllerButton, size_t contollerIndex) const
 {
 	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
@@ -107,3 +187,36 @@ bool InputManager::IsReleasedThisFrame(PCController::ControllerButton controller
 	}
 	return m_pPCControllers[contollerIndex]->IsReleasedThisFrame(controllerButton);
 }
+#pragma endregion
+
+#pragma region Keyboard Keys
+bool dae::InputManager::IsPressed(KeyboardKey keyboardButton) const
+{
+	return m_pCurrenStates[int(keyboardButton)];
+}
+
+bool dae::InputManager::IsPressedThisFrame(KeyboardKey keyboardButton) const
+{
+	return m_KeysPressedThisFrame[int(keyboardButton)];
+}
+
+bool dae::InputManager::IsReleasedThisFrame(KeyboardKey keyboardButton) const
+{
+	return m_KeysReleasedThisFrame[int(keyboardButton)];
+}
+#pragma endregion
+
+#pragma region Mouse Buttons
+bool dae::InputManager::IsPressed(MouseButtons mouseButton) const
+{
+	return m_CurrentMouseButtons & int(mouseButton);
+}
+bool dae::InputManager::IsPressedThisFrame(MouseButtons mouseButton) const
+{
+	return m_ButtonsPressedThisFrame & int(mouseButton);
+}
+bool dae::InputManager::IsReleasedThisFrame(MouseButtons mouseButton) const
+{
+	return m_ButtonsReleasedThisFrame & int(mouseButton);
+}
+#pragma endregion

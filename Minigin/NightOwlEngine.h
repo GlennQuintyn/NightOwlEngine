@@ -13,10 +13,12 @@ namespace dae
 		void Run();
 		void Cleanup();
 
+		SDL_Window* GetWindow() const { return m_pWindow; };
+
 	private:
 		static const int m_MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
 		/*Test code for input and transfrom code
 		GameObject* temp;*/
-		SDL_Window* m_Window{};
+		SDL_Window* m_pWindow{};
 	};
 }
