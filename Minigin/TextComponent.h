@@ -22,6 +22,8 @@ namespace dae
 		void SetTextColor(const SDL_Color& color);
 		void SetTextColor(unsigned char r, unsigned char g, unsigned char b);
 
+		void Setup(const std::shared_ptr<Font>& font, const SDL_Color& color = SDL_Color{ 255, 255, 255 }, const std::string_view text = "0");
+
 		virtual void LateInit() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override {};

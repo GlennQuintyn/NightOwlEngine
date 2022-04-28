@@ -158,7 +158,9 @@ namespace dae
 		{
 			Button_LEFT = 1,
 			Button_MIDDLE = 2,
-			Button_RIGHT = 4
+			Button_RIGHT = 4,
+			Button_X1 = 8,
+			Button_X2 = 16
 		};
 
 		enum class ButtonPressState
@@ -181,9 +183,11 @@ namespace dae
 		bool IsPressedThisFrame(KeyboardKey keyboardButton) const;
 		bool IsReleasedThisFrame(KeyboardKey keyboardButton) const;
 
-		//
+		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
 		bool IsPressed(MouseButtons mouseButton) const;
+		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
 		bool IsPressedThisFrame(MouseButtons mouseButton) const;
+		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
 		bool IsReleasedThisFrame(MouseButtons mouseButton) const;
 
 		const glm::ivec2& GetMousePosition() { return m_MousePos; };

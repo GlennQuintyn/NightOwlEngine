@@ -5,8 +5,8 @@
 
 namespace dae
 {
-	int g_MovementSpeedHorizontal{ 50 };
-	int g_MovementSpeedVertical{ 30 };
+	int g_MovementSpeedHorizontal{ 100 };
+	int g_MovementSpeedVertical{ 50 };
 
 	class WalkRightCommand final : public Command
 	{

@@ -21,7 +21,7 @@ namespace dae
 		virtual void LateInit() override;
 		virtual void Update() override;
 		virtual void LateUpdate() override {};
-		virtual void Render() const override;
+		virtual void Render() const override {};
 
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;

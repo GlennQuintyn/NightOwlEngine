@@ -18,10 +18,10 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "TrashTheCacheComponent.h"
-#include "LivesComponent.h"
-#include "PeterPepper.h"
-#include "ScoreComponent.h"
-#include "Subject.h"
+//#include "LivesComponent.h"
+//#include "PeterPepper.h"
+//#include "ScoreComponent.h"
+//#include "Subject.h"
 
 using namespace std;
 
@@ -227,7 +227,7 @@ void dae::NightOwlEngine::Run()
 	auto prevTime = chrono::high_resolution_clock::now();
 	float lag = 0.0f;
 
-	float timer{};
+	//float timer{};
 
 	while (doContinue)
 	{
@@ -323,7 +323,6 @@ void dae::NightOwlEngine::Run()
 		//	std::cout << "W\n";
 		//if (input.IsReleasedThisFrame(InputManager::KeyboardKey::Key_S))
 		//	std::cout << "S\n";
-
 		//if (input.IsPressed(InputManager::MouseButtons::Button_LEFT))
 		//	std::cout << "LEFT\n";
 		//if (input.IsPressedThisFrame(InputManager::MouseButtons::Button_MIDDLE))
@@ -331,16 +330,7 @@ void dae::NightOwlEngine::Run()
 		//if (input.IsReleasedThisFrame(InputManager::MouseButtons::Button_RIGHT))
 		//	std::cout << "RIGHT\n";
 
-		//if (input.IsPressedThisFrame(InputManager::MouseButtons(8)))
-		//	std::cout << "FOUR?\n";
 
-		//timer += deltaT;
-
-		//if (timer >= .15f)
-		//{
-		//	std::cout << "MOUSE POS X: " << input.GetMousePosition().x << ", Y: " << input.GetMousePosition().y << "\n";
-		//	timer -= 0.15f;
-		//}
 
 		//used for physics 
 		while (lag >= m_MsPerFrame)
@@ -352,6 +342,11 @@ void dae::NightOwlEngine::Run()
 		sceneManager.LateUpdate();
 
 		renderer.Render();
+
+		//SDL_SetRenderDrawColor(renderer.GetSDLRenderer(), 255, 255, 255, SDL_ALPHA_OPAQUE);
+		////SDL_RenderDrawLine(renderer.GetSDLRenderer(), 50, 50, 150, 150);
+		//SDL_Rect smt{ 50,50,100,100 };
+		//SDL_RenderDrawRect(renderer.GetSDLRenderer(), &smt);
 
 		//make thread sleep to save on PC resources
 		const auto sleepTime = currentTime + chrono::milliseconds(m_MsPerFrame) - chrono::high_resolution_clock::now();

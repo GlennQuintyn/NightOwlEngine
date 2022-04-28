@@ -23,9 +23,6 @@
     <Filter Include="Utility">
       <UniqueIdentifier>{62be3d9e-0e7d-482d-a577-066e58526c06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Charachters">
-      <UniqueIdentifier>{3b6f6017-8b08-48ac-817c-d2269f3e93dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Specific Components">
       <UniqueIdentifier>{5d263fcf-a3c8-462e-a3ef-53d398473281}</UniqueIdentifier>
     </Filter>
@@ -85,9 +82,6 @@
     <ClInclude Include="NightOwlEngine.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="NightOwlEnginePCH.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -106,9 +100,6 @@
     <ClInclude Include="Logger.h">
       <Filter>Utility</Filter>
     </ClInclude>
-    <ClInclude Include="PeterPepper.h">
-      <Filter>Components\Charachters</Filter>
-    </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -124,21 +115,18 @@
     <ClInclude Include="FPSComponent.h">
       <Filter>Components\Specific Components</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="LivesComponent.h">
-      <Filter>Components\Specific Components</Filter>
-    </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Components\Specific Components</Filter>
     </ClInclude>
     <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="SpriteComponent.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NightOwlEnginePCH.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="NightOwlEnginePCH.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -199,9 +187,6 @@
     <ClCompile Include="NightOwlEngine.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="NightOwlEnginePCH.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="TimeSingleton.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -210,9 +195,6 @@
     </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="PeterPepper.cpp">
-      <Filter>Components\Charachters</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Resource Files</Filter>
@@ -229,18 +211,15 @@
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Components\Specific Components</Filter>
     </ClCompile>
-    <ClCompile Include="LivesComponent.cpp">
-      <Filter>Components\Specific Components</Filter>
-    </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Components\Specific Components</Filter>
     </ClCompile>
     <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="NightOwlEnginePCH.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

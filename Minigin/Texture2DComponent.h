@@ -17,7 +17,7 @@ namespace dae
 		~Texture2DComponent() = default;
 
 		void LateInit() override;
-		void Update() override;
+		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
 

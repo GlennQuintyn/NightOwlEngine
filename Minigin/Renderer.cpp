@@ -29,9 +29,9 @@ int GetOpenGLDriverIndex()
 
 void Renderer::Init(SDL_Window* window)
 {
-	m_Window = window;
-	m_Renderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (m_Renderer == nullptr)
+	m_pWindow = window;
+	m_pRenderer = SDL_CreateRenderer(window, GetOpenGLDriverIndex(), SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (m_pRenderer == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
@@ -44,15 +44,15 @@ void Renderer::Init(SDL_Window* window)
 
 	//first time setup frame
 	ImGui_ImplOpenGL2_NewFrame();
-	ImGui_ImplSDL2_NewFrame(m_Window);
+	ImGui_ImplSDL2_NewFrame(m_pWindow);
 	ImGui::NewFrame();
 }
 
 void Renderer::Render() const
 {
-	const auto& color = GetBackgroundColor();
-	SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
-	SDL_RenderClear(m_Renderer);
+	//const auto& color = GetBackgroundColor();
+	SDL_SetRenderDrawColor(m_pRenderer, m_ClearColor.r, m_ClearColor.g, m_ClearColor.b, m_ClearColor.a);
+	SDL_RenderClear(m_pRenderer);
 
 	//TODO: change rendere to render objects according to their Z value
 	SceneManager::GetInstance().Render();
@@ -64,11 +64,11 @@ void Renderer::Render() const
 	ImGui::Render();
 	ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
 
-	SDL_RenderPresent(m_Renderer);
+	SDL_RenderPresent(m_pRenderer);
 
 	//reset frame for next use
 	ImGui_ImplOpenGL2_NewFrame();
-	ImGui_ImplSDL2_NewFrame(m_Window);
+	ImGui_ImplSDL2_NewFrame(m_pWindow);
 	ImGui::NewFrame();
 }
 
@@ -79,10 +79,10 @@ void Renderer::Destroy()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
-	if (m_Renderer != nullptr)
+	if (m_pRenderer != nullptr)
 	{
-		SDL_DestroyRenderer(m_Renderer);
-		m_Renderer = nullptr;
+		SDL_DestroyRenderer(m_pRenderer);
+		m_pRenderer = nullptr;
 	}
 }
 

@@ -1,18 +1,23 @@
-#include "NightOwlEnginePCH.h"
-#include "ScoreComponent.h"
+#include "BurgerTimePCH.h"
+
+#include <stdio.h>
+#include <sstream>
+#include "Logger.h"
 #include "Renderer.h"
+#include "SteamAchievements.h"
+
+#include "ScoreComponent.h"
 #include "TextComponent.h"
 #include "Enums.h"
-#include "SteamAchievements.h"
 
 using namespace dae;
 
 //extern SteamAchievements* g_SteamAchievements;
 
 ScoreComponent::ScoreComponent(GameObject* pParentObject)
-	: m_CurrentScore{}
-	, m_pParentObject{ nullptr }
+	: m_pParentObject{ nullptr }
 	, m_pTextComponent{ nullptr }
+	, m_CurrentScore{}
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;
@@ -41,8 +46,8 @@ void ScoreComponent::Notify(GameObject* pObject, int event)
 
 	if (m_CurrentScore >= 500)
 	{
-		if (dae::SteamAchievements::g_SteamAchievements)
-			dae::SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
+		if (SteamAchievements::g_SteamAchievements)
+			SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
 	}
 }
 
@@ -54,5 +59,5 @@ void ScoreComponent::LateInit()
 
 void ScoreComponent::Update()
 {
-	m_pTextComponent->SetText("Score: " + std::to_string(m_CurrentScore));
+	m_pTextComponent->SetText(std::to_string(m_CurrentScore));
 }

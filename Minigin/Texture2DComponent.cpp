@@ -21,10 +21,6 @@ void Texture2DComponent::LateInit()
 		Logger::GetInstance().LogError("TEXTURE2DCOMPONENT:\tTEXTURE WAS NOT GIVEN!");
 }
 
-void Texture2DComponent::Update()
-{
-}
-
 void Texture2DComponent::Render() const
 {
 	if (m_pTexture != nullptr)

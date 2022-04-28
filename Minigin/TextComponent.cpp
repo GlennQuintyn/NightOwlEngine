@@ -1,5 +1,6 @@
 #include "NightOwlEnginePCH.h"
 #include "TextComponent.h"
+#include "TextComponent.h"
 #include <SDL_ttf.h>
 #include "Renderer.h"
 #include "Font.h"
@@ -43,6 +44,13 @@ void TextComponent::SetTextColor(unsigned char r, unsigned char g, unsigned char
 {
 	m_TextColor = SDL_Color{ r, g, b };
 	m_NeedsUpdate = true;
+}
+
+void dae::TextComponent::Setup(const std::shared_ptr<Font>& font, const SDL_Color& color, const std::string_view text)
+{
+	m_Font = font;
+	m_TextColor = color;
+	m_Text = text;
 }
 
 void dae::TextComponent::LateInit()

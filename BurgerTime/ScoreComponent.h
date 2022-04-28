@@ -26,6 +26,10 @@ namespace dae
 		void LateUpdate() override {};
 		void Render() const override {};
 
+		ScoreComponent(const ScoreComponent& other) = delete;
+		ScoreComponent(ScoreComponent&& other) = delete;
+		ScoreComponent& operator=(const ScoreComponent& other) = delete;
+		ScoreComponent& operator=(ScoreComponent&& other) = delete;
 	private:
 		int m_CurrentScore;
 

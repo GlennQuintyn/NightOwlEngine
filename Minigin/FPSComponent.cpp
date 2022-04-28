@@ -32,7 +32,3 @@ void FPSComponent::Update()
 		m_pTextComponent->SetText(std::to_string(int(Time::GetInstance().GetFPS())) + " FPS");
 	//m_pTextComponent->SetText(std::format("{:.1f} FPS", Time::GetInstance().GetFPS()));
 }
-
-void FPSComponent::Render() const
-{
-}
