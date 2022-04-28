@@ -235,6 +235,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="Command.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="NightOwlEnginePCH.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PCController.h" />
     <ClInclude Include="SpriteComponent.h" />
