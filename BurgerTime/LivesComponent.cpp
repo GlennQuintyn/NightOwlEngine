@@ -79,7 +79,7 @@ void LivesComponent::Render() const
 	const float offset{ 5.f };
 	float tempY{ pos.y };
 
-	for (size_t count = 0; count < m_CurrentLives; count++)
+	for (int count = 0; count < m_CurrentLives; count++)
 	{
 		if (m_IconSize.x < 0.f || m_IconSize.y < 0.f)
 			Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, tempY);
