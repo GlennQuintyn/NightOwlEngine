@@ -55,6 +55,8 @@
 
 #include "BurgerTimeCommands.h"
 
+#include "SDLSoundSystem.h"
+#include "ServiceLocator.h"
 //#include "SDL_mix"
 
 using namespace dae;
@@ -173,8 +175,10 @@ int main(int, char* [])
 	pepperCountObject.AddComponent<PepperCountComponent>().SetTextComponent(pepperCountComp);
 	pepperCountObject.SetLocalPosition(windowW - (uiFontSize * 2.f), uiFontSize * 1.5f);
 
-	
-	
+	//ServiceLocator::RegisterSoundSystem(new SDLSoundSystem{});
+	//ServiceLocator::GetSS().RegisterSound();
+	//ServiceLocator::GetSS().PlaySFX();
+
 	//auto rendereerere = Renderer::GetInstance().GetSDLRenderer();
 	////SDL_renderD
 	//SDL_RenderDrawLine(rendereerere, 50, 50, 150, 150);

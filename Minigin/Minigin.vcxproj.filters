@@ -26,6 +26,9 @@
     <Filter Include="Components\Specific Components">
       <UniqueIdentifier>{5d263fcf-a3c8-462e-a3ef-53d398473281}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SoundSystem">
+      <UniqueIdentifier>{c5592b1b-24a1-4ddb-88c2-8430f2dff898}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture2DComponent.h">
@@ -128,6 +131,15 @@
     <ClInclude Include="NightOwlEnginePCH.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSoundSystem.h">
+      <Filter>SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>SoundSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp">
@@ -220,6 +232,15 @@
     </ClCompile>
     <ClCompile Include="NightOwlEnginePCH.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSoundSystem.cpp">
+      <Filter>SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>SoundSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

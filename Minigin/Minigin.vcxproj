@@ -238,6 +238,9 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="NightOwlEnginePCH.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PCController.h" />
+    <ClInclude Include="SDLSoundSystem.h" />
+    <ClInclude Include="ServiceLocator.h" />
+    <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="Subject.h" />
@@ -311,6 +314,9 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     </ClCompile>
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PCController.cpp" />
+    <ClCompile Include="SDLSoundSystem.cpp" />
+    <ClCompile Include="ServiceLocator.cpp" />
+    <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="Subject.cpp" />
