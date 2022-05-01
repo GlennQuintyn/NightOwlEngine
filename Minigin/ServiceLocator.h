@@ -20,6 +20,11 @@ namespace dae
 			m_pSSInstance = ss == nullptr ? &m_SSNULL : ss;
 		}
 
+		ServiceLocator(const ServiceLocator& other) = delete;
+		ServiceLocator(ServiceLocator&& other) = delete;
+		ServiceLocator& operator=(const ServiceLocator& other) = delete;
+		ServiceLocator& operator=(ServiceLocator&& other) = delete;
+
 	private:
 		static SoundSystem* m_pSSInstance;
 		static NULLSoundSystem m_SSNULL;

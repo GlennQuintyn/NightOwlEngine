@@ -7,8 +7,10 @@ namespace dae
 	public:
 
 		virtual ~SoundSystem() = default;
-		virtual void PlaySFX() = 0;
-		virtual void RegisterSound() = 0;
+
+		virtual void Update() = 0;
+		virtual void RegisterSound(const std::string& filename, int id = -1) = 0;
+		virtual void PlaySFX(int id, int volume) = 0;
 
 	private:
 	};
@@ -17,8 +19,9 @@ namespace dae
 	{
 	public:
 
-		void PlaySFX() override {};
-		void RegisterSound() override {};
+		void Update() override {};
+		void RegisterSound(const std::string&, int) override {};
+		void PlaySFX(int, int) override {};
 
 	private:
 	};
@@ -29,15 +32,16 @@ namespace dae
 		LoggingSoundSystem(SoundSystem* ss) : m_pRealSS(ss) {};
 		~LoggingSoundSystem() { delete m_pRealSS; };
 
-		void RegisterSound(/*const sound_id id, const std::string_view path*/) override
+		void RegisterSound(const std::string& filename, int id = -1) override
 		{
-			//m_pRealSS->registerSound(/*id I pa h*/);
+			m_pRealSS->RegisterSound(filename, id);
+			std::cout << "Registering " << filename << " with id: " << id << std::endl;
 		};
 
-		void PlaySFX(/*const sound_id id, const float volu e*/) override
+		void PlaySFX(int id, int volume) override
 		{
-			//_real_ss->play(id, volume);
-			//std::cout << "Playing " << id << " at volume " << volume << std::endl;
+			m_pRealSS->PlaySFX(id, volume);
+			std::cout << "Playing " << id << " at volume " << volume << std::endl;
 		}
 
 	private:

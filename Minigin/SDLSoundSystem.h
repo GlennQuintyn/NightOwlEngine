@@ -6,12 +6,18 @@ namespace dae
 	class SDLSoundSystem final : public SoundSystem
 	{
 	public:
-		SDLSoundSystem();
+		SDLSoundSystem(const std::string_view soundDataPath);
 		~SDLSoundSystem();
 
-		void PlaySFX() override {};
-		void RegisterSound(/*const sound_id id, const std::string_view path*/) override {};
+		void Update() override;
 
+		void RegisterSound(const std::string& filename, int id = -1) override;
+		void PlaySFX(int id, int volume) override;
+
+		SDLSoundSystem(const SDLSoundSystem& other) = delete;
+		SDLSoundSystem(SDLSoundSystem&& other) = delete;
+		SDLSoundSystem& operator=(const SDLSoundSystem& other) = delete;
+		SDLSoundSystem& operator=(SDLSoundSystem&& other) = delete;
 	private:
 		class SDLSoundSystemImpl;
 		SDLSoundSystemImpl* m_pImpl;

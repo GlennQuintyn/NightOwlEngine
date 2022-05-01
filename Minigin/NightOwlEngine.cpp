@@ -220,6 +220,7 @@ void dae::NightOwlEngine::Run()
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
+	//auto& SS = ServiceLocator::GetSS();
 
 	sceneManager.LateInit();
 
@@ -241,96 +242,7 @@ void dae::NightOwlEngine::Run()
 		time.Update(deltaT);
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
-
-		/*Test code for input and transfrom code
-		auto pos = temp->GetWorldPosition();
-		if (input.IsPressed(PCController::ControllerButton::Button_Cross))
-		{
-			pos += glm::vec2{ 0,1 };
-		}
-		if (input.IsPressed(PCController::ControllerButton::Button_Circle))
-		{
-			pos += glm::vec2{ 1,0 };
-		}
-		if (input.IsPressed(PCController::ControllerButton::Button_Triangle))
-		{
-			pos += glm::vec2{ 0, -1 };
-		}
-		if (input.IsPressed(PCController::ControllerButton::Button_Square))
-		{
-			pos += glm::vec2{ -1,0 };
-		}
-		temp->SetLocalPosition(pos);*/
-		/*if (input.IsPressed(SDL_SCANCODE_ESCAPE))
-			break;
-		if (input.IsPressed(SDL_SCANCODE_A))
-			std::cout << "a\n";
-		if (input.IsPressed(SDL_SCANCODE_B))
-			std::cout << "b\n";
-		if (input.IsPressed(SDL_SCANCODE_C))
-			std::cout << "c\n";
-		if (input.IsPressed(SDL_SCANCODE_D))
-			std::cout << "d\n";
-		if (input.IsPressed(SDL_SCANCODE_E))
-			std::cout << "e\n";
-		if (input.IsPressed(SDL_SCANCODE_F))
-			std::cout << "f\n";
-		if (input.IsPressed(SDL_SCANCODE_G))
-			std::cout << "g\n";
-		if (input.IsPressed(SDL_SCANCODE_H))
-			std::cout << "h\n";
-		if (input.IsPressed(SDL_SCANCODE_I))
-			std::cout << "i\n";
-		if (input.IsPressed(SDL_SCANCODE_J))
-			std::cout << "j\n";
-		if (input.IsPressed(SDL_SCANCODE_K))
-			std::cout << "k\n";
-		if (input.IsPressed(SDL_SCANCODE_L))
-			std::cout << "l\n";
-		*/
-		/*
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_ESCAPE))
-			break;
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_A))
-			std::cout << "a\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_B))
-			std::cout << "b\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_C))
-			std::cout << "c\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_D))
-			std::cout << "d\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_E))
-			std::cout << "e\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_F))
-			std::cout << "f\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_G))
-			std::cout << "g\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_H))
-			std::cout << "h\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_I))
-			std::cout << "i\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_J))
-			std::cout << "j\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_K))
-			std::cout << "k\n";
-		if (input.IsPressed(InputManager::KeyboardKey::KEY_L))
-			std::cout << "l\n";
-		*/
-
-		//if (input.IsPressed(InputManager::KeyboardKey::Key_SPACE))
-		//	std::cout << "SPACE\n";
-		//if (input.IsPressedThisFrame(InputManager::KeyboardKey::Key_W))
-		//	std::cout << "W\n";
-		//if (input.IsReleasedThisFrame(InputManager::KeyboardKey::Key_S))
-		//	std::cout << "S\n";
-		//if (input.IsPressed(InputManager::MouseButtons::Button_LEFT))
-		//	std::cout << "LEFT\n";
-		//if (input.IsPressedThisFrame(InputManager::MouseButtons::Button_MIDDLE))
-		//	std::cout << "MIDDLE\n";
-		//if (input.IsReleasedThisFrame(InputManager::MouseButtons::Button_RIGHT))
-		//	std::cout << "RIGHT\n";
-
-
+		//SS.Update();
 
 		//used for physics 
 		while (lag >= m_MsPerFrame)
@@ -342,11 +254,6 @@ void dae::NightOwlEngine::Run()
 		sceneManager.LateUpdate();
 
 		renderer.Render();
-
-		//SDL_SetRenderDrawColor(renderer.GetSDLRenderer(), 255, 255, 255, SDL_ALPHA_OPAQUE);
-		////SDL_RenderDrawLine(renderer.GetSDLRenderer(), 50, 50, 150, 150);
-		//SDL_Rect smt{ 50,50,100,100 };
-		//SDL_RenderDrawRect(renderer.GetSDLRenderer(), &smt);
 
 		//make thread sleep to save on PC resources
 		const auto sleepTime = currentTime + chrono::milliseconds(m_MsPerFrame) - chrono::high_resolution_clock::now();
