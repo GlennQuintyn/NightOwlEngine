@@ -1,11 +1,11 @@
+#include "BurgerTimePCH.h"
+
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
 #if __has_include(<vld.h>)
 #include <vld.h>
 #endif
 #endif
-
-#include "BurgerTimePCH.h"
 
 //#include <iostream> // std::cout
 //#include <sstream> // stringstream
@@ -177,6 +177,7 @@ int main(int, char* [])
 
 
 
+	//ServiceLocator::RegisterSoundSystem(new LoggingSoundSystem(new SDLSoundSystem("../Data/Sound/")));
 	ServiceLocator::RegisterSoundSystem(new SDLSoundSystem("../Data/Sound/"));
 	ServiceLocator::GetSS().RegisterSound("test.wav", 0);
 	ServiceLocator::GetSS().RegisterSound("test2.wav", 1);

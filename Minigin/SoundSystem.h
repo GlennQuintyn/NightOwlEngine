@@ -32,6 +32,8 @@ namespace dae
 		LoggingSoundSystem(SoundSystem* ss) : m_pRealSS(ss) {};
 		~LoggingSoundSystem() { delete m_pRealSS; };
 
+		void Update() override {};
+
 		void RegisterSound(const std::string& filename, int id = -1) override
 		{
 			m_pRealSS->RegisterSound(filename, id);

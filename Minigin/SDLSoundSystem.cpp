@@ -56,15 +56,12 @@ namespace dae
 			// Set up the audio stream
 			int result = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 			if (result < 0)
-			{
-				throw std::runtime_error(std::string("Unable to open audio: ") + SDL_GetError());// +"\nAudio driver: " + SDL_AudioDriverName());
-			}
+				throw std::runtime_error(std::string("Unable to open audio: ") + SDL_GetError());
+
 
 			result = Mix_AllocateChannels(8);
 			if (result < 0)
-			{
 				throw std::runtime_error(std::string("Unable to allocate mixing channels: ") + SDL_GetError());
-			}
 
 			//make an infinte loop that is not quite infinite
 			m_SoundThread = std::jthread([this]
@@ -72,7 +69,8 @@ namespace dae
 					while (m_RunThread)
 					{
 						std::unique_lock<std::mutex> lk(m_Mutex);
-						m_CV.wait(lk, [this] {  return m_Head != m_Tail; });
+						//If there are no pending requests, do nothing.
+						m_CV.wait(lk, [this] {  return (m_Head != m_Tail) || !m_RunThread; });
 						Update();
 					}
 				});
@@ -81,18 +79,27 @@ namespace dae
 		~SDLSoundSystemImpl()
 		{
 			m_RunThread = false;
-			//join thread to be sure that it won't try and update when it should close down
+			//notify to wakeup the condition variable linked to the seperate thread
+			m_CV.notify_all();
+			//join thread to be sure that it stops the loop and won't try and update when it should close down
 			m_SoundThread.join();
-			//Mix_CloseAudio();
-			//Mix_Quit();
+
+			int frequency, channels;
+			Uint16 format;
+			//you have to call Mix_CloseAudio as many times as you opened it, so for safety i get the ammount that is open
+			//and close them all in a small loop as its just closing time which doesn't matter that much as runtime
+			int count = Mix_QuerySpec(&frequency, &format, &channels);
+			for (int index = 0; index < count; index++)
+			{
+				std::cout << "yes\n";
+				Mix_CloseAudio();
+			}
+			Mix_Quit();
 		}
 
 		//actually plays the head from the ring buffer
 		void Update()
 		{
-			//If there are no pending requests, do nothing.
-			Logger::GetInstance().LogInfo("UPDATE SS\n");
-
 			auto firstInQueue = m_RingBuffer[m_Head];
 			m_Head = (m_Head + 1) % MAX_PENDING;
 

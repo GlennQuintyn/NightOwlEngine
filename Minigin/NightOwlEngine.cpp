@@ -202,6 +202,7 @@ void dae::NightOwlEngine::Initialize()
 void dae::NightOwlEngine::Cleanup()
 {
 	Renderer::GetInstance().Destroy();
+	ServiceLocator::RegisterSoundSystem(nullptr);
 	SDL_DestroyWindow(m_pWindow);
 	m_pWindow = nullptr;
 	SDL_Quit();

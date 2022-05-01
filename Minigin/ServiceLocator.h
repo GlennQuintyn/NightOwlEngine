@@ -10,13 +10,15 @@ namespace dae
 	class ServiceLocator
 	{
 	public:
-		~ServiceLocator() { delete m_pSSInstance; }
-		
 		static SoundSystem& GetSS() { return *m_pSSInstance; };
 
 		//The service locator owns the sound system for easier cleanup
 		static void RegisterSoundSystem(SoundSystem* ss)
 		{
+			//check if its not the null type, if not then delete it
+			if (m_pSSInstance != &m_SSNULL)
+				delete m_pSSInstance;
+			
 			m_pSSInstance = ss == nullptr ? &m_SSNULL : ss;
 		}
 
