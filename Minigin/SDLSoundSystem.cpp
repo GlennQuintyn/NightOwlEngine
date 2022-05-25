@@ -91,7 +91,6 @@ namespace dae
 			int count = Mix_QuerySpec(&frequency, &format, &channels);
 			for (int index = 0; index < count; index++)
 			{
-				std::cout << "yes\n";
 				Mix_CloseAudio();
 			}
 			Mix_Quit();
@@ -157,9 +156,11 @@ namespace dae
 			assert((m_Tail + 1) % MAX_PENDING != m_Head);
 
 			// Add to the end of the list.
+			//auto lock = std::scoped_lock(m_Mutex);
 			m_RingBuffer[m_Tail].id = id;
 			m_RingBuffer[m_Tail].volume = volume;
 			m_Tail = (m_Tail + 1) % MAX_PENDING;
+			//m_Mutex.unlock();
 
 			m_CV.notify_all();
 		};

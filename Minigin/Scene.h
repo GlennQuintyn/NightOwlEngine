@@ -1,9 +1,10 @@
 #pragma once
+#include "GameObject.h"
 //#include "SceneManager.h"
 
 namespace dae
 {
-	class GameObject;
+	//class GameObject;// this used to work but since VS version of 09/05/2022 it doesn't and i need to inlcude Gameobject.h instead of class forward declaration
 
 	class Scene
 	{
@@ -20,7 +21,7 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
-		~Scene();
+		~Scene() = default;
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
@@ -36,5 +37,4 @@ namespace dae
 
 		static unsigned int m_IdCounter;
 	};
-
 }

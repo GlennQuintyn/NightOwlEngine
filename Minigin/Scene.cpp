@@ -9,8 +9,6 @@ unsigned int Scene::m_IdCounter = 0;
 
 Scene::Scene(const std::string_view name) : m_Name(name) {}
 
-Scene::~Scene() = default;
-
 GameObject& Scene::CreateObject(const std::string_view name/*const std::unique_ptr<GameObject>& object*/)
 {
 	m_Objects.push_back(std::make_unique<GameObject>(name, this));
@@ -23,7 +21,7 @@ void dae::Scene::TakeOwnership(std::unique_ptr<GameObject> pObject)
 	m_Objects.push_back(std::move(pObject));
 }
 
-std::unique_ptr<GameObject> dae::Scene::ReleaseOwnership(GameObject & pObject)
+std::unique_ptr<GameObject> dae::Scene::ReleaseOwnership(GameObject& pObject)
 {
 	auto it = std::find_if(m_Objects.begin(), m_Objects.end(), [&pObject](const std::unique_ptr<GameObject>& pUniqueObject)
 		{
