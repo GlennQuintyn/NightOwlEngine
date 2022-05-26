@@ -46,10 +46,8 @@ void LivesComponent::SetTexture(const std::string& filename, float sizeX, float 
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
-void dae::LivesComponent::Notify(GameObject* pObject, int event)
+void dae::LivesComponent::Notify(GameObject*, int event)
 {
-	pObject;
-
 	switch (Events(event))
 	{
 	case dae::Events::PeterPepper_Died:

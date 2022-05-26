@@ -71,6 +71,9 @@ namespace dae
 						std::unique_lock<std::mutex> lk(m_Mutex);
 						//If there are no pending requests, do nothing.
 						m_CV.wait(lk, [this] {  return (m_Head != m_Tail) || !m_RunThread; });
+						//m_Mutex.unlock();
+						lk.unlock();
+
 						Update();
 					}
 				});
@@ -99,8 +102,15 @@ namespace dae
 		//actually plays the head from the ring buffer
 		void Update()
 		{
-			auto firstInQueue = m_RingBuffer[m_Head];
-			m_Head = (m_Head + 1) % MAX_PENDING;
+			SoundInfo firstInQueue{};
+			{
+				//bool yesu = m_Mutex.try_lock();
+				//yesu;
+				std::scoped_lock mylk(m_Mutex);
+				firstInQueue = m_RingBuffer[m_Head];
+
+				m_Head = (m_Head + 1) % MAX_PENDING;
+			}
 
 			Mix_Chunk* pSoundChunk = m_MapOfSounds.at(firstInQueue.id);
 			Mix_VolumeChunk(pSoundChunk, firstInQueue.volume);
@@ -142,25 +152,27 @@ namespace dae
 			if (it == m_MapOfSounds.end())
 				return;
 
-			// Walk the pending requests to find duplicates, if so change volume to more recent requested.
-			for (int i = m_Head; i != m_Tail; i = (i + 1) % MAX_PENDING)
-			{
-				if (m_RingBuffer[i].id == id)
-				{
-					m_RingBuffer[i].volume = volume;
-					return;
-				}
-			}
-
-			//check so that it doesn't overwrite sounds that should still be played
-			assert((m_Tail + 1) % MAX_PENDING != m_Head);
-
 			// Add to the end of the list.
-			//auto lock = std::scoped_lock(m_Mutex);
-			m_RingBuffer[m_Tail].id = id;
-			m_RingBuffer[m_Tail].volume = volume;
-			m_Tail = (m_Tail + 1) % MAX_PENDING;
-			//m_Mutex.unlock();
+			{
+				std::scoped_lock mylk(m_Mutex);
+				// Walk the pending requests to find duplicates, if so change volume to more recent requested.
+				for (int i = m_Head; i != m_Tail; i = (i + 1) % MAX_PENDING)
+				{
+					if (m_RingBuffer[i].id == id)
+					{
+						m_RingBuffer[i].volume = volume;
+						return;
+					}
+				}
+				//check so that it doesn't overwrite sounds that should still be played
+				assert((m_Tail + 1) % MAX_PENDING != m_Head);
+
+				// Add to the end of the list.
+				//std::scoped_lock mylk(m_Mutex);
+				m_RingBuffer[m_Tail].id = id;
+				m_RingBuffer[m_Tail].volume = volume;
+				m_Tail = (m_Tail + 1) % MAX_PENDING;
+			}
 
 			m_CV.notify_all();
 		};
@@ -203,10 +215,10 @@ SDLSoundSystem::~SDLSoundSystem()
 	delete m_pImpl;
 }
 
-void SDLSoundSystem::Update()
-{
-	m_pImpl->Update();
-}
+//void SDLSoundSystem::Update()
+//{
+//	//m_pImpl->Update();
+//}
 
 void SDLSoundSystem::RegisterSound(const std::string& filename, int id)
 {

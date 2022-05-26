@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "ColliderManager.h"
 #include "GameObject.h"
 #include "Scene.h"
 
@@ -221,6 +222,7 @@ void dae::NightOwlEngine::Run()
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
+	auto& collider = ColliderManager::GetInstance();
 	//auto& SS = ServiceLocator::GetSS();
 
 	sceneManager.LateInit();
@@ -243,11 +245,11 @@ void dae::NightOwlEngine::Run()
 		time.Update(deltaT);
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
-		//SS.Update();
 
 		//used for physics 
 		while (lag >= m_MsPerFrame)
 		{
+			collider.Update();
 			sceneManager.FixedUpdate(m_MsPerFrame);
 			lag -= m_MsPerFrame;
 		}

@@ -1,18 +1,16 @@
 #pragma once
 #include "GameObject.h"
-//#include "SceneManager.h"
 
 namespace dae
 {
-	//class GameObject;// this used to work but since VS version of 09/05/2022 it doesn't and i need to inlcude Gameobject.h instead of class forward declaration
-
 	class Scene
 	{
 	public:
-		//explicit Scene(const std::string_view name);
-
 		GameObject& CreateObject(const std::string_view name/*const std::unique_ptr<GameObject>& object*/);
+
+		//user should NOT use this, internal use only
 		void TakeOwnership(std::unique_ptr<GameObject> pObject);
+		//user should NOT use this, internal use only
 		std::unique_ptr<GameObject> ReleaseOwnership(GameObject& pObject);
 
 		void LateInit();
@@ -29,7 +27,6 @@ namespace dae
 
 	private:
 		explicit Scene(const std::string_view name);
-		//friend Scene& SceneManager::CreateScene(const std::string_view name);
 		friend class SceneManager;
 
 		std::string m_Name;

@@ -14,6 +14,14 @@ namespace dae
 		void Init(const std::string_view data);
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& file);
 		std::shared_ptr<Font> LoadFont(const std::string& file, unsigned int size);
+
+		~ResourceManager() = default;
+
+		ResourceManager(const ResourceManager& other) = delete;
+		ResourceManager(ResourceManager&& other) = delete;
+		ResourceManager& operator=(const ResourceManager& other) = delete;
+		ResourceManager& operator=(ResourceManager&& other) = delete;
+
 	private:
 		//TODO: add container with loaded textures AND fonts
 		friend class Singleton<ResourceManager>;

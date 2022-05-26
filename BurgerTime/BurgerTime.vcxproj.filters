@@ -45,6 +45,9 @@
     <ClCompile Include="PeterPepper.cpp">
       <Filter>Components\Charachters</Filter>
     </ClCompile>
+    <ClCompile Include="HotDog.cpp">
+      <Filter>Components\Charachters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HiScoreComponent.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="ScoreComponent.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="HotDog.h">
+      <Filter>Components\Charachters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -103,6 +103,8 @@ int main(int, char* [])
 	peterSprite.SetTexture("peter/Peter_Walking_Up.png");
 	peterSprite.Setup(4, 1, 16, 50, 50);
 
+	peterPepperObj.AddComponent<rectcol>();
+
 
 	peterPepperObj.SetLocalPosition(200, 200);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
@@ -176,15 +178,16 @@ int main(int, char* [])
 #pragma endregion
 
 
-
+	/*sound system testing code
 	//ServiceLocator::RegisterSoundSystem(new LoggingSoundSystem(new SDLSoundSystem("../Data/Sound/")));
-	ServiceLocator::RegisterSoundSystem(new SDLSoundSystem("../Data/Sound/"));
-	ServiceLocator::GetSS().RegisterSound("test.wav", 0);
-	ServiceLocator::GetSS().RegisterSound("test2.wav", 1);
-	ServiceLocator::GetSS().RegisterSound("test3.wav", 2);
-	ServiceLocator::GetSS().PlaySFX(0, 40);
-	ServiceLocator::GetSS().PlaySFX(1, 50);
-	ServiceLocator::GetSS().PlaySFX(2, 80);
+	//ServiceLocator::RegisterSoundSystem(new SDLSoundSystem("../Data/Sound/"));
+	//ServiceLocator::GetSS().RegisterSound("test.wav", 0);
+	//ServiceLocator::GetSS().RegisterSound("test2.wav", 1);
+	//ServiceLocator::GetSS().RegisterSound("test3.wav", 2);
+	//ServiceLocator::GetSS().PlaySFX(0, 40);
+	//ServiceLocator::GetSS().PlaySFX(1, 50);
+	//ServiceLocator::GetSS().PlaySFX(2, 80);
+	*/
 
 	//auto rendereerere = Renderer::GetInstance().GetSDLRenderer();
 	////SDL_renderD
