@@ -1,13 +1,15 @@
 #include "NightOwlEnginePCH.h"
 #include "ColliderManager.h"
 
-void dae::ColliderManager::RegisterRectCollider(RectColiderComponent* pCollider)
+void dae::ColliderManager::RegisterRectCollider(RectColliderComponent* pCollider)
 {
 	m_pRectColliderComponents.emplace_back(pCollider);
 }
 
 void dae::ColliderManager::Update()
 {
+	//Logger::GetInstance().LogInfo("COLLISION CHECK");
+
 	for (size_t index1 = 0; index1 < m_pRectColliderComponents.size() - 1; index1++)
 	{
 		for (size_t index2 = index1 + 1; index2 < m_pRectColliderComponents.size(); index2++)

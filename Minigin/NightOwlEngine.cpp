@@ -39,6 +39,12 @@ void PrintSDLVersion()
 		linked.major, linked.minor, linked.patch);
 }
 
+dae::NightOwlEngine::NightOwlEngine(int windowWidth, int windowHeight)
+	:m_WindowWidth{ windowWidth }
+	, m_WindowHeight{ windowHeight }
+{
+}
+
 void dae::NightOwlEngine::Initialize()
 {
 	PrintSDLVersion();
@@ -52,8 +58,8 @@ void dae::NightOwlEngine::Initialize()
 		"BURGERTIME",//"Programming 4 assignment"
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		640,//640
-		900,//480
+		m_WindowWidth,//640,//640
+		m_WindowHeight,//900,//480
 		SDL_WINDOW_OPENGL
 	);
 
@@ -246,10 +252,10 @@ void dae::NightOwlEngine::Run()
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
 
+			collider.Update();
 		//used for physics 
 		while (lag >= m_MsPerFrame)
 		{
-			collider.Update();
 			sceneManager.FixedUpdate(m_MsPerFrame);
 			lag -= m_MsPerFrame;
 		}

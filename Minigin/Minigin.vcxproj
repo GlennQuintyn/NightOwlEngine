@@ -247,7 +247,7 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\SDL2_mixer.d
     <ClInclude Include="NightOwlEnginePCH.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PCController.h" />
-    <ClInclude Include="RectColiderComponent.h" />
+    <ClInclude Include="RectColliderComponent.h" />
     <ClInclude Include="SDLSoundSystem.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
@@ -325,7 +325,7 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\SDL2_mixer.d
     </ClCompile>
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PCController.cpp" />
-    <ClCompile Include="RectColiderComponent.cpp" />
+    <ClCompile Include="RectColliderComponent.cpp" />
     <ClCompile Include="SDLSoundSystem.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
     <ClCompile Include="SoundSystem.cpp" />

@@ -6,7 +6,7 @@
 namespace dae
 {
 	int g_MovementSpeedHorizontal{ 100 };
-	int g_MovementSpeedVertical{ 50 };
+	int g_MovementSpeedVertical{ 75 };//50
 
 	class WalkRightCommand final : public Command
 	{
@@ -15,6 +15,15 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			if (auto pPetterPepper = m_pObject->GetComponent<PeterPepper>())
+			{
+				if (pPetterPepper->IsOnLadder())
+				{
+					Logger::GetInstance().LogInfo("cannot walk RIGHT");
+					return;
+				}
+			}
+
 			auto& pos{ m_pObject->GetLoacalPosition() };
 			m_pObject->SetLocalPosition(pos.x + (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), pos.y);
 		};
@@ -42,6 +51,15 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			if (auto pPetterPepper = m_pObject->GetComponent<PeterPepper>())
+			{
+				if (pPetterPepper->IsOnLadder())
+				{
+					Logger::GetInstance().LogInfo("cannot walk LEFT");
+					return;
+				}
+			}
+
 			auto& pos{ m_pObject->GetLoacalPosition() };
 			m_pObject->SetLocalPosition(pos.x - (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), pos.y);
 		};

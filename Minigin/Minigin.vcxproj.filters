@@ -140,7 +140,7 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>SoundSystem</Filter>
     </ClInclude>
-    <ClInclude Include="RectColiderComponent.h">
+    <ClInclude Include="RectColliderComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ColliderManager.h">
@@ -248,7 +248,7 @@
     <ClCompile Include="SoundSystem.cpp">
       <Filter>SoundSystem</Filter>
     </ClCompile>
-    <ClCompile Include="RectColiderComponent.cpp">
+    <ClCompile Include="RectColliderComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ColliderManager.cpp">

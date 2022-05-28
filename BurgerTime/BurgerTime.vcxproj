@@ -209,11 +209,13 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     </ClCompile>
     <ClCompile Include="HiScoreComponent.cpp" />
     <ClCompile Include="HotDog.cpp" />
+    <ClCompile Include="LadderComponent.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PepperCountComponent.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
+    <ClCompile Include="WalkingPlatformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerTimeCommands.h" />
@@ -221,10 +223,12 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="Enums.h" />
     <ClInclude Include="HiScoreComponent.h" />
     <ClInclude Include="HotDog.h" />
+    <ClInclude Include="LadderComponent.h" />
     <ClInclude Include="LivesComponent.h" />
     <ClInclude Include="PepperCountComponent.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="WalkingPlatformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

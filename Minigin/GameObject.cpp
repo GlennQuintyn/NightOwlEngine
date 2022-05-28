@@ -50,6 +50,8 @@ GameObject::GameObject(const std::string_view objectName, Scene* pScene, GameObj
 		else
 			m_Name = objectName;
 	}
+
+	m_TransformIsDirty = true;
 }
 
 GameObject::~GameObject() = default;
@@ -265,12 +267,11 @@ void GameObject::AdoptChild(std::unique_ptr<GameObject> pObject)
 	m_pChildren.push_back(std::move(pObject));
 }
 
-GameObject* GameObject::CreateAddChild(const std::string_view childName)
+GameObject& GameObject::CreateAddChild(const std::string_view childName)
 {
 	auto newObject = new GameObject{ childName, nullptr, this };
-	//newObject->SetParent(this);
 	m_pChildren.emplace_back(newObject);
-	return newObject;
+	return *m_pChildren.back();
 }
 #pragma endregion
 

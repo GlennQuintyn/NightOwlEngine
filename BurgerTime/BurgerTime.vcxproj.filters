@@ -22,6 +22,12 @@
     <Filter Include="Core">
       <UniqueIdentifier>{bf246f9b-0067-4b5f-8344-028838b5f7ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Ingredients">
+      <UniqueIdentifier>{76c361b9-e183-499a-85c4-42dec7f01c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Level">
+      <UniqueIdentifier>{5c96cc65-99db-40e3-8678-d7f92fc9e289}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PepperCountComponent.cpp">
@@ -47,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="HotDog.cpp">
       <Filter>Components\Charachters</Filter>
+    </ClCompile>
+    <ClCompile Include="LadderComponent.cpp">
+      <Filter>Components\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkingPlatformComponent.cpp">
+      <Filter>Components\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="HotDog.h">
       <Filter>Components\Charachters</Filter>
+    </ClInclude>
+    <ClInclude Include="LadderComponent.h">
+      <Filter>Components\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkingPlatformComponent.h">
+      <Filter>Components\Level</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

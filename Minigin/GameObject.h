@@ -57,7 +57,7 @@ namespace dae
 		std::unique_ptr<GameObject> RemoveChildAt(size_t index);
 		std::unique_ptr<GameObject> RemoveChildByName(const std::string_view childName);
 
-		GameObject* CreateAddChild(const std::string_view childName = {});
+		GameObject& CreateAddChild(const std::string_view childName = {});
 
 		const std::string& GetName() const { return m_Name; };
 		//void SetName(const std::string_view name) { m_Name = name; };//TODO: implement properly in future, so that duplicate child naming is not possible

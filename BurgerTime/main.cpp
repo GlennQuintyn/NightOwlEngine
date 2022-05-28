@@ -51,6 +51,10 @@
 #include "HiScoreComponent.h"
 #include "LivesComponent.h"
 #include "PepperCountComponent.h"
+
+#include "RectColliderComponent.h"
+#include "LadderComponent.h"
+#include "WalkingPlatformComponent.h"
 #pragma endregion
 
 #include "BurgerTimeCommands.h"
@@ -62,7 +66,7 @@ using namespace dae;
 
 int main(int, char* [])
 {
-	auto engine = new dae::NightOwlEngine();
+	auto engine = new dae::NightOwlEngine(640, 900);
 
 	engine->Initialize();
 
@@ -74,7 +78,7 @@ int main(int, char* [])
 	//std::cout << "\n\n-player 1:\n\tButton Y: Lose a life\n\tButton R1: add 25 to score\n\tButton R3: add 50 to score\n\n";
 	//std::cout << "-player 2:\n\tButton X: Lose a life\n\tButton L1: add 25 to score\n\tButton L3: add 50 to score\n\n";
 
-	auto& scene = SceneManager::GetInstance().CreateScene("FPS Counter");
+	auto& scene = SceneManager::GetInstance().CreateScene("BURGER TIME");
 	auto& inputmanager = InputManager::GetInstance();
 
 	auto fpsFont = ResourceManager::GetInstance().LoadFont("Fonts/Lingua.otf", 19);
@@ -84,7 +88,8 @@ int main(int, char* [])
 	SDL_GetWindowSize(engine->GetWindow(), &windowW, &windowH);
 
 	auto& backgroundObject = scene.CreateObject("backgroundObject");
-	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("background_adj.jpg");
+	//backgroundObject.AddComponent<Texture2DComponent>().SetTexture("background_adj.jpg");
+	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level1.png");
 
 
 	auto& fpsCounterObj = scene.CreateObject("fpsCounterObj");
@@ -97,16 +102,33 @@ int main(int, char* [])
 
 	//peter pepper test object
 	auto& peterPepperObj = scene.CreateObject("peterPepperObj");
-	peterPepperObj.AddComponent<PeterPepper>();
+	auto& petercmpt = peterPepperObj.AddComponent<PeterPepper>();
 	auto& peterSprite = peterPepperObj.AddComponent<SpriteComponent>();
+
 	//peterSprite.SetTexture("Peter_Walking_Down.png");
-	peterSprite.SetTexture("peter/Peter_Walking_Up.png");
-	peterSprite.Setup(4, 1, 16, 50, 50);
+	peterSprite.SetTexture("peter/Peter_Walking_Down.png");
+	peterSprite.Setup(4, 1, 16 * 0, 45, 45);
 
-	peterPepperObj.AddComponent<rectcol>();
+	auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
+	pepperCollider.Init({ 0,0,45,45 }, true);
 
+	//seting up the collider logic tree
+	auto& peterColliderlogicObj = peterPepperObj.CreateAddChild("peterColliderLogic");
+	auto& colliderLObj = peterColliderlogicObj.CreateAddChild("Lcollider");
+	auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
+	colliderLcmpt.Init({ -5,37,3,3 }, true, { 255, 0, 0, 128 });
+	auto& colliderRObj = peterColliderlogicObj.CreateAddChild("Rcollider");
+	auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
+	colliderRcmpt.Init({ 47,37,3,3 }, true, { 0, 255, 0, 128 });;
+	auto& colliderUPObj = peterColliderlogicObj.CreateAddChild("UPcollider");
+	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
+	colliderUPcmpt.Init({ 22,-5,3,3 }, true, { 0, 0, 255, 128 });;
+	auto& colliderDOWNObj = peterColliderlogicObj.CreateAddChild("DOWNcollider");
+	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
+	colliderDowncmpt.Init({ 22,50,3,3 }, true, { 0, 255, 255, 128 });;
 
-	peterPepperObj.SetLocalPosition(200, 200);
+	peterPepperObj.SetLocalPosition(200, 400);
+#pragma region InputCommands
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
@@ -118,6 +140,37 @@ int main(int, char* [])
 
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+#pragma endregion
+
+#pragma region LadderSetup
+	auto& ladderObj1 = scene.CreateObject("ladderObj1");
+	ladderObj1.SetLocalPosition(51.f, 342.f);
+	ladderObj1.AddComponent<LadderComponent>();
+	auto& ladder1colliderCmpt = ladderObj1.AddComponent<RectColliderComponent>();
+	ladder1colliderCmpt.Init({ 0, 0, 3, 270 }, true, { 255, 255, 0, 128 });
+#pragma endregion
+
+#pragma region WalkingPlatformSetup
+	//auto& walkPlatformObj1 = scene.CreateObject("walkPlatformObj1");
+	//walkPlatformObj1.SetLocalPosition(507.f, 390.f);
+	//walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
+	//auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
+	//walkPlatform1colliderCmpt.Init({ 0, 0, 2, 310 }, true, { 0, 255, 0, 128 });
+#pragma endregion
+
+	//auto& subje1 = petercmpt.GetSubject();
+	////subje1.AddObserver(pepperCollider);
+	//subje1.AddObserver(ladder1colliderCmpt);
+	//subje1.AddObserver(pepperCollider);
+
+	auto& subje1 = pepperCollider.GetSubject();
+	subje1.AddObserver(petercmpt);
+
+	//subje3.AddObserver(ladder1colliderCmpt);
+	//auto& subje2 = ladder1colliderCmpt.GetSubject();
+	//subje2.AddObserver(petercmpt);
+	//subje2.AddObserver(pepperCollider);
+
 
 
 #pragma region UI/SCORE

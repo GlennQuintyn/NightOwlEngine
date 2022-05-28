@@ -20,7 +20,6 @@ void ResourceManager::Init(const std::string_view dataPath)
 	m_DataPath = dataPath;
 
 	// load support for png and jpg, this takes a while!
-
 	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG)
 	{
 		throw std::runtime_error(std::string("Failed to load support for png's: ") + SDL_GetError());

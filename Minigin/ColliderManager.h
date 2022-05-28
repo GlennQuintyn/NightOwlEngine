@@ -1,7 +1,6 @@
 #pragma once
 #include "Singleton.h"
-#include "RectColiderComponent.h"
-
+#include "RectColliderComponent.h"
 
 namespace dae
 {
@@ -10,7 +9,7 @@ namespace dae
 	public:
 		~ColliderManager() = default;
 
-		void RegisterRectCollider(RectColiderComponent* pCollider);
+		void RegisterRectCollider(RectColliderComponent* pCollider);
 
 		void Update();
 
@@ -23,6 +22,6 @@ namespace dae
 		friend class Singleton<ColliderManager>;
 		ColliderManager() = default;
 
-		std::vector<RectColiderComponent*> m_pRectColliderComponents;
+		std::vector<RectColliderComponent*> m_pRectColliderComponents;
 	};
 }

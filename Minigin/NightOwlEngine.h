@@ -8,6 +8,10 @@ namespace dae
 	class NightOwlEngine
 	{
 	public:
+
+		NightOwlEngine(int windowWidth, int windowHeight);
+		~NightOwlEngine() = default;
+
 		void Initialize();
 		//void LoadGame() /*const*/;
 		void Run();
@@ -17,8 +21,8 @@ namespace dae
 
 	private:
 		static const int m_MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
-		/*Test code for input and transfrom code
-		GameObject* temp;*/
+		int m_WindowWidth;
+		int m_WindowHeight;
 		SDL_Window* m_pWindow{};
 	};
 }
