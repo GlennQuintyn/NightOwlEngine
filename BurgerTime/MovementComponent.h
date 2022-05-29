@@ -1,5 +1,6 @@
 #pragma once
 #include <BaseComponent.h>
+#include "RectColliderComponent.h"
 #include <array>
 
 namespace dae
@@ -19,6 +20,11 @@ namespace dae
 		bool CanGoRight()const { return m_CanGoRight; };
 		bool CanGoUp()const { return m_CanGoUp; };
 		bool CanGoDown()const { return m_CanGoDown; };
+
+		GameObject* GetTouchingPlatformLeft();
+		GameObject* GetTouchingPlatformRight();
+		GameObject* GetTouchingLadderUp();
+		GameObject* GetTouchingLadderDown();
 
 		void LateInit() override {};
 		void Update() override {};

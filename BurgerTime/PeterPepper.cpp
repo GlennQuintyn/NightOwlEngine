@@ -58,63 +58,6 @@ void PeterPepper::Update()
 
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
-	if (true)
-	{
-		return;
-	}
-
-	//check if the object has a ladder component
-	if (auto pLaddercmp = pObject->GetComponent<LadderComponent>())
-	{
-		//if the event is a 0 that means the collider entered a ladder and if its 0 it exited one
-		switch (event)
-		{
-		case 0:
-		{
-			if (true)
-			{
-
-			}
-
-
-			m_IsOnLadder = true;
-			//set petterpepper on the center of the ladder
-			auto& ladderPos = pObject->GetWorldPosition();
-			auto& peterPos = m_pParentObject->GetWorldPosition();
-			m_pParentObject->SetLocalPosition(ladderPos.x - (m_Size.x / 2.f), peterPos.y);
-			break;
-		}
-		case 1:
-			m_IsOnLadder = false;
-			break;
-		default:
-			Logger::GetInstance().LogError("PetterPeppber: invalid switch state! reached");
-			break;
-		}
-	}
-	//check if it has a platform component
-	else if (auto pPlatformcmp = pObject->GetComponent<WalkingPlatformComponent>())
-	{
-		//if the event is a 0 that means the collider entered a plaform and if its 0 it exited one
-		switch (event)
-		{
-		case 0:
-		{
-			m_IsOnLadder = true;
-			//set petterpepper on the center of the ladder
-			auto& ladderPos = pObject->GetWorldPosition();
-			auto& peterPos = m_pParentObject->GetWorldPosition();
-			m_pParentObject->SetLocalPosition(ladderPos.x - (m_Size.x / 2.f), peterPos.y);
-			break;
-		}
-		case 1:
-			m_IsOnLadder = false;
-			break;
-		default:
-			Logger::GetInstance().LogError("PetterPeppber: invalid switch state! reached");
-			break;
-		}
-	}
 }
 
 void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)

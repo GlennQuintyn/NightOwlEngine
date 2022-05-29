@@ -45,7 +45,7 @@ namespace dae
 		std::vector<RectColliderComponent*> m_pOtherOverlappingColliders;
 		SDL_Color m_ColliderColor;
 		GameObject* m_pParentObject;
-		int m_IdNr;
+		int m_IdNr;//TODO: remove the ID
 		bool m_DebugRender;
 	};
 }

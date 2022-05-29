@@ -43,11 +43,6 @@ namespace dae
 
 		bool m_IsOnLadder;
 
-		bool m_CanGoLeft;
-		bool m_CanGoRight;
-		bool m_CanGoUp;
-		bool m_CanGoDown;
-
 		PCController::ControllerButton m_DeahtButton;
 		PCController::ControllerButton m_ObjFellButton;
 		PCController::ControllerButton m_EnemyPepperedButton;
