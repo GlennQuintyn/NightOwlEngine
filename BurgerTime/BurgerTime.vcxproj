@@ -212,6 +212,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClCompile Include="LadderComponent.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PepperCountComponent.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
@@ -225,6 +226,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="HotDog.h" />
     <ClInclude Include="LadderComponent.h" />
     <ClInclude Include="LivesComponent.h" />
+    <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="PepperCountComponent.h" />
     <ClInclude Include="PeterPepper.h" />
     <ClInclude Include="ScoreComponent.h" />

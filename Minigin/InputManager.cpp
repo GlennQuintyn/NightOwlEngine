@@ -113,7 +113,7 @@ bool InputManager::ProcessInput()
 		}
 	}
 
-	//keyboard command code
+	//mouse command code
 	for (auto& mouseCommand : m_MapOfMouseCommands)
 	{
 		switch (mouseCommand.first.pressState)

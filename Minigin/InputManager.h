@@ -9,23 +9,6 @@
 
 namespace dae
 {
-	/*enum class ControllerButton
-	{
-		ButtonA,
-		ButtonB,
-		ButtonX,
-		ButtonY
-	};*/
-
-	/*class InputManager final : public Singleton<InputManager>
-	{
-	public:
-		bool ProcessInput();
-		bool IsPressed(ControllerButton button) const;
-	private:
-		XINPUT_STATE m_CurrentState{};
-	};*/
-	//TODO: add keyboard support
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:

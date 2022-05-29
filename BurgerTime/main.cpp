@@ -55,6 +55,7 @@
 #include "RectColliderComponent.h"
 #include "LadderComponent.h"
 #include "WalkingPlatformComponent.h"
+#include "MovementComponent.h"
 #pragma endregion
 
 #include "BurgerTimeCommands.h"
@@ -110,24 +111,26 @@ int main(int, char* [])
 	peterSprite.Setup(4, 1, 16 * 0, 45, 45);
 
 	auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	pepperCollider.Init({ 0,0,45,45 }, true);
+	pepperCollider.Init({ 0,0,45,45 }, -1, true);
+
+	peterPepperObj.AddComponent<MovementComponent>();
 
 	//seting up the collider logic tree
-	auto& peterColliderlogicObj = peterPepperObj.CreateAddChild("peterColliderLogic");
-	auto& colliderLObj = peterColliderlogicObj.CreateAddChild("Lcollider");
-	auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
-	colliderLcmpt.Init({ -5,37,3,3 }, true, { 255, 0, 0, 128 });
-	auto& colliderRObj = peterColliderlogicObj.CreateAddChild("Rcollider");
-	auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
-	colliderRcmpt.Init({ 47,37,3,3 }, true, { 0, 255, 0, 128 });;
-	auto& colliderUPObj = peterColliderlogicObj.CreateAddChild("UPcollider");
-	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
-	colliderUPcmpt.Init({ 22,-5,3,3 }, true, { 0, 0, 255, 128 });;
-	auto& colliderDOWNObj = peterColliderlogicObj.CreateAddChild("DOWNcollider");
-	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
-	colliderDowncmpt.Init({ 22,50,3,3 }, true, { 0, 255, 255, 128 });;
+	//auto& peterColliderlogicObj = peterPepperObj.CreateAddChild("peterColliderLogic");
+	//auto& colliderLObj = peterColliderlogicObj.CreateAddChild("Lcollider");
+	//auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
+	//colliderLcmpt.Init({ -5,37,3,3 }, 0, true, { 255, 0, 0, 128 });
+	//auto& colliderRObj = peterColliderlogicObj.CreateAddChild("Rcollider");
+	//auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
+	//colliderRcmpt.Init({ 47,37,3,3 }, 1, true, { 0, 255, 0, 128 });
+	//auto& colliderUPObj = peterColliderlogicObj.CreateAddChild("UPcollider");
+	//auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
+	//colliderUPcmpt.Init({ 22,-5,3,3 }, 2, true, { 0, 0, 255, 128 });
+	//auto& colliderDOWNObj = peterColliderlogicObj.CreateAddChild("DOWNcollider");
+	//auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
+	//colliderDowncmpt.Init({ 22,50,3,3 }, 3, true, { 0, 255, 255, 128 });
 
-	peterPepperObj.SetLocalPosition(200, 400);
+	peterPepperObj.SetLocalPosition(298, 563);
 #pragma region InputCommands
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
@@ -147,25 +150,148 @@ int main(int, char* [])
 	ladderObj1.SetLocalPosition(51.f, 342.f);
 	ladderObj1.AddComponent<LadderComponent>();
 	auto& ladder1colliderCmpt = ladderObj1.AddComponent<RectColliderComponent>();
-	ladder1colliderCmpt.Init({ 0, 0, 3, 270 }, true, { 255, 255, 0, 128 });
+	ladder1colliderCmpt.Init({ 0, 0, 3, 268 }, 10, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj2 = scene.CreateObject("ladderObj2");
+	ladderObj2.SetLocalPosition(51.f, 161.f);
+	ladderObj2.AddComponent<LadderComponent>();
+	auto& ladder2colliderCmpt = ladderObj2.AddComponent<RectColliderComponent>();
+	ladder2colliderCmpt.Init({ 0, 0, 3, 135 }, 11, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj3 = scene.CreateObject("ladderObj2");
+	ladderObj3.SetLocalPosition(117.f, 251.f);
+	ladderObj3.AddComponent<LadderComponent>();
+	auto& ladder3colliderCmpt = ladderObj3.AddComponent<RectColliderComponent>();
+	ladder3colliderCmpt.Init({ 0, 0, 4, 268 }, 12, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj4 = scene.CreateObject("ladderObj4");
+	ladderObj4.SetLocalPosition(184.f, 161.f);
+	ladderObj4.AddComponent<LadderComponent>();
+	auto& ladder4colliderCmpt = ladderObj4.AddComponent<RectColliderComponent>();
+	ladder4colliderCmpt.Init({ 0, 0, 4, 448 }, 13, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj5 = scene.CreateObject("ladderObj5");
+	ladderObj5.SetLocalPosition(251.f, 161.f);
+	ladderObj5.AddComponent<LadderComponent>();
+	auto& ladder5colliderCmpt = ladderObj5.AddComponent<RectColliderComponent>();
+	ladder5colliderCmpt.Init({ 0, 0, 4, 180 }, 14, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj6 = scene.CreateObject("ladderObj6");
+	ladderObj6.SetLocalPosition(318.f, 161.f);
+	ladderObj6.AddComponent<LadderComponent>();
+	auto& ladder6colliderCmpt = ladderObj6.AddComponent<RectColliderComponent>();
+	ladder6colliderCmpt.Init({ 0, 0, 4, 448 }, 15, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj7 = scene.CreateObject("ladderObj7");
+	ladderObj7.SetLocalPosition(385.f, 251.f);
+	ladderObj7.AddComponent<LadderComponent>();
+	auto& ladder7colliderCmpt = ladderObj7.AddComponent<RectColliderComponent>();
+	ladder7colliderCmpt.Init({ 0, 0, 4, 178 }, 16, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj8 = scene.CreateObject("ladderObj8");
+	ladderObj8.SetLocalPosition(452.f, 161.f);
+	ladderObj8.AddComponent<LadderComponent>();
+	auto& ladder8colliderCmpt = ladderObj8.AddComponent<RectColliderComponent>();
+	ladder8colliderCmpt.Init({ 0, 0, 4, 448 }, 17, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj9 = scene.CreateObject("ladderObj9");
+	ladderObj9.SetLocalPosition(519.f, 338.f);
+	ladderObj9.AddComponent<LadderComponent>();
+	auto& ladder9colliderCmpt = ladderObj9.AddComponent<RectColliderComponent>();
+	ladder9colliderCmpt.Init({ 0, 0, 3, 269 }, 18, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj10 = scene.CreateObject("ladderObj10");
+	ladderObj10.SetLocalPosition(586.f, 161.f);
+	ladderObj10.AddComponent<LadderComponent>();
+	auto& ladder10colliderCmpt = ladderObj10.AddComponent<RectColliderComponent>();
+	ladder10colliderCmpt.Init({ 0, 0, 4, 225 }, 19, true, { 255, 255, 0, 128 });
+
+	auto& ladderObj11 = scene.CreateObject("ladderObj11");
+	ladderObj11.SetLocalPosition(586.f, 429.f);
+	ladderObj11.AddComponent<LadderComponent>();
+	auto& ladder11colliderCmpt = ladderObj11.AddComponent<RectColliderComponent>();
+	ladder11colliderCmpt.Init({ 0, 0, 4, 180 }, 20, true, { 255, 255, 0, 128 });
 #pragma endregion
 
 #pragma region WalkingPlatformSetup
-	//auto& walkPlatformObj1 = scene.CreateObject("walkPlatformObj1");
-	//walkPlatformObj1.SetLocalPosition(507.f, 390.f);
-	//walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
-	//auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
-	//walkPlatform1colliderCmpt.Init({ 0, 0, 2, 310 }, true, { 0, 255, 0, 128 });
+	auto& walkPlatformObj1 = scene.CreateObject("walkPlatformObj1");
+	walkPlatformObj1.SetLocalPosition(30.f, 195.f);
+	walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
+	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 50, true, { 0, 255, 0, 128 });
+	
+	auto& walkPlatformObj2 = scene.CreateObject("walkPlatformObj2");
+	walkPlatformObj2.SetLocalPosition(30.f, 285.f);
+	walkPlatformObj2.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform2colliderCmpt = walkPlatformObj2.AddComponent<RectColliderComponent>();
+	walkPlatform2colliderCmpt.Init({ 0, 0, 178, 4}, 51, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj3 = scene.CreateObject("walkPlatformObj3");
+	walkPlatformObj3.SetLocalPosition(295.f, 285.f);
+	walkPlatformObj3.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform3colliderCmpt = walkPlatformObj3.AddComponent<RectColliderComponent>();
+	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4}, 52, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj4 = scene.CreateObject("walkPlatformObj4");
+	walkPlatformObj4.SetLocalPosition(165.f, 330.f);
+	walkPlatformObj4.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform4colliderCmpt = walkPlatformObj4.AddComponent<RectColliderComponent>();
+	walkPlatform4colliderCmpt.Init({ 0, 0, 180, 4}, 53, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj5 = scene.CreateObject("walkPlatformObj5");
+	walkPlatformObj5.SetLocalPosition(30.f, 375.f);
+	walkPlatformObj5.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform5colliderCmpt = walkPlatformObj5.AddComponent<RectColliderComponent>();
+	walkPlatform5colliderCmpt.Init({ 0, 0, 178, 4 }, 54, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj6 = scene.CreateObject("walkPlatformObj6");
+	walkPlatformObj6.SetLocalPosition(430.f, 375.f);
+	walkPlatformObj6.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform6colliderCmpt = walkPlatformObj6.AddComponent<RectColliderComponent>();
+	walkPlatform6colliderCmpt.Init({ 0, 0, 178, 4 }, 55, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj7 = scene.CreateObject("walkPlatformObj7");
+	walkPlatformObj7.SetLocalPosition(165.f, 418.f);
+	walkPlatformObj7.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform7colliderCmpt = walkPlatformObj7.AddComponent<RectColliderComponent>();
+	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4}, 56, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj8 = scene.CreateObject("walkPlatformObj8");
+	walkPlatformObj8.SetLocalPosition(430.f, 463.f);
+	walkPlatformObj8.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform8colliderCmpt = walkPlatformObj8.AddComponent<RectColliderComponent>();
+	walkPlatform8colliderCmpt.Init({ 0, 0, 178, 4}, 57, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj9 = scene.CreateObject("walkPlatformObj9");
+	walkPlatformObj9.SetLocalPosition(30.f, 508.f);
+	walkPlatformObj9.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform9colliderCmpt = walkPlatformObj9.AddComponent<RectColliderComponent>();
+	walkPlatform9colliderCmpt.Init({ 0, 0, 435, 4 }, 58, true, { 0, 255, 0, 128 });
+
+	auto& walkPlatformObj10 = scene.CreateObject("walkPlatformObj10");
+	walkPlatformObj10.SetLocalPosition(30.f, 597.f);
+	walkPlatformObj10.AddComponent<WalkingPlatformComponent>();
+	auto& walkPlatform10colliderCmpt = walkPlatformObj10.AddComponent<RectColliderComponent>();
+	walkPlatform10colliderCmpt.Init({ 0, 0, 580, 4 }, 59, true, { 0, 255, 0, 128 });
 #pragma endregion
+	
+
+	auto& subje1 = pepperCollider.GetSubject();
+	subje1.AddObserver(petercmpt);
+
+	//auto& subjectL = colliderLcmpt.GetSubject();
+	//subjectL.AddObserver(petercmpt);
+	//auto& subjectR = colliderRcmpt.GetSubject();
+	//subjectR.AddObserver(petercmpt);
+	//auto& subjectUp = colliderUPcmpt.GetSubject();
+	//subjectUp.AddObserver(petercmpt);
+	//auto& subjectDown = colliderDowncmpt.GetSubject();
+	//subjectDown.AddObserver(petercmpt);
 
 	//auto& subje1 = petercmpt.GetSubject();
 	////subje1.AddObserver(pepperCollider);
 	//subje1.AddObserver(ladder1colliderCmpt);
 	//subje1.AddObserver(pepperCollider);
-
-	auto& subje1 = pepperCollider.GetSubject();
-	subje1.AddObserver(petercmpt);
-
 	//subje3.AddObserver(ladder1colliderCmpt);
 	//auto& subje2 = ladder1colliderCmpt.GetSubject();
 	//subje2.AddObserver(petercmpt);

@@ -60,6 +60,9 @@
     <ClCompile Include="WalkingPlatformComponent.cpp">
       <Filter>Components\Level</Filter>
     </ClCompile>
+    <ClCompile Include="MovementComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HiScoreComponent.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="WalkingPlatformComponent.h">
       <Filter>Components\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="MovementComponent.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -338,6 +338,8 @@ void GameObject::UpdateTransform()
 	{
 		UpdateZDept();
 	}
+
+	//m_TransformIsDirty = false;
 }
 
 void GameObject::UpdatePosition()

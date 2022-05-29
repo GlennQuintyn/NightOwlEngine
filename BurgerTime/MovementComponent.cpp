@@ -1,0 +1,127 @@
+#include "BurgerTimePCH.h"
+#include "MovementComponent.h"
+#include "Observer.h"
+#include "GameObject.h"
+#include "RectColliderComponent.h"
+#include "LadderComponent.h"
+#include "WalkingPlatformComponent.h"
+
+namespace dae
+{
+	enum class ColliderIndices
+	{
+		ColliderLeft = 0,
+		ColliderRight = 1,
+		ColliderUp = 2,
+		ColliderDown = 3
+	};
+
+	class MovementComponent::HitBoxObserver final : public dae::Observer
+	{
+	public:
+		HitBoxObserver(bool isLadderObserver, bool& direction)
+			: m_IsLadderObserver{ isLadderObserver }
+			, m_CanGoDirection{ direction }
+			, m_pLastTouchedCollider{ nullptr }
+		{}
+
+		~HitBoxObserver() = default;
+
+		void Notify(GameObject* pObject, int event) override
+		{
+			m_pLastTouchedCollider = pObject->GetComponent<RectColliderComponent>();
+
+			if (m_IsLadderObserver)
+			{
+				if (auto pLaddercmp = pObject->GetComponent<LadderComponent>())
+				{
+					// if the event is a 0 that means the collider entered a ladder and if its 0 it exited one
+					switch (event)
+					{
+					case 0:
+						m_CanGoDirection = true;
+						break;
+					case 1:
+						m_CanGoDirection = false;
+						break;
+					default:
+						Logger::GetInstance().LogError("MOVEMENTCOMPONENT: invalid switch state reached!");
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (auto pPlatformcmp = pObject->GetComponent<WalkingPlatformComponent>())
+				{
+					switch (event)
+					{
+					case 0:
+						m_CanGoDirection = true;
+						break;
+					case 1:
+						m_CanGoDirection = false;
+						break;
+					default:
+						Logger::GetInstance().LogError("MOVEMENTCOMPONENT: invalid switch state reached!");
+						break;
+					}
+				}
+			}
+		}
+
+	private:
+		const bool m_IsLadderObserver;
+		bool& m_CanGoDirection;
+		RectColliderComponent* m_pLastTouchedCollider;
+	};
+}
+
+
+dae::MovementComponent::MovementComponent(GameObject* pParentObject)
+	: m_pParentObject{ pParentObject }
+{
+	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
+	auto& colliderLObj = colliderLogicObj.CreateAddChild("Lcollider");
+	auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
+	colliderLcmpt.Init({ -5,37,3,3 }, 0, true, { 255, 0, 0, 128 });
+	auto& colliderRObj = colliderLogicObj.CreateAddChild("Rcollider");
+	auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
+	colliderRcmpt.Init({ 47,37,3,3 }, 1, true, { 0, 255, 0, 128 });
+	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
+	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
+	colliderUPcmpt.Init({ 22,-5,3,3 }, 2, true, { 0, 0, 255, 128 });
+	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
+	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
+	colliderDowncmpt.Init({ 22,50,3,3 }, 3, true, { 0, 255, 255, 128 });
+
+	//m_pImpl = std::make_unique<std::array<HitBoxObserver, 4>>( HitBoxObserver(false, m_CanGoLeft), HitBoxObserver(false, m_CanGoRight), HitBoxObserver(true, m_CanGoUp), HitBoxObserver(true, m_CanGoDown));
+	//m_pImpl = std::make_unique<std::array<HitBoxObserver, 4>>( HitBoxObserver{false, m_CanGoLeft}, HitBoxObserver{false, m_CanGoRight}, HitBoxObserver{true, m_CanGoUp}, HitBoxObserver{true, m_CanGoDown});
+	//std::array<int, 5> myArray;
+	//myArray = { 0, 1, 2, 3, 4 }; // okay
+	//std::unique_ptr<std::array<double, 2>> pointer(new std::array<double, 2>{10.1, 10.1});
+	//std::array<HitBoxObserver, 4> myArray(HitBoxObserver(false, m_CanGoLeft), HitBoxObserver(false, m_CanGoRight), HitBoxObserver(true, m_CanGoUp), HitBoxObserver(true, m_CanGoDown) );
+
+	std::array<HitBoxObserver, 4>* myArray(new std::array<HitBoxObserver, 4>{ HitBoxObserver(false, m_CanGoLeft), HitBoxObserver(false, m_CanGoRight), HitBoxObserver(true, m_CanGoUp), HitBoxObserver(true, m_CanGoDown) });
+	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(myArray);
+
+	//
+	//m_pImpl = std::make_unique<std::to_array<HitBoxObserver>>({ false, m_CanGoLeft, false, m_CanGoRight, true, m_CanGoUp, true, m_CanGoDown });
+	//std::array<HitBoxObserver, 4>* idk = new std::array<HitBoxObserver, 4>();
+	//
+	//m_pImpl = );
+	//m_pImpl = std::make_unique<std::array<HitBoxObserver, 4>>({ false, m_CanGoLeft }, { false, m_CanGoRight }, { true, m_CanGoUp }, { true, m_CanGoDown });
+
+	auto& subjectL = colliderLcmpt.GetSubject();
+	subjectL.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)));
+	auto& subjectR = colliderRcmpt.GetSubject();
+	subjectR.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)));
+	auto& subjectUp = colliderUPcmpt.GetSubject();
+	subjectUp.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderUp)));
+	auto& subjectDown = colliderDowncmpt.GetSubject();
+	subjectDown.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderDown)));
+}
+
+dae::MovementComponent::~MovementComponent()
+{
+}

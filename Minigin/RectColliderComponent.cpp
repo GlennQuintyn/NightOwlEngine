@@ -9,6 +9,7 @@ dae::RectColliderComponent::RectColliderComponent(GameObject* pParentObject)
 	, m_Subject{}
 	, m_ColliderBox{}
 	, m_ColliderColor{ 255, 255, 255, SDL_ALPHA_OPAQUE / 2 }
+	, m_IdNr{ 0 }
 	, m_DebugRender{ false }
 {
 	ColliderManager::GetInstance().RegisterRectCollider(this);
@@ -40,9 +41,10 @@ void dae::RectColliderComponent::Render() const
 	//SDL_RenderDrawRect(Renderer::GetInstance().GetSDLRenderer(), &m_ColliderBox);
 }
 
-void dae::RectColliderComponent::Init(SDL_Rect colliderBox, bool debugRender, SDL_Color debugColor)
+void dae::RectColliderComponent::Init(SDL_Rect colliderBox, int id, bool debugRender, SDL_Color debugColor)
 {
 	m_ColliderBox = colliderBox;
+	m_IdNr = id;
 	m_DebugRender = debugRender;
 	m_ColliderColor = debugColor;
 }

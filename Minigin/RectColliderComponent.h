@@ -22,11 +22,11 @@ namespace dae
 		virtual void LateUpdate() {};
 		virtual void Render() const;
 
-		void Init(SDL_Rect colliderBox, bool debugRender = false, SDL_Color debugColor = { 255, 255, 255, SDL_ALPHA_OPAQUE / 2 });
+		void Init(SDL_Rect colliderBox, int id, bool debugRender = false, SDL_Color debugColor = { 255, 255, 255, SDL_ALPHA_OPAQUE / 2 });
 
 		void SetDebugMode(bool drawDebug) { m_DebugRender = drawDebug; }
 		void SetDebugColliderColor(SDL_Color debugColor) { m_ColliderColor = debugColor; }
-
+		int GetID() const { return m_IdNr; };
 
 		void Notify(GameObject*, int) override {};
 
@@ -45,6 +45,7 @@ namespace dae
 		std::vector<RectColliderComponent*> m_pOtherOverlappingColliders;
 		SDL_Color m_ColliderColor;
 		GameObject* m_pParentObject;
+		int m_IdNr;
 		bool m_DebugRender;
 	};
 }
