@@ -29,6 +29,9 @@
     <Filter Include="SoundSystem">
       <UniqueIdentifier>{c5592b1b-24a1-4ddb-88c2-8430f2dff898}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Spites">
+      <UniqueIdentifier>{f87fb489-7432-4653-aca8-461974248b0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Texture2DComponent.h">
@@ -72,9 +75,6 @@
     </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.87\backends\imgui_impl_sdl.h">
       <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="TrashTheCacheComponent.h">
-      <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Input</Filter>
@@ -122,9 +122,6 @@
       <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="SteamAchievements.h" />
-    <ClInclude Include="SpriteComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="NightOwlEnginePCH.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -145,6 +142,15 @@
     </ClInclude>
     <ClInclude Include="ColliderManager.h">
       <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TrashTheCacheComponent.h">
+      <Filter>Components\Specific Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>Components\Spites</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteManagerComponent.h">
+      <Filter>Components\Spites</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -186,9 +192,6 @@
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.87\backends\imgui_impl_sdl.cpp">
       <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="TrashTheCacheComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="PCController.cpp">
       <Filter>Input</Filter>
@@ -233,9 +236,6 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="SteamAchievements.cpp" />
-    <ClCompile Include="SpriteComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="NightOwlEnginePCH.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -253,6 +253,15 @@
     </ClCompile>
     <ClCompile Include="ColliderManager.cpp">
       <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="TrashTheCacheComponent.cpp">
+      <Filter>Components\Specific Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>Components\Spites</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteManagerComponent.cpp">
+      <Filter>Components\Spites</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

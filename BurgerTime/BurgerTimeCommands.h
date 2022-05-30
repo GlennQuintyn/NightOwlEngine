@@ -4,6 +4,8 @@
 #include "TimeSingleton.h"
 #include "MovementComponent.h"
 #include "RectColliderComponent.h"
+#include "SpriteManagerComponent.h"
+#include "Enums.h"
 
 namespace dae
 {
@@ -29,6 +31,8 @@ namespace dae
 			}
 			m_Size.x = pCollider->GetRectangle().w;
 			m_Size.y = pCollider->GetRectangle().h;
+
+			m_pSpriteManagerCmpt = m_pObject->GetComponent<SpriteManagerComponent>();
 		};
 	private:
 		void Execute() override
@@ -42,19 +46,15 @@ namespace dae
 
 				//m_pObject->SetLocalPosition(pos.x + (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), pos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
 				m_pObject->SetLocalPosition(pos.x - (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), PlatformPos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
+
+				if (m_pSpriteManagerCmpt)
+					m_pSpriteManagerCmpt->PlaySprite(static_cast<uint32_t>(SpriteIndices::WalkLeft));
 			}
-			//if (auto pPetterPepper = m_pObject->GetComponent<PeterPepper>())
-			//{
-			//	if (pPetterPepper->IsOnLadder())
-			//	{
-			//		Logger::GetInstance().LogInfo("cannot walk LEFT");
-			//		return;
-			//	}
-			//}
 		};
+		glm::ivec2 m_Size{};
 		GameObject* m_pObject{};//example code
-		glm::ivec2 m_Size;
-		MovementComponent* m_pMovementCmpt;
+		MovementComponent* m_pMovementCmpt{};
+		SpriteManagerComponent* m_pSpriteManagerCmpt{};
 	};
 
 	class WalkRightCommand final : public Command
@@ -76,6 +76,8 @@ namespace dae
 			}
 			m_Size.x = pCollider->GetRectangle().w;
 			m_Size.y = pCollider->GetRectangle().h;
+
+			m_pSpriteManagerCmpt = m_pObject->GetComponent<SpriteManagerComponent>();
 		};
 	private:
 		void Execute() override
@@ -86,7 +88,11 @@ namespace dae
 				auto& PlatformPos = pPlatform->GetWorldPosition();
 				auto pPlarformCollider = pPlatform->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };
+
 				m_pObject->SetLocalPosition(pos.x + (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), PlatformPos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
+
+				if (m_pSpriteManagerCmpt)
+					m_pSpriteManagerCmpt->PlaySprite(static_cast<uint32_t>(SpriteIndices::WalkRight));
 			}
 			//if (auto pPetterPepper = m_pObject->GetComponent<PeterPepper>())
 			//{
@@ -97,9 +103,10 @@ namespace dae
 			//	}
 			//}
 		};
+		glm::ivec2 m_Size{};
 		GameObject* m_pObject{};//example code
-		glm::ivec2 m_Size;
-		MovementComponent* m_pMovementCmpt;
+		MovementComponent* m_pMovementCmpt{};
+		SpriteManagerComponent* m_pSpriteManagerCmpt{};
 	};
 
 	class WalkUpCommand final : public Command
@@ -121,6 +128,8 @@ namespace dae
 			}
 			m_Size.x = pCollider->GetRectangle().w;
 			m_Size.y = pCollider->GetRectangle().h;
+
+			m_pSpriteManagerCmpt = m_pObject->GetComponent<SpriteManagerComponent>();
 		};
 	private:
 		void Execute() override
@@ -138,11 +147,15 @@ namespace dae
 				auto& pos{ m_pObject->GetLoacalPosition() };
 
 				m_pObject->SetLocalPosition(ladderPos.x + (pLadderCollider->GetRectangle().w / 2.f) - (m_Size.x / 2.f), pos.y - (g_MovementSpeedVertical * Time::GetInstance().GetDeltaT()));
+
+				if (m_pSpriteManagerCmpt)
+					m_pSpriteManagerCmpt->PlaySprite(static_cast<uint32_t>(SpriteIndices::WalkUp));
 			}
 		};
+		glm::ivec2 m_Size{};
 		GameObject* m_pObject{};//example code
-		glm::ivec2 m_Size;
-		MovementComponent* m_pMovementCmpt;
+		MovementComponent* m_pMovementCmpt{};
+		SpriteManagerComponent* m_pSpriteManagerCmpt{};
 	};
 
 	class WalkDownCommand final : public Command
@@ -164,6 +177,8 @@ namespace dae
 			}
 			m_Size.x = pCollider->GetRectangle().w;
 			m_Size.y = pCollider->GetRectangle().h;
+
+			m_pSpriteManagerCmpt = m_pObject->GetComponent<SpriteManagerComponent>();
 		};
 	private:
 		void Execute() override
@@ -175,10 +190,14 @@ namespace dae
 				auto pLadderCollider = pLadder->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };
 				m_pObject->SetLocalPosition(ladderPos.x + (pLadderCollider->GetRectangle().w / 2.f) - (m_Size.x / 2.f), pos.y + (g_MovementSpeedVertical * Time::GetInstance().GetDeltaT()));
+
+				if (m_pSpriteManagerCmpt)
+					m_pSpriteManagerCmpt->PlaySprite(static_cast<uint32_t>(SpriteIndices::WalkDown));
 			}
 		};
+		glm::ivec2 m_Size{};
 		GameObject* m_pObject{};//example code
-		glm::ivec2 m_Size;
-		MovementComponent* m_pMovementCmpt;
+		MovementComponent* m_pMovementCmpt{};
+		SpriteManagerComponent* m_pSpriteManagerCmpt{};
 	};
 }

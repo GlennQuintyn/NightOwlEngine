@@ -21,7 +21,8 @@ namespace dae
 		void LateUpdate() override {};
 		void Render() const override;
 
-		void SetTexture(const std::string& filename);
+		void SetTexture(const std::string& filename, float width = -1.f, float height = -1.f);
+		const glm::vec2& GetTextureSize() const { return m_Size; };
 
 		Texture2DComponent(const Texture2DComponent& other) = delete;
 		Texture2DComponent(Texture2DComponent&& other) = delete;
@@ -29,6 +30,7 @@ namespace dae
 		Texture2DComponent& operator=(Texture2DComponent&& other) = delete;
 	private:
 		std::shared_ptr<Texture2D> m_pTexture{};
+		glm::vec2 m_Size;
 		GameObject* m_pParentObject;
 	};
 }

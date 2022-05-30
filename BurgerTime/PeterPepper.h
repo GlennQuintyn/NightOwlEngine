@@ -2,11 +2,11 @@
 #include "BaseComponent.h"
 #include "PCController.h"
 #include "Observer.h"
+#include "Subject.h"
 
 namespace dae
 {
 	class GameObject;
-	class Subject;
 
 	class PeterPepper final : public BaseComponent, public Observer
 	{
@@ -24,13 +24,11 @@ namespace dae
 
 		void Notify(GameObject* pObject, int event) override;
 
-		bool IsOnLadder() const { return m_IsOnLadder; };
-
 		void SetDeathButton(PCController::ControllerButton deahtButton);
 		void SetObjectFellButton(PCController::ControllerButton objFellButton);
 		void SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton);
 
-		Subject& GetSubject() const { return *m_pSubject; }
+		Subject& GetSubject() { return m_Subject; }
 
 		PeterPepper(const PeterPepper& other) = delete;
 		PeterPepper(PeterPepper&& other) = delete;
@@ -38,10 +36,8 @@ namespace dae
 		PeterPepper& operator=(PeterPepper&& other) = delete;
 	private:
 		GameObject* m_pParentObject;
-		std::unique_ptr<Subject> m_pSubject;
+		Subject m_Subject;
 		glm::ivec2 m_Size;
-
-		bool m_IsOnLadder;
 
 		PCController::ControllerButton m_DeahtButton;
 		PCController::ControllerButton m_ObjFellButton;

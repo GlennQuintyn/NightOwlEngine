@@ -12,7 +12,7 @@ using namespace dae;
 
 PeterPepper::PeterPepper(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
-	, m_IsOnLadder{ false }
+	, m_Subject{}
 	, m_DeahtButton{ PCController::ControllerButton::Button_Triangle }
 	, m_ObjFellButton{ PCController::ControllerButton::Button_R_SHOULDER }
 	, m_EnemyPepperedButton{ PCController::ControllerButton::Button_R_THUMB }
@@ -22,7 +22,7 @@ PeterPepper::PeterPepper(GameObject* pParentObject)
 	else
 		Logger::GetInstance().LogWarning("FPSComponent:\tPARENT OBJECT WAS NOT GIVEN!");
 
-	m_pSubject = std::make_unique<Subject>();
+	//m_Subject = std::make_unique<Subject>();
 }
 
 void PeterPepper::LateInit()
@@ -40,24 +40,26 @@ void PeterPepper::Update()
 {
 	if (InputManager::GetInstance().IsPressedThisFrame(m_DeahtButton))
 	{
-		m_pSubject->Notify(m_pParentObject, int(Events::PeterPepper_Died));
+		m_Subject.Notify(m_pParentObject, int(Events::PeterPepper_Died));
 
 		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::PeterPepper_Died));
 	}
 	if (InputManager::GetInstance().IsPressedThisFrame(m_ObjFellButton))
 	{
-		m_pSubject->Notify(m_pParentObject, int(Events::Item_Fell));
+		m_Subject.Notify(m_pParentObject, int(Events::Item_Fell));
 		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Item_Fell));
 	}
 	if (InputManager::GetInstance().IsPressedThisFrame(m_EnemyPepperedButton))
 	{
-		m_pSubject->Notify(m_pParentObject, int(Events::Enemy_Peppered));
+		m_Subject.Notify(m_pParentObject, int(Events::Enemy_Peppered));
 		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Enemy_Peppered));
 	}
 }
 
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
+	pObject;
+	event;
 }
 
 void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)

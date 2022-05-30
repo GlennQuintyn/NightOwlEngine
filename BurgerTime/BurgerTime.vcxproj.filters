@@ -22,31 +22,19 @@
     <Filter Include="Core">
       <UniqueIdentifier>{bf246f9b-0067-4b5f-8344-028838b5f7ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Components\Ingredients">
-      <UniqueIdentifier>{76c361b9-e183-499a-85c4-42dec7f01c2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components\Level">
       <UniqueIdentifier>{5c96cc65-99db-40e3-8678-d7f92fc9e289}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\UI">
+      <UniqueIdentifier>{5fe33a8b-8a47-405e-b2a4-e3bd15233df8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PepperCountComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="HiScoreComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="BurgerTimePCH.cpp">
       <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="LivesComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="PeterPepper.cpp">
       <Filter>Components\Charachters</Filter>
@@ -61,16 +49,28 @@
       <Filter>Components\Level</Filter>
     </ClCompile>
     <ClCompile Include="MovementComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="HiScoreComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="LivesComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PepperCountComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Components\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlateComponent.cpp">
+      <Filter>Components\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="IngredientComponent.cpp">
+      <Filter>Components\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HiScoreComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PepperCountComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="BurgerTimePCH.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -83,12 +83,6 @@
     <ClInclude Include="PeterPepper.h">
       <Filter>Components\Charachters</Filter>
     </ClInclude>
-    <ClInclude Include="LivesComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="HotDog.h">
       <Filter>Components\Charachters</Filter>
     </ClInclude>
@@ -99,7 +93,25 @@
       <Filter>Components\Level</Filter>
     </ClInclude>
     <ClInclude Include="MovementComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="HiScoreComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PepperCountComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Components\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PlateComponent.h">
+      <Filter>Components\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="IngredientComponent.h">
+      <Filter>Components\Level</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

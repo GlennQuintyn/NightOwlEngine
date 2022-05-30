@@ -52,7 +52,7 @@ void SpriteComponent::Update()
 
 	if (m_AccumulatedSec >= m_SecsPerFrame)
 	{
-		m_CurrentFrame++;
+		++m_CurrentFrame;
 		m_CurrentFrame %= (m_Cols * m_Rows);
 
 		m_AccumulatedSec -= m_SecsPerFrame;
@@ -64,21 +64,6 @@ void SpriteComponent::Render() const
 
 	float srcX{ m_FrameWidth * (m_CurrentFrame % m_Cols) };
 	float srcY{ m_FrameHeight * (m_CurrentFrame / m_Cols) };
-
-	////Rectf srcRect{};
-	//float dstX{ pos.x };
-	//float dstY{ pos.y };
-	//srcRect.width =
-	//srcRect.height =
-	//srcRect.bottom = srcRect.height * (m_ActFrame / m_Cols);
-	//srcRect.left = srcRect.width * (m_ActFrame % m_Cols);
-	//
-	////Rectf destRect{};
-	//destRect.bottom = pos.y;
-	//destRect.left = pos.x;
-	//destRect.width = srcRect.width * scale;
-	//destRect.height = srcRect.height * scale;
-	//m_pTexture->Draw(destRect, srcRect);
 
 	if (m_pTexture != nullptr)
 	{

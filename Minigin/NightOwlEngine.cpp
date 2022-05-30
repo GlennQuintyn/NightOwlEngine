@@ -252,7 +252,7 @@ void dae::NightOwlEngine::Run()
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
 
-			collider.Update();
+		collider.Update();
 		//used for physics 
 		while (lag >= m_MsPerFrame)
 		{

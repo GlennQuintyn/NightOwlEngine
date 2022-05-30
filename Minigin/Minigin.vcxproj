@@ -252,6 +252,7 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\SDL2_mixer.d
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="SpriteManagerComponent.h" />
     <ClInclude Include="SteamAchievements.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TextComponent.h" />
@@ -330,6 +331,7 @@ xcopy $(SolutionDir)3rdParty\SDL2_mixer-2.0.4\lib\$(PlatformTarget)\SDL2_mixer.d
     <ClCompile Include="ServiceLocator.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="SpriteManagerComponent.cpp" />
     <ClCompile Include="SteamAchievements.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="TextComponent.cpp" />

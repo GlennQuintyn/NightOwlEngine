@@ -209,12 +209,14 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     </ClCompile>
     <ClCompile Include="HiScoreComponent.cpp" />
     <ClCompile Include="HotDog.cpp" />
+    <ClCompile Include="IngredientComponent.cpp" />
     <ClCompile Include="LadderComponent.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="PepperCountComponent.cpp" />
     <ClCompile Include="PeterPepper.cpp" />
+    <ClCompile Include="PlateComponent.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="WalkingPlatformComponent.cpp" />
   </ItemGroup>
@@ -224,11 +226,13 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="Enums.h" />
     <ClInclude Include="HiScoreComponent.h" />
     <ClInclude Include="HotDog.h" />
+    <ClInclude Include="IngredientComponent.h" />
     <ClInclude Include="LadderComponent.h" />
     <ClInclude Include="LivesComponent.h" />
     <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="PepperCountComponent.h" />
     <ClInclude Include="PeterPepper.h" />
+    <ClInclude Include="PlateComponent.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="WalkingPlatformComponent.h" />
   </ItemGroup>

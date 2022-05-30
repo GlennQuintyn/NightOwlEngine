@@ -48,6 +48,8 @@
 #include "ScoreComponent.h"
 #include "Subject.h"
 #include "SpriteComponent.h"
+#include "SpriteManagerComponent.h"
+
 #include "HiScoreComponent.h"
 #include "LivesComponent.h"
 #include "PepperCountComponent.h"
@@ -56,6 +58,9 @@
 #include "LadderComponent.h"
 #include "WalkingPlatformComponent.h"
 #include "MovementComponent.h"
+
+#include "IngredientComponent.h"
+#include "PlateComponent.h"
 #pragma endregion
 
 #include "BurgerTimeCommands.h"
@@ -104,16 +109,31 @@ int main(int, char* [])
 	//peter pepper test object
 	auto& peterPepperObj = scene.CreateObject("peterPepperObj");
 	auto& petercmpt = peterPepperObj.AddComponent<PeterPepper>();
-	auto& peterSprite = peterPepperObj.AddComponent<SpriteComponent>();
-
-	//peterSprite.SetTexture("Peter_Walking_Down.png");
-	peterSprite.SetTexture("peter/Peter_Walking_Down.png");
-	peterSprite.Setup(4, 1, 16 * 0, 45, 45);
+	auto& peterSpriteManager = peterPepperObj.AddComponent<SpriteManagerComponent>();
+	peterSpriteManager.AddSprite("peter/Peter_Idle.png", 1, 1, 0, 45, 45);
+	peterSpriteManager.AddSprite("peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
 
 	auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
 	pepperCollider.Init({ 0,0,45,45 }, -1, true);
-
 	peterPepperObj.AddComponent<MovementComponent>();
+	peterPepperObj.SetLocalPosition(298, 563);
+
+
+	//auto& mrHotDogObj = scene.CreateObject("mrHotDogObj");
+	//auto& petercmpt = mrHotDogObj.AddComponent<hot>();
+	//auto& peterSpriteManager = mrHotDogObj.AddComponent<SpriteManagerComponent>();
+	//peterSpriteManager.AddSprite("peter/Peter_Idle.png", 1, 1, 0, 45, 45);
+	//peterSpriteManager.AddSprite("peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
+	//peterSpriteManager.AddSprite("peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
+	//peterSpriteManager.AddSprite("peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
+	//peterSpriteManager.AddSprite("peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
+	//
+	//auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
+	//pepperCollider.Init({ 0,0,45,45 }, -1, true);
+	//peterPepperObj.AddComponent<MovementComponent>();
 
 	//seting up the collider logic tree
 	//auto& peterColliderlogicObj = peterPepperObj.CreateAddChild("peterColliderLogic");
@@ -130,8 +150,7 @@ int main(int, char* [])
 	//auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
 	//colliderDowncmpt.Init({ 22,50,3,3 }, 3, true, { 0, 255, 255, 128 });
 
-	peterPepperObj.SetLocalPosition(298, 563);
-#pragma region InputCommands
+#pragma region InputCommandsPeter
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
@@ -219,24 +238,24 @@ int main(int, char* [])
 	walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
 	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 50, true, { 0, 255, 0, 128 });
-	
+
 	auto& walkPlatformObj2 = scene.CreateObject("walkPlatformObj2");
 	walkPlatformObj2.SetLocalPosition(30.f, 292.f);
 	walkPlatformObj2.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform2colliderCmpt = walkPlatformObj2.AddComponent<RectColliderComponent>();
-	walkPlatform2colliderCmpt.Init({ 0, 0, 178, 4}, 51, true, { 0, 255, 0, 128 });
+	walkPlatform2colliderCmpt.Init({ 0, 0, 178, 4 }, 51, true, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj3 = scene.CreateObject("walkPlatformObj3");
 	walkPlatformObj3.SetLocalPosition(295.f, 292.f);
 	walkPlatformObj3.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform3colliderCmpt = walkPlatformObj3.AddComponent<RectColliderComponent>();
-	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4}, 52, true, { 0, 255, 0, 128 });
+	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4 }, 52, true, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj4 = scene.CreateObject("walkPlatformObj4");
 	walkPlatformObj4.SetLocalPosition(165.f, 337.f);
 	walkPlatformObj4.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform4colliderCmpt = walkPlatformObj4.AddComponent<RectColliderComponent>();
-	walkPlatform4colliderCmpt.Init({ 0, 0, 180, 4}, 53, true, { 0, 255, 0, 128 });
+	walkPlatform4colliderCmpt.Init({ 0, 0, 180, 4 }, 53, true, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj5 = scene.CreateObject("walkPlatformObj5");
 	walkPlatformObj5.SetLocalPosition(30.f, 382.f);
@@ -254,13 +273,13 @@ int main(int, char* [])
 	walkPlatformObj7.SetLocalPosition(165.f, 425.f);
 	walkPlatformObj7.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform7colliderCmpt = walkPlatformObj7.AddComponent<RectColliderComponent>();
-	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4}, 56, true, { 0, 255, 0, 128 });
+	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4 }, 56, true, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj8 = scene.CreateObject("walkPlatformObj8");
 	walkPlatformObj8.SetLocalPosition(430.f, 470.f);
 	walkPlatformObj8.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform8colliderCmpt = walkPlatformObj8.AddComponent<RectColliderComponent>();
-	walkPlatform8colliderCmpt.Init({ 0, 0, 178, 4}, 57, true, { 0, 255, 0, 128 });
+	walkPlatform8colliderCmpt.Init({ 0, 0, 178, 4 }, 57, true, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj9 = scene.CreateObject("walkPlatformObj9");
 	walkPlatformObj9.SetLocalPosition(30.f, 515.f);
@@ -274,7 +293,7 @@ int main(int, char* [])
 	auto& walkPlatform10colliderCmpt = walkPlatformObj10.AddComponent<RectColliderComponent>();
 	walkPlatform10colliderCmpt.Init({ 0, 0, 580, 4 }, 59, true, { 0, 255, 0, 128 });
 #pragma endregion
-	
+
 
 	auto& subje1 = pepperCollider.GetSubject();
 	subje1.AddObserver(petercmpt);
@@ -287,7 +306,6 @@ int main(int, char* [])
 	//subjectUp.AddObserver(petercmpt);
 	//auto& subjectDown = colliderDowncmpt.GetSubject();
 	//subjectDown.AddObserver(petercmpt);
-
 	//auto& subje1 = petercmpt.GetSubject();
 	////subje1.AddObserver(pepperCollider);
 	//subje1.AddObserver(ladder1colliderCmpt);
@@ -297,7 +315,56 @@ int main(int, char* [])
 	//subje2.AddObserver(petercmpt);
 	//subje2.AddObserver(pepperCollider);
 
+#pragma region IngredientsSetup
+	auto& bunBottomObj1 = scene.CreateObject("bunBottomObj1");
+	auto& bunBottomcmpt = bunBottomObj1.AddComponent<IngredientComponent>();
+	bunBottomObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
+	auto& bunBottomcollider1 = bunBottomObj1.AddComponent<RectColliderComponent>();
+	bunBottomcollider1.Init({ 0, 0, 88, 20 }, 100, true, { 133, 0, 133, 255 });
+	bunBottomObj1.SetLocalPosition(75.f, 595.f);
 
+	auto& burgerMeatObj1 = scene.CreateObject("burgerMeatObj1");
+	auto& burgerBottomcmpt = burgerMeatObj1.AddComponent<IngredientComponent>();
+	burgerMeatObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
+	auto& burgerMeatcollider1 = burgerMeatObj1.AddComponent<RectColliderComponent>();
+	burgerMeatcollider1.Init({ 0, 0, 88, 20 }, 100, true, { 133, 0, 133, 255 });
+	burgerMeatObj1.SetLocalPosition(75.f, 505.f);
+
+	auto& lettuceObj1 = scene.CreateObject("lettuceObj1");
+	auto& lettucecmpt = lettuceObj1.AddComponent<IngredientComponent>();
+	lettuceObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
+	auto& lettucecollider1 = lettuceObj1.AddComponent<RectColliderComponent>();
+	lettucecollider1.Init({ 0, 0, 88, 20 }, 100, true, { 133, 0, 133, 255 });
+	lettuceObj1.SetLocalPosition(75.f, 375.f);
+
+	auto& bunTopObj1 = scene.CreateObject("bunTopObj1");
+	auto& bunTopcmpt = bunTopObj1.AddComponent<IngredientComponent>();
+	bunTopObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
+	auto& bunTopcollider1 = bunTopObj1.AddComponent<RectColliderComponent>();
+	bunTopcollider1.Init({ 0, 0, 88, 20 }, 100, true, { 133, 0, 133, 255 });
+	bunTopObj1.SetLocalPosition(75.f, 285.f);
+#pragma endregion
+
+#pragma region PlateSetup
+	auto& plateObj1 = scene.CreateObject("plateObj1");
+	auto& plateCmpt1 = plateObj1.AddComponent<PlateComponent>();
+	plateObj1.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
+	auto& plateCollider1 = plateObj1.AddComponent<RectColliderComponent>();
+	plateCollider1.Init({ 0, 8, 104, 4 }, 100, true, { 0, 133, 133, 255 });
+	plateObj1.SetLocalPosition(67.f, 800.f);
+	//plateObj1.SetLocalPosition(67.f, 690.f);
+#pragma endregion
+
+	auto& yeso = plateCollider1.GetSubject();
+	yeso.AddObserver(plateCmpt1);
+	auto& yeso1 = bunBottomcollider1.GetSubject();
+	yeso1.AddObserver(bunBottomcmpt);
+	auto& yeso2 = burgerMeatcollider1.GetSubject();
+	yeso2.AddObserver(burgerBottomcmpt);
+	auto& yeso3 = lettucecollider1.GetSubject();
+	yeso3.AddObserver(lettucecmpt);
+	auto& yeso4 = bunTopcollider1.GetSubject();
+	yeso4.AddObserver(bunTopcmpt);
 
 #pragma region UI/SCORE
 	int uiFontSize{ 20 };
@@ -373,9 +440,6 @@ int main(int, char* [])
 	//SDL_RenderDrawLine(rendereerere, 50, 50, 150, 150);
 	//
 	//SDL_RenderPresent(rendereerere);
-
-
-
 
 
 

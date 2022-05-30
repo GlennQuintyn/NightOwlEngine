@@ -1,14 +1,13 @@
 #pragma once
 #include "BaseComponent.h"
 #include "Subject.h"
-#include "Observer.h"
+//#include "Observer.h"
 
 namespace dae
 {
 	class GameObject;
-	//class Subject;
 
-	class RectColliderComponent final : public BaseComponent, public Observer
+	class RectColliderComponent final : public BaseComponent//, public Observer
 	{
 	public:
 		RectColliderComponent(GameObject* pParentObject);
@@ -26,13 +25,14 @@ namespace dae
 
 		void SetDebugMode(bool drawDebug) { m_DebugRender = drawDebug; }
 		void SetDebugColliderColor(SDL_Color debugColor) { m_ColliderColor = debugColor; }
-		int GetID() const { return m_IdNr; };
 
-		void Notify(GameObject*, int) override {};
+		//int GetID() const { return m_IdNr; };
+		//void Notify(GameObject*, int) override {};
 
 		Subject& GetSubject() { return m_Subject; }
 		void UpdateOverlapping(RectColliderComponent* pOtherCollider);
 		const SDL_Rect& GetRectangle() const { return m_ColliderBox; }
+		void SetRectangle(SDL_Rect collider) { m_ColliderBox = collider; }
 
 		RectColliderComponent(const RectColliderComponent& other) = delete;
 		RectColliderComponent(RectColliderComponent&& other) = delete;
