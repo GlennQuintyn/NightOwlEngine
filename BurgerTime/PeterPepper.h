@@ -30,6 +30,9 @@ namespace dae
 
 		Subject& GetSubject() { return m_Subject; }
 
+		void SetSpawnLocation(float x, float y);
+		bool IsAlive() const { return m_IsAlive; };
+
 		PeterPepper(const PeterPepper& other) = delete;
 		PeterPepper(PeterPepper&& other) = delete;
 		PeterPepper& operator=(const PeterPepper& other) = delete;
@@ -38,10 +41,14 @@ namespace dae
 		GameObject* m_pParentObject;
 		Subject m_Subject;
 		glm::ivec2 m_Size;
+		glm::vec2 m_SpawnLoc;
+		bool m_IsAlive;
+
 
 		PCController::ControllerButton m_DeahtButton;
 		PCController::ControllerButton m_ObjFellButton;
 		PCController::ControllerButton m_EnemyPepperedButton;
+
 	};
 }
 

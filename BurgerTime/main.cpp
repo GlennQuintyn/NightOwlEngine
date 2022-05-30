@@ -7,29 +7,6 @@
 #endif
 #endif
 
-//#include <iostream> // std::cout
-//#include <sstream> // stringstream
-//#include <memory> // smart pointers
-//#include <vector>
-//#include <string>
-//
-////self made stuff to have handy
-//#include "time.h"
-//#include "logger.h"
-//
-////#define win32_lean_and_mean
-////#include <windows.h>
-//
-////disabling all warnings that come from this math library
-//#pragma warning(push)
-//#pragma warning( disable : 26495 )
-//#pragma warning( disable : 26812 )
-//#pragma warning( disable : 26819 )
-//#pragma warning( disable : 4201 )
-//#include <glm/glm.hpp>
-//#include <SDL.h>
-//#pragma warning (pop)
-
 #include "NightOwlEngine.h"
 
 #pragma region Components importing
@@ -37,34 +14,39 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
-#include "GameObject.h"
+
 #include "Scene.h"
+#include "GameObject.h"
+
 #include "Texture2DComponent.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
-#include "TrashTheCacheComponent.h"
-#include "LivesComponent.h"
-#include "PeterPepper.h"
-#include "ScoreComponent.h"
+
 #include "Subject.h"
 #include "SpriteComponent.h"
+#include "RectColliderComponent.h"
 #include "SpriteManagerComponent.h"
 
+#include "MovementComponent.h"
+#include "PeterPepper.h"
+#include "MrHotDog.h"
+#include "MrEgg.h"
+#include "MrPickle.h"
+
+#include "PepperCountComponent.h"
 #include "HiScoreComponent.h"
 #include "LivesComponent.h"
-#include "PepperCountComponent.h"
+#include "LivesComponent.h"
+#include "ScoreComponent.h"
 
-#include "RectColliderComponent.h"
 #include "LadderComponent.h"
 #include "WalkingPlatformComponent.h"
-#include "MovementComponent.h"
 
 #include "IngredientComponent.h"
 #include "PlateComponent.h"
 #pragma endregion
 
 #include "BurgerTimeCommands.h"
-
 #include "ServiceLocator.h"
 #include "SDLSoundSystem.h"
 
@@ -110,30 +92,45 @@ int main(int, char* [])
 	auto& peterPepperObj = scene.CreateObject("peterPepperObj");
 	auto& petercmpt = peterPepperObj.AddComponent<PeterPepper>();
 	auto& peterSpriteManager = peterPepperObj.AddComponent<SpriteManagerComponent>();
-	peterSpriteManager.AddSprite("peter/Peter_Idle.png", 1, 1, 0, 45, 45);
-	peterSpriteManager.AddSprite("peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
-	peterSpriteManager.AddSprite("peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
-	peterSpriteManager.AddSprite("peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
-	peterSpriteManager.AddSprite("peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Idle.png", 1, 1, 0, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Death.png", 6, 1, 2, 45, 45);
 
 	auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
 	pepperCollider.Init({ 0,0,45,45 }, -1, true);
 	peterPepperObj.AddComponent<MovementComponent>();
-	peterPepperObj.SetLocalPosition(298, 563);
+	petercmpt.SetSpawnLocation(298.f, 563.f);
+	peterPepperObj.SetLocalPosition(298.f, 563.f);
 
+	auto& pettercollidersubje = pepperCollider.GetSubject();
+	pettercollidersubje.AddObserver(petercmpt);
 
-	//auto& mrHotDogObj = scene.CreateObject("mrHotDogObj");
-	//auto& petercmpt = mrHotDogObj.AddComponent<hot>();
-	//auto& peterSpriteManager = mrHotDogObj.AddComponent<SpriteManagerComponent>();
-	//peterSpriteManager.AddSprite("peter/Peter_Idle.png", 1, 1, 0, 45, 45);
-	//peterSpriteManager.AddSprite("peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
-	//peterSpriteManager.AddSprite("peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
-	//peterSpriteManager.AddSprite("peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
-	//peterSpriteManager.AddSprite("peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
-	//
-	//auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	//pepperCollider.Init({ 0,0,45,45 }, -1, true);
-	//peterPepperObj.AddComponent<MovementComponent>();
+	auto& mrHotDogObj = scene.CreateObject("mrHotDogObj");
+	auto& mrHotDogcmpt = mrHotDogObj.AddComponent<MrHotDog>();
+	mrHotDogcmpt;
+	auto& mrHotDogSpriteManager = mrHotDogObj.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 16, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 16, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 16, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 4, 1, 16, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+
+	auto& mrHotDogCollider = mrHotDogObj.AddComponent<RectColliderComponent>();
+	mrHotDogCollider.Init({ 0,0,45,45 }, -2, true);
+	mrHotDogObj.AddComponent<MovementComponent>();
+	//mrHotDogObj.SetLocalPosition(29, 162);
+	mrHotDogObj.SetLocalPosition(97, 320);
+
+	auto& mrHotDogcollidersubje = mrHotDogCollider.GetSubject();
+	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt);
+
+	
+		
+
 
 	//seting up the collider logic tree
 	//auto& peterColliderlogicObj = peterPepperObj.CreateAddChild("peterColliderLogic");
@@ -295,8 +292,7 @@ int main(int, char* [])
 #pragma endregion
 
 
-	auto& subje1 = pepperCollider.GetSubject();
-	subje1.AddObserver(petercmpt);
+
 
 	//auto& subjectL = colliderLcmpt.GetSubject();
 	//subjectL.AddObserver(petercmpt);
@@ -306,10 +302,10 @@ int main(int, char* [])
 	//subjectUp.AddObserver(petercmpt);
 	//auto& subjectDown = colliderDowncmpt.GetSubject();
 	//subjectDown.AddObserver(petercmpt);
-	//auto& subje1 = petercmpt.GetSubject();
-	////subje1.AddObserver(pepperCollider);
-	//subje1.AddObserver(ladder1colliderCmpt);
-	//subje1.AddObserver(pepperCollider);
+	//auto& pettercollidersubje = petercmpt.GetSubject();
+	////pettercollidersubje.AddObserver(pepperCollider);
+	//pettercollidersubje.AddObserver(ladder1colliderCmpt);
+	//pettercollidersubje.AddObserver(pepperCollider);
 	//subje3.AddObserver(ladder1colliderCmpt);
 	//auto& subje2 = ladder1colliderCmpt.GetSubject();
 	//subje2.AddObserver(petercmpt);
@@ -468,9 +464,9 @@ int main(int, char* [])
 
 		auto& peterPepperObj1 = scene.CreateObject("peterPepperObj1");
 		auto& peterPepperComp1 = peterPepperObj1.AddComponent<PeterPepper>();
-		auto& subje1 = peterPepperComp1.GetSubject();
-		subje1.AddObserver(livescomp1);
-		subje1.AddObserver(scorecomp1);
+		auto& pettercollidersubje = peterPepperComp1.GetSubject();
+		pettercollidersubje.AddObserver(livescomp1);
+		pettercollidersubje.AddObserver(scorecomp1);
 
 
 

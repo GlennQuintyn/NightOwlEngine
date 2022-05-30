@@ -26,6 +26,8 @@ namespace dae
 		GameObject* GetTouchingLadderUp();
 		GameObject* GetTouchingLadderDown();
 
+		void SetEnabled(bool enabled) { m_Enabled = enabled; };
+
 		void LateInit() override {};
 		void Update() override {};
 		void LateUpdate() override {};
@@ -36,6 +38,8 @@ namespace dae
 
 		class HitBoxObserver;
 		std::unique_ptr<std::array<HitBoxObserver, 4>> m_pImpl;
+
+		bool m_Enabled;
 
 		bool m_CanGoLeft;
 		bool m_CanGoRight;

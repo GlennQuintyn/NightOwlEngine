@@ -21,6 +21,7 @@ namespace dae
 			, m_FrameHeight{ 0.f }
 			, m_Width{ width }
 			, m_Height{ height }
+			, m_Loop{ false }
 		{
 			if (filename.empty())
 			{
@@ -38,6 +39,13 @@ namespace dae
 		void Update()
 		{
 			m_AccumulatedSec += Time::GetInstance().GetDeltaT();
+
+			//if it should not loop, then
+			//	- once it reached the final frame AND
+			//	- one frame time has passed
+			//it should stop updating the frames
+			if (!m_Loop && m_CurrentFrame == ((m_Cols * m_Rows) - 1) && m_AccumulatedSec >= m_SecsPerFrame)
+				return;
 
 			if (m_AccumulatedSec >= m_SecsPerFrame)
 			{
@@ -65,6 +73,8 @@ namespace dae
 			m_CurrentFrame = 0;
 		}
 
+		void SetLoopState(bool loop) { m_Loop = loop; };
+
 		~Sprite() = default;
 
 	private:
@@ -80,6 +90,8 @@ namespace dae
 		float m_Width;
 		float m_Height;
 
+		bool m_Loop;
+
 		GameObject* m_pParentObject;
 		std::shared_ptr<Texture2D> m_pTexture{};
 	};
@@ -89,6 +101,7 @@ dae::SpriteManagerComponent::SpriteManagerComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_CurrentSprite{ 0 }
 	, m_IsMoving{ false }
+	, m_Loop{ false }
 {
 	m_pSpriteArray = std::make_unique<std::vector<Sprite>>();
 }
@@ -105,6 +118,14 @@ void dae::SpriteManagerComponent::LateInit()
 
 void dae::SpriteManagerComponent::Update()
 {
+	//if the sprite is not looping then just update it and let the sprite play out
+	//if the PlaySprite gets called again for a new sprite then the current not looping sprite will get interrupted
+	if (!m_Loop)
+	{
+		m_pSpriteArray->at(m_CurrentSprite).Update();
+		return;
+	}
+
 	//if in the current frame there was no movement then it should play the idle frame
 	if (!m_IsMoving)
 	{
@@ -125,7 +146,8 @@ void dae::SpriteManagerComponent::Render() const
 
 void dae::SpriteManagerComponent::PlaySprite(uint32_t index, bool loop)
 {
-	m_IsMoving = true;
+	m_IsMoving = true && loop;//not looping sprites shouldn't move 
+	m_Loop = loop;
 
 	//if its the same sprite don't do anything
 	if (index == m_CurrentSprite)
@@ -135,6 +157,7 @@ void dae::SpriteManagerComponent::PlaySprite(uint32_t index, bool loop)
 	{
 		m_CurrentSprite = index;
 		m_pSpriteArray->at(m_CurrentSprite).Reset();
+		m_pSpriteArray->at(m_CurrentSprite).SetLoopState(loop);
 	}
 	else
 		Logger::GetInstance().LogWarning("SPRITEMANAGER: index was out of bounds");

@@ -15,6 +15,8 @@ namespace dae
 		WalkLeft = 1,
 		WalkRight = 2,
 		WalkUp = 3,
-		WalkDown = 4
+		WalkDown = 4,
+		Death = 5,
+		Peppered = 6
 	};
 }

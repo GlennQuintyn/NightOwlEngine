@@ -40,11 +40,13 @@ namespace dae
 			if (m_pMovementCmpt->CanGoLeft())
 			{
 				auto pPlatform = m_pMovementCmpt->GetTouchingPlatformLeft();
+				if (!pPlatform)
+					return;
+
 				auto& PlatformPos = pPlatform->GetWorldPosition();
 				auto pPlarformCollider = pPlatform->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };
 
-				//m_pObject->SetLocalPosition(pos.x + (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), pos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
 				m_pObject->SetLocalPosition(pos.x - (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), PlatformPos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
 
 				if (m_pSpriteManagerCmpt)
@@ -85,6 +87,9 @@ namespace dae
 			if (m_pMovementCmpt->CanGoRight())
 			{
 				auto pPlatform = m_pMovementCmpt->GetTouchingPlatformRight();
+				if (!pPlatform)
+					return;
+
 				auto& PlatformPos = pPlatform->GetWorldPosition();
 				auto pPlarformCollider = pPlatform->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };
@@ -94,14 +99,6 @@ namespace dae
 				if (m_pSpriteManagerCmpt)
 					m_pSpriteManagerCmpt->PlaySprite(static_cast<uint32_t>(SpriteIndices::WalkRight));
 			}
-			//if (auto pPetterPepper = m_pObject->GetComponent<PeterPepper>())
-			//{
-			//	if (pPetterPepper->IsOnLadder())
-			//	{
-			//		Logger::GetInstance().LogInfo("cannot walk RIGHT");
-			//		return;
-			//	}
-			//}
 		};
 		glm::ivec2 m_Size{};
 		GameObject* m_pObject{};//example code
@@ -136,12 +133,10 @@ namespace dae
 		{
 			if (m_pMovementCmpt->CanGoUp())
 			{
-				//auto& PlatformPos = pObject->GetWorldPosition();
-				//auto& peterPos = m_pParentObject->GetWorldPosition();
-				//m_pParentObject->SetLocalPosition(PlatformPos.x - (m_Size.x / 2.f), peterPos.y);
-				//m_pObject->SetLocalPosition(pos.x, pos.y - (g_MovementSpeedVertical * Time::GetInstance().GetDeltaT()));
-
 				auto pLadder = m_pMovementCmpt->GetTouchingLadderUp();
+				if (!pLadder)
+					return;
+
 				auto& ladderPos = pLadder->GetWorldPosition();
 				auto pLadderCollider = pLadder->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };
@@ -186,6 +181,9 @@ namespace dae
 			if (m_pMovementCmpt->CanGoDown())
 			{
 				auto pLadder = m_pMovementCmpt->GetTouchingLadderDown();
+				if (!pLadder)
+					return;
+
 				auto& ladderPos = pLadder->GetWorldPosition();
 				auto pLadderCollider = pLadder->GetComponent<RectColliderComponent>();
 				auto& pos{ m_pObject->GetLoacalPosition() };

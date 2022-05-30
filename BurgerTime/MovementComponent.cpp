@@ -84,6 +84,11 @@ namespace dae
 
 dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
+	, m_CanGoLeft{ false }
+	, m_CanGoRight{ false }
+	, m_CanGoUp{ false }
+	, m_CanGoDown{ false }
+	, m_Enabled{ true }
 {
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
@@ -125,20 +130,32 @@ dae::MovementComponent::~MovementComponent()
 
 dae::GameObject* dae::MovementComponent::GetTouchingPlatformLeft()
 {
-	return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)).GetLastTouchedColliderObj();
+	if (m_Enabled)
+		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)).GetLastTouchedColliderObj();
+	else
+		return nullptr;
 }
 
 dae::GameObject* dae::MovementComponent::GetTouchingPlatformRight()
 {
-	return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)).GetLastTouchedColliderObj();
+	if (m_Enabled)
+		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)).GetLastTouchedColliderObj();
+	else
+		return nullptr;
 }
 
 dae::GameObject* dae::MovementComponent::GetTouchingLadderUp()
 {
-	return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderUp)).GetLastTouchedColliderObj();
+	if (m_Enabled)
+		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderUp)).GetLastTouchedColliderObj();
+	else
+		return nullptr;
 }
 
 dae::GameObject* dae::MovementComponent::GetTouchingLadderDown()
 {
-	return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderDown)).GetLastTouchedColliderObj();
+	if (m_Enabled)
+		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderDown)).GetLastTouchedColliderObj();
+	else
+		return nullptr;
 }

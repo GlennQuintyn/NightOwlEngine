@@ -37,5 +37,6 @@ namespace dae
 		class Sprite;
 		std::unique_ptr<std::vector<Sprite>> m_pSpriteArray;
 		bool m_IsMoving;
+		bool m_Loop;
 	};
 }

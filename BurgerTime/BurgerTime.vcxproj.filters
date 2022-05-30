@@ -39,7 +39,7 @@
     <ClCompile Include="PeterPepper.cpp">
       <Filter>Components\Charachters</Filter>
     </ClCompile>
-    <ClCompile Include="HotDog.cpp">
+    <ClCompile Include="MrHotDog.cpp">
       <Filter>Components\Charachters</Filter>
     </ClCompile>
     <ClCompile Include="LadderComponent.cpp">
@@ -69,6 +69,12 @@
     <ClCompile Include="IngredientComponent.cpp">
       <Filter>Components\Level</Filter>
     </ClCompile>
+    <ClCompile Include="MrEgg.cpp">
+      <Filter>Components\Charachters</Filter>
+    </ClCompile>
+    <ClCompile Include="MrPickle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerTimePCH.h">
@@ -83,7 +89,7 @@
     <ClInclude Include="PeterPepper.h">
       <Filter>Components\Charachters</Filter>
     </ClInclude>
-    <ClInclude Include="HotDog.h">
+    <ClInclude Include="MrHotDog.h">
       <Filter>Components\Charachters</Filter>
     </ClInclude>
     <ClInclude Include="LadderComponent.h">
@@ -112,6 +118,12 @@
     </ClInclude>
     <ClInclude Include="IngredientComponent.h">
       <Filter>Components\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="MrEgg.h">
+      <Filter>Components\Charachters</Filter>
+    </ClInclude>
+    <ClInclude Include="MrPickle.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
