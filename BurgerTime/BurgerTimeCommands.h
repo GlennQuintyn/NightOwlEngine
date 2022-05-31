@@ -45,7 +45,7 @@ namespace dae
 
 				auto& PlatformPos = pPlatform->GetWorldPosition();
 				auto pPlarformCollider = pPlatform->GetComponent<RectColliderComponent>();
-				auto& pos{ m_pObject->GetLoacalPosition() };
+				auto& pos{ m_pObject->GetWorldPosition() };
 
 				m_pObject->SetLocalPosition(pos.x - (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), PlatformPos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
 
@@ -92,7 +92,7 @@ namespace dae
 
 				auto& PlatformPos = pPlatform->GetWorldPosition();
 				auto pPlarformCollider = pPlatform->GetComponent<RectColliderComponent>();
-				auto& pos{ m_pObject->GetLoacalPosition() };
+				auto& pos{ m_pObject->GetWorldPosition() };
 
 				m_pObject->SetLocalPosition(pos.x + (g_MovementSpeedHorizontal * Time::GetInstance().GetDeltaT()), PlatformPos.y + (pPlarformCollider->GetRectangle().h) - m_Size.y);
 
@@ -139,7 +139,7 @@ namespace dae
 
 				auto& ladderPos = pLadder->GetWorldPosition();
 				auto pLadderCollider = pLadder->GetComponent<RectColliderComponent>();
-				auto& pos{ m_pObject->GetLoacalPosition() };
+				auto& pos{ m_pObject->GetWorldPosition() };
 
 				m_pObject->SetLocalPosition(ladderPos.x + (pLadderCollider->GetRectangle().w / 2.f) - (m_Size.x / 2.f), pos.y - (g_MovementSpeedVertical * Time::GetInstance().GetDeltaT()));
 
@@ -186,7 +186,7 @@ namespace dae
 
 				auto& ladderPos = pLadder->GetWorldPosition();
 				auto pLadderCollider = pLadder->GetComponent<RectColliderComponent>();
-				auto& pos{ m_pObject->GetLoacalPosition() };
+				auto& pos{ m_pObject->GetWorldPosition() };
 				m_pObject->SetLocalPosition(ladderPos.x + (pLadderCollider->GetRectangle().w / 2.f) - (m_Size.x / 2.f), pos.y + (g_MovementSpeedVertical * Time::GetInstance().GetDeltaT()));
 
 				if (m_pSpriteManagerCmpt)

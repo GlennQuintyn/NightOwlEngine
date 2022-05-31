@@ -33,7 +33,7 @@ namespace dae
 		void SetLocalZDept(float z);
 
 		const Transform& GetLoacalTransform() const { return m_LocalTransform; };
-		const glm::vec2& GetLoacalPosition() const { return m_LocalTransform.position; };
+		const glm::vec2& GetLocalPosition() const { return m_LocalTransform.position; };
 		const float GetLoacalRotation() const { return m_LocalTransform.rotation; };
 		const glm::vec2& GetLoacalScale() const { return m_LocalTransform.scale; };
 		const float GetLoacalZDept() const { return m_LocalTransform.zDept; };

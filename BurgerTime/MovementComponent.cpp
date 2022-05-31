@@ -32,16 +32,18 @@ namespace dae
 			{
 				if (auto pLaddercmp = pObject->GetComponent<LadderComponent>())
 				{
-					m_pLastTouchedColliderObj = pObject;
+					//m_pLastTouchedColliderObj = pObject;
 
 					// if the event is a 0 that means the collider entered a ladder and if its 0 it exited one
 					switch (event)
 					{
 					case 0:
 						m_CanGoDirection = true;
+						m_pLastTouchedColliderObj = pObject;
 						break;
 					case 1:
 						m_CanGoDirection = false;
+						m_pLastTouchedColliderObj = nullptr;
 						break;
 					default:
 						Logger::GetInstance().LogError("MOVEMENTCOMPONENT: invalid switch state reached!");
@@ -53,16 +55,18 @@ namespace dae
 			{
 				if (auto pPlatformcmp = pObject->GetComponent<WalkingPlatformComponent>())
 				{
-					m_pLastTouchedColliderObj = pObject;
+					//m_pLastTouchedColliderObj = pObject;
 
 					// if the event is a 0 that means the collider entered a platform and if its 0 it exited one
 					switch (event)
 					{
 					case 0:
 						m_CanGoDirection = true;
+						m_pLastTouchedColliderObj = pObject;
 						break;
 					case 1:
 						m_CanGoDirection = false;
+						m_pLastTouchedColliderObj = nullptr;
 						break;
 					default:
 						Logger::GetInstance().LogError("MOVEMENTCOMPONENT: invalid switch state reached!");
@@ -72,7 +76,10 @@ namespace dae
 			}
 		}
 
-		GameObject* GetLastTouchedColliderObj() { return m_pLastTouchedColliderObj; };
+		GameObject* GetLastTouchedColliderObj()
+		{
+			return m_pLastTouchedColliderObj;
+		};
 
 	private:
 		const bool m_IsLadderObserver;
@@ -100,10 +107,10 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	colliderRcmpt.Init({ 47,42,3,3 }, 1, true, { 0, 255, 0, 128 });
 	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
 	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
-	colliderUPcmpt.Init({ 21,-3,3,3 }, 2, true, { 0, 0, 255, 128 });
+	colliderUPcmpt.Init({ 20,-3,4,3 }, 2, true, { 0, 0, 255, 128 });
 	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
 	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
-	colliderDowncmpt.Init({ 21,48,3,3 }, 3, true, { 0, 255, 255, 128 });
+	colliderDowncmpt.Init({ 20,48,4,3 }, 3, true, { 0, 255, 255, 128 });
 
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(
 		new std::array<HitBoxObserver, 4>{

@@ -4,6 +4,8 @@
 
 namespace dae
 {
+	//TODO: create only 1 active scene and a goto next scene or certain scene index
+
 	class SceneManager final : public Singleton<SceneManager>
 	{
 	public:

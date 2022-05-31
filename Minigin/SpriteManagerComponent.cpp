@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 
+//TODO: maybe change this to a FSM system instead of this ... stuff
+
 namespace dae
 {
 	class SpriteManagerComponent::Sprite final

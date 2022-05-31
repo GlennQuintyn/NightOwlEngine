@@ -207,6 +207,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="EnemyControllerComponent.cpp" />
     <ClCompile Include="HiScoreComponent.cpp" />
     <ClCompile Include="MrEgg.cpp" />
     <ClCompile Include="MrHotDog.cpp" />
@@ -225,6 +226,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
   <ItemGroup>
     <ClInclude Include="BurgerTimeCommands.h" />
     <ClInclude Include="BurgerTimePCH.h" />
+    <ClInclude Include="EnemyControllerComponent.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="HiScoreComponent.h" />
     <ClInclude Include="MrEgg.h" />
