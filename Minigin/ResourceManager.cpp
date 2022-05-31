@@ -38,7 +38,7 @@ void ResourceManager::Init(const std::string_view dataPath)
 
 std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file)
 {
-	//TODO: check member container if texture was already loaded before if not make new one if it does give copy of sharedptr
+	//TO: check member container if texture was already loaded before if not make new one if it does give copy of sharedptr
 
 	//checks if the texture already exits in the map if so return the shared ptr to it,
 	//if not, create new texture and store its path as key and shared ptr as value
@@ -64,9 +64,7 @@ std::shared_ptr<Texture2D> ResourceManager::LoadTexture(const std::string& file)
 
 std::shared_ptr<Font> ResourceManager::LoadFont(const std::string& file, unsigned int size)
 {
-	//TODO: check member container if font was already loaded before if not make new one if it does give copy of sharedptr
-	size;
-
+	//TO: check member container if font was already loaded before if not make new one if it does give copy of sharedptr
 	if (const auto font = m_FontMap.find({ file, size }); font != m_FontMap.end())
 	{
 		return (*font).second;

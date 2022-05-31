@@ -23,7 +23,7 @@ namespace dae
 		ResourceManager& operator=(ResourceManager&& other) = delete;
 
 	private:
-		//TODO: add container with loaded textures AND fonts
+		//TO: add container with loaded textures AND fonts
 		friend class Singleton<ResourceManager>;
 		ResourceManager() = default;
 		std::string m_DataPath;

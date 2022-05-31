@@ -175,7 +175,7 @@ namespace dae
 
 		const glm::ivec2& GetMousePosition() { return m_MousePos; };
 
-		//TODO:change add controlle to works automatically aka detect if controller gets added or removed and only itterate over the ones that are still there
+		//TODO: change add controlle to works automatically aka detect if controller gets added or removed and only itterate over the ones that are still there
 		//adds a new controller up to 4, when the input manager gets constructed a controller gets added automatically
 		void AddController();
 

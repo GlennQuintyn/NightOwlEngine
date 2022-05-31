@@ -41,8 +41,10 @@ namespace dae
 
 		enum class MovementState
 		{
-			Horizontal,
+			LadderDone,
 			Left,
+			Right,
+			PlatformDone,
 			UpLadder,
 			DownLadder,
 			NoMovement
