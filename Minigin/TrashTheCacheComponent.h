@@ -16,6 +16,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override;
+		void Reset() override {};
 
 		TrashTheCacheComponent(const TrashTheCacheComponent& other) = delete;
 		TrashTheCacheComponent(TrashTheCacheComponent&& other) = delete;

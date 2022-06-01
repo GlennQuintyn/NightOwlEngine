@@ -34,6 +34,7 @@ namespace dae
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 	private:
 		GameObject* m_pParentObject;

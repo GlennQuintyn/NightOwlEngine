@@ -115,6 +115,19 @@ void GameObject::Render() const
 		child->Render();
 	}
 }
+
+void GameObject::Reset()
+{
+	for (const auto& component : m_pComponents)
+	{
+		component.first->Reset();
+	}
+
+	for (const auto& child : m_pChildren)
+	{
+		child->Reset();
+	}
+}
 #pragma endregion
 
 Scene* GameObject::GetScene()
@@ -128,7 +141,7 @@ Scene* GameObject::GetScene()
 
 //TODO: Fix adding a child and parent code for the transform stuff
 
-void GameObject::SetParent(GameObject* pParent, bool keepWorldPosition)
+void GameObject::SetParent(GameObject * pParent, bool keepWorldPosition)
 {
 	//if the new parent is a nullptr
 	if (!pParent)

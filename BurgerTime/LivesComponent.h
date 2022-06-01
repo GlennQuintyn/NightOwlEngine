@@ -44,6 +44,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override;
+		void Reset() override {};
 
 		LivesComponent(const LivesComponent& other) = delete;
 		LivesComponent(LivesComponent&& other) = delete;

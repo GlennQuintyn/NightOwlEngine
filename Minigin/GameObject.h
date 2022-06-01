@@ -19,6 +19,8 @@ namespace dae
 		void LateUpdate();
 		void Render() const;
 
+		void Reset();
+
 		template <typename T> T& AddComponent();
 		template <typename T> void AddComponent(T* component);
 		template <typename T> T* GetComponent() const;

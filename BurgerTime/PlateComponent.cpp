@@ -7,6 +7,7 @@
 dae::PlateComponent::PlateComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_pCollidermpt{ nullptr }
+	, m_IngredientsCount{ 0 }
 {
 }
 
@@ -27,6 +28,12 @@ void dae::PlateComponent::Notify(GameObject* pObject, int event)
 			auto& colliderBox = m_pCollidermpt->GetRectangle();
 			//increase the collider box size
 			m_pCollidermpt->SetRectangle({ colliderBox.x, colliderBox.y - yes->GetRectangle().h, colliderBox.w, colliderBox.h + yes->GetRectangle().h });
+			++m_IngredientsCount;
 		}
 	}
+}
+
+void dae::PlateComponent::Reset()
+{
+	m_IngredientsCount = 0;
 }

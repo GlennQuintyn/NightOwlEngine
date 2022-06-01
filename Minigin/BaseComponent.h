@@ -12,6 +12,7 @@ namespace dae
 		virtual void Update() = 0;
 		virtual void LateUpdate() = 0;
 		virtual void Render() const = 0;
+		virtual void Reset() = 0;
 
 		BaseComponent(const BaseComponent& other) = delete;
 		BaseComponent(BaseComponent&& other) = delete;

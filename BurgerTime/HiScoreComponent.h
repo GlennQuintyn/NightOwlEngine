@@ -21,6 +21,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 		void SetTextComponent(TextComponent& textComponent);
 		void SetScoreComponent(ScoreComponent& scoreComponent);

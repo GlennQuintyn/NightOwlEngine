@@ -16,11 +16,11 @@ namespace dae
 
 		~PepperComponent() = default;
 
-		void  SetSpriteDuration(const float duration) { m_SpriteDuration = duration; };
+		void SetSpriteDuration(const float duration) { m_SpriteDuration = duration; };
 		void SetResetPos(const float xPos, const float yPos) { m_ResetPos = { xPos,yPos }; };
 
 		const float GetPepperedDuration() const { return m_PepperedDuration; };
-		void Reset();
+		//void Reset();
 		void Thrown();
 
 		void Notify(GameObject* pObject, int event) override;
@@ -29,6 +29,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override;
 
 		PepperComponent(const PepperComponent& other) = delete;
 		PepperComponent(PepperComponent&& other) = delete;

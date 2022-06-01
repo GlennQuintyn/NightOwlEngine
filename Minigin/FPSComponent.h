@@ -18,10 +18,11 @@ namespace dae
 
 		void SetTextComponent(TextComponent& pTextComponent);
 
-		virtual void LateInit() override;
-		virtual void Update() override;
-		virtual void LateUpdate() override {};
-		virtual void Render() const override {};
+		void LateInit() override;
+		void Update() override;
+		void LateUpdate() override {};
+		void Render() const override {};
+		void Reset() override {};
 
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;

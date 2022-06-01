@@ -29,6 +29,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override;
+		void Reset() override {};
 
 		void SetTexture(const std::string& filename);
 		void Setup(int columnCount, int rowCount, int fps, float width, float height);

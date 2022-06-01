@@ -51,6 +51,11 @@ void SceneManager::Render()
 	//}
 }
 
+void dae::SceneManager::ResetActiveScene()
+{
+	m_pScenes[m_ActiveSceneIndex]->Reset();
+}
+
 void dae::SceneManager::SetActiveScene(size_t index)
 {
 	if (index<0 || index>m_pScenes.size() - 1)

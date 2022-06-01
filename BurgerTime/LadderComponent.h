@@ -19,6 +19,7 @@ namespace dae
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 		LadderComponent(const LadderComponent& other) = delete;
 		LadderComponent(LadderComponent&& other) = delete;

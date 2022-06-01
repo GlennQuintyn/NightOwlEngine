@@ -25,6 +25,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 		ScoreComponent(const ScoreComponent& other) = delete;
 		ScoreComponent(ScoreComponent&& other) = delete;

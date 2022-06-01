@@ -23,6 +23,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 		MrHotDog(const MrHotDog& other) = delete;
 		MrHotDog(MrHotDog&& other) = delete;

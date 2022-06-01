@@ -20,6 +20,7 @@ namespace dae
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
+		void Reset() override {};
 
 		void SetTexture(const std::string& filename, float width = -1.f, float height = -1.f);
 		const glm::vec2& GetTextureSize() const { return m_Size; };

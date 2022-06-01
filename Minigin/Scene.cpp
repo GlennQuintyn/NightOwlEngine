@@ -81,3 +81,10 @@ void Scene::Render() const
 	}
 }
 
+void dae::Scene::Reset()
+{
+	for (auto& object : m_Objects)
+	{
+		object->Reset();
+	}
+}

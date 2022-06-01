@@ -15,10 +15,16 @@ namespace dae
 
 		~RectColliderComponent() = default;
 
-		virtual void LateInit() {};
-		virtual void Update() {};
-		virtual void LateUpdate() {};
-		virtual void Render() const;
+		//virtual void LateInit() {};
+		//virtual void Update() {};
+		//virtual void LateUpdate() {};
+		//virtual void Render() const;
+
+		void LateInit() override {};
+		void Update() override {};
+		void LateUpdate() override {};
+		void Render() const override;
+		void Reset() override {};
 
 		void Init(SDL_Rect colliderBox, int id, bool debugRender = false, SDL_Color debugColor = { 255, 255, 255, SDL_ALPHA_OPAQUE / 2 });
 

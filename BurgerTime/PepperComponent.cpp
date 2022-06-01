@@ -4,7 +4,9 @@
 
 dae::PepperComponent::PepperComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
+	, m_ResetPos{}
 	, m_PepperedDuration{ 5.f }
+	, m_SpriteDuration{ 0.f }
 	, m_TimeLeft{ 0.f }
 	, m_hasBeenThrown{ false }
 {

@@ -16,10 +16,14 @@ namespace dae
 
 		~PlateComponent() = default;
 
+		void SetIngredientFullCount(int count) { m_MaxIngredientsCount = count; };
+		bool IsPlateFull() { return m_IngredientsCount >= m_MaxIngredientsCount; };
+
 		void LateInit() override;
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override;
 
 		//Subject& GetSubject() { return m_Subject; }
 		void Notify(GameObject* pObject, int event) override;
@@ -32,6 +36,8 @@ namespace dae
 	private:
 		GameObject* m_pParentObject;
 		RectColliderComponent* m_pCollidermpt;
+		int m_IngredientsCount;
+		int m_MaxIngredientsCount;
 	};
 }
 

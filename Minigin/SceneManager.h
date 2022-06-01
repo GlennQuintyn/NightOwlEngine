@@ -17,6 +17,8 @@ namespace dae
 		void LateUpdate();
 		void Render();
 
+		void ResetActiveScene();
+
 		~SceneManager() = default;
 
 		void SetActiveScene(size_t index);

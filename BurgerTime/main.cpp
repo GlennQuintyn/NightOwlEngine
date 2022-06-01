@@ -467,16 +467,17 @@ int main(int, char* [])
 #pragma region PlateSetup
 	auto& plateObj1 = sceneLevel1.CreateObject("plateObj1");
 	auto& plateCmpt1 = plateObj1.AddComponent<PlateComponent>();
+	plateCmpt1.SetIngredientFullCount(4);
 	plateObj1.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider1 = plateObj1.AddComponent<RectColliderComponent>();
 	plateCollider1.Init({ 0, 8, 104, 4 }, 100, true, { 0, 133, 133, 255 });
-	//plateObj1.SetLocalPosition(67.f, 690.f);
 	plateObj1.SetLocalPosition(68.f, 800.f);
 	auto& plateSubje1 = plateCollider1.GetSubject();
 	plateSubje1.AddObserver(plateCmpt1);
 
 	auto& plateObj2 = sceneLevel1.CreateObject("plateObj2");
 	auto& plateCmpt2 = plateObj2.AddComponent<PlateComponent>();
+	plateCmpt2.SetIngredientFullCount(4);
 	plateObj2.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider2 = plateObj2.AddComponent<RectColliderComponent>();
 	plateCollider2.Init({ 0, 8, 104, 4 }, 100, true, { 0, 133, 133, 255 });
@@ -486,6 +487,7 @@ int main(int, char* [])
 
 	auto& plateObj3 = sceneLevel1.CreateObject("plateObj3");
 	auto& plateCmpt3 = plateObj3.AddComponent<PlateComponent>();
+	plateCmpt3.SetIngredientFullCount(4);
 	plateObj3.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider3 = plateObj3.AddComponent<RectColliderComponent>();
 	plateCollider3.Init({ 0, 8, 104, 4 }, 100, true, { 0, 133, 133, 255 });
@@ -495,6 +497,7 @@ int main(int, char* [])
 
 	auto& plateObj4 = sceneLevel1.CreateObject("plateObj4");
 	auto& plateCmpt4 = plateObj4.AddComponent<PlateComponent>();
+	plateCmpt4.SetIngredientFullCount(4);
 	plateObj4.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider4 = plateObj4.AddComponent<RectColliderComponent>();
 	plateCollider4.Init({ 0, 8, 104, 4 }, 100, true, { 0, 133, 133, 255 });

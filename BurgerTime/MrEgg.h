@@ -22,6 +22,7 @@ namespace dae
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
+		void Reset() override {};
 
 		MrEgg(const MrEgg& other) = delete;
 		MrEgg(MrEgg&& other) = delete;
