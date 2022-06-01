@@ -5,6 +5,7 @@
 namespace dae
 {
 	class GameObject;
+	class EnemyControllerComponent;
 
 	class MrHotDog final : public BaseComponent, public Observer
 	{
@@ -18,18 +19,21 @@ namespace dae
 
 		void Notify(GameObject* pObject, int event) override;
 
-		void LateInit() override {};
-		void Update() override {};
+		void LateInit() override;
+		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
 
-		MrHotDog(const MrHotDog & other) = delete;
-		MrHotDog(MrHotDog && other) = delete;
-		MrHotDog& operator=(const MrHotDog & other) = delete;
-		MrHotDog& operator=(MrHotDog && other) = delete;
+		MrHotDog(const MrHotDog& other) = delete;
+		MrHotDog(MrHotDog&& other) = delete;
+		MrHotDog& operator=(const MrHotDog& other) = delete;
+		MrHotDog& operator=(MrHotDog&& other) = delete;
 
 
 	private:
 		GameObject* m_pParentObject;
+		EnemyControllerComponent* m_pEnemyController;
+		float m_PepperedDurationLeft;
+		bool m_IsPeppered;
 	};
 }

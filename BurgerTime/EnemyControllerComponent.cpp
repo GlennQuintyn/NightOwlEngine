@@ -6,7 +6,7 @@
 #include "SpriteManagerComponent.h"
 #include "Enums.h"
 
-const float g_PixelEpsilon{ 1.5f };
+//const float g_PixelEpsilon{ 1.5f };
 
 dae::EnemyControllerComponent::EnemyControllerComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
@@ -15,8 +15,20 @@ dae::EnemyControllerComponent::EnemyControllerComponent(GameObject* pParentObjec
 	, m_pPlayer1{ nullptr }
 	, m_pPlayer2{ nullptr }
 	, m_State{ MovementState::DownLadder }//TODO: FIX
+	, m_PreviousState{}
 	, m_MovmentSpeed{ 75.f, 40.f }//x: horizontal, y: vertical
+	, m_Size{}
 {
+}
+
+void dae::EnemyControllerComponent::SetMovement(bool state)
+{
+	if (!state)
+	{
+		m_PreviousState = m_State;
+		m_State = MovementState::NoMovement;
+	}
+	else { m_State = m_PreviousState; }
 }
 
 void dae::EnemyControllerComponent::LateInit()
@@ -51,55 +63,6 @@ void dae::EnemyControllerComponent::LateInit()
 
 void dae::EnemyControllerComponent::Update()
 {
-	//TODO: check player count and goto closest
-	//if on lader keep direction
-	//check if player is above, below, left or right
-
-	//switch (m_State)
-	//{
-	//case dae::EnemyControllerComponent::MovementState::Horizontal:
-	//	Logger::GetInstance().LogInfo("Horizontal");
-	//	break;
-	//case dae::EnemyControllerComponent::MovementState::UpLadder:
-	//	Logger::GetInstance().LogInfo("UpLadder");
-	//	break;
-	//case dae::EnemyControllerComponent::MovementState::DownLadder:
-	//	Logger::GetInstance().LogInfo("DownLadder");
-	//	break;
-	//case dae::EnemyControllerComponent::MovementState::NoMovement:
-	//	Logger::GetInstance().LogInfo("NoMovement");
-	//	break;
-	//default:
-	//	break;
-	//}
-
-
-	//first check if there is a platform left or right to break the continous ladder movement
-	//if (m_pMovementCmpt->GetTouchingPlatformLeft() || m_pMovementCmpt->GetTouchingPlatformRight())
-	//{
-	//	Logger::GetInstance().LogInfo("Horizontal");
-	//	m_State = MovementState::Right;
-	//}
-
-
-	//if the enemy is still going up/down a ladder then they should keep going that direction until they reached the end of the ladder.
-	//if (m_State == MovementState::UpLadder)
-	//{
-	//	if (m_pMovementCmpt->CanGoUp())
-	//		MoveUp(pos);
-	//	else
-	//		m_State = MovementState::Right;
-	//	return;
-	//}
-	//else if (m_State == MovementState::DownLadder)
-	//{
-	//	if (m_pMovementCmpt->CanGoDown())
-	//		MoveDown(pos);
-	//	else
-	//		m_State = MovementState::Right;
-	//	return;
-	//}
-
 	//no Movement AI when dead)
 	if (m_State == MovementState::NoMovement)
 		return;
@@ -165,9 +128,6 @@ void dae::EnemyControllerComponent::Update()
 			m_State = MovementState::LadderDone;
 		break;
 	}
-	//default:
-	//	Logger::GetInstance().LogError("EnemyController: Invalid switch state!");
-	//	break;
 	}
 
 	//if not in a one direction state,
@@ -264,34 +224,6 @@ void dae::EnemyControllerComponent::Update()
 					m_State = MovementState::Right;
 			}
 		}
-	}
-
-	if (true)
-		return;
-
-	//go up if possible
-	if (std::abs(goal.y - pos.y) >= g_PixelEpsilon && goal.y <= pos.y && m_pMovementCmpt->CanGoUp())
-		//if (goal.y <= pos.y && m_pMovementCmpt->CanGoUp())
-	{
-		MoveUp(pos);
-		m_State = MovementState::UpLadder;
-	}
-	//go down if possible
-	else if (std::abs(goal.y - pos.y) >= g_PixelEpsilon && goal.y >= pos.y && m_pMovementCmpt->CanGoDown())
-		//else if (goal.y >= pos.y && m_pMovementCmpt->CanGoDown())
-	{
-		MoveDown(pos);
-		m_State = MovementState::DownLadder;
-	}
-	//go left
-	else if (m_State == MovementState::Right && goal.x < pos.x && m_pMovementCmpt->CanGoLeft())
-	{
-		MoveLeft(pos);
-	}
-	//go right
-	else if (m_State == MovementState::Right && goal.x > pos.x && m_pMovementCmpt->CanGoRight())
-	{
-		MoveRigth(pos);
 	}
 }
 

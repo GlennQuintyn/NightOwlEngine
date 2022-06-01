@@ -4,9 +4,11 @@
 #include "Observer.h"
 #include "Subject.h"
 
+
 namespace dae
 {
 	class GameObject;
+	class PepperComponent;
 
 	class PeterPepper final : public BaseComponent, public Observer
 	{
@@ -24,9 +26,9 @@ namespace dae
 
 		void Notify(GameObject* pObject, int event) override;
 
-		void SetDeathButton(PCController::ControllerButton deahtButton);
-		void SetObjectFellButton(PCController::ControllerButton objFellButton);
-		void SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton);
+		//void SetDeathButton(PCController::ControllerButton deahtButton);
+		//void SetObjectFellButton(PCController::ControllerButton objFellButton);
+		//void SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton);
 
 		Subject& GetSubject() { return m_Subject; }
 
@@ -37,17 +39,18 @@ namespace dae
 		PeterPepper(PeterPepper&& other) = delete;
 		PeterPepper& operator=(const PeterPepper& other) = delete;
 		PeterPepper& operator=(PeterPepper&& other) = delete;
+
 	private:
 		GameObject* m_pParentObject;
 		Subject m_Subject;
 		glm::ivec2 m_Size;
 		glm::vec2 m_SpawnLoc;
+		PepperComponent* m_pPepperCmpt;
 		bool m_IsAlive;
 
-
-		PCController::ControllerButton m_DeahtButton;
-		PCController::ControllerButton m_ObjFellButton;
-		PCController::ControllerButton m_EnemyPepperedButton;
+		//PCController::ControllerButton m_DeahtButton;
+		//PCController::ControllerButton m_ObjFellButton;
+		//PCController::ControllerButton m_EnemyPepperedButton;
 
 	};
 }

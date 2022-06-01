@@ -17,7 +17,7 @@ namespace dae
 
 		~EnemyControllerComponent() = default;
 
-		//void Notify(GameObject * pObject, int event) override;
+		void SetMovement(bool state);
 
 		void SetPlayer1(GameObject* pPlayer1) { m_pPlayer1 = pPlayer1; };
 		void SetPlayer2(GameObject* pPlayer2) { m_pPlayer2 = pPlayer2; };
@@ -31,7 +31,6 @@ namespace dae
 		EnemyControllerComponent(EnemyControllerComponent&& other) = delete;
 		EnemyControllerComponent& operator=(const EnemyControllerComponent& other) = delete;
 		EnemyControllerComponent& operator=(EnemyControllerComponent&& other) = delete;
-
 
 	private:
 		void MoveLeft(const glm::vec2& pos);
@@ -50,7 +49,7 @@ namespace dae
 			NoMovement
 		};
 		glm::vec2 m_MovmentSpeed;
-		glm::ivec2 m_Size{};
+		glm::ivec2 m_Size;
 
 		GameObject* m_pParentObject;
 		GameObject* m_pPlayer1;
@@ -58,5 +57,6 @@ namespace dae
 		MovementComponent* m_pMovementCmpt;
 		SpriteManagerComponent* m_pSpriteManagerCmpt;
 		MovementState m_State;
+		MovementState m_PreviousState;
 	};
 }

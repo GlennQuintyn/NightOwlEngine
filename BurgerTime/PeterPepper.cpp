@@ -9,6 +9,7 @@
 #include "WalkingPlatformComponent.h"
 #include "SpriteManagerComponent.h"
 #include "MovementComponent.h"
+#include "PepperComponent.h"
 
 #include "MrHotDog.h"
 #include "MrEgg.h"
@@ -20,9 +21,10 @@ PeterPepper::PeterPepper(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_Subject{}
 	, m_IsAlive{ true }
-	, m_DeahtButton{ PCController::ControllerButton::Button_Triangle }
-	, m_ObjFellButton{ PCController::ControllerButton::Button_R_SHOULDER }
-	, m_EnemyPepperedButton{ PCController::ControllerButton::Button_R_THUMB }
+	, m_pPepperCmpt{ nullptr }
+	//, m_DeahtButton{ PCController::ControllerButton::Button_Triangle }
+	//, m_ObjFellButton{ PCController::ControllerButton::Button_R_SHOULDER }
+	//, m_EnemyPepperedButton{ PCController::ControllerButton::Button_R_THUMB }
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;
@@ -37,6 +39,11 @@ void PeterPepper::LateInit()
 		m_Size.x = pCollidercmpt->GetRectangle().w;
 		m_Size.y = pCollidercmpt->GetRectangle().h;
 	}
+
+	if (!m_pPepperCmpt)
+	{
+
+	}
 }
 
 void PeterPepper::Update()
@@ -44,21 +51,21 @@ void PeterPepper::Update()
 	if (!m_IsAlive)
 		return;
 
-	if (InputManager::GetInstance().IsPressedThisFrame(m_DeahtButton))
-	{
-		m_Subject.Notify(m_pParentObject, int(Events::PeterPepper_Died));
-		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::PeterPepper_Died));
-	}
-	if (InputManager::GetInstance().IsPressedThisFrame(m_ObjFellButton))
-	{
-		m_Subject.Notify(m_pParentObject, int(Events::Item_Fell));
-		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Item_Fell));
-	}
-	if (InputManager::GetInstance().IsPressedThisFrame(m_EnemyPepperedButton))
-	{
-		m_Subject.Notify(m_pParentObject, int(Events::Enemy_Peppered));
-		//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Enemy_Peppered));
-	}
+	//if (InputManager::GetInstance().IsPressedThisFrame(m_DeahtButton))
+	//{
+	//	m_Subject.Notify(m_pParentObject, int(Events::PeterPepper_Died));
+	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::PeterPepper_Died));
+	//}
+	//if (InputManager::GetInstance().IsPressedThisFrame(m_ObjFellButton))
+	//{
+	//	m_Subject.Notify(m_pParentObject, int(Events::Item_Fell));
+	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Item_Fell));
+	//}
+	//if (InputManager::GetInstance().IsPressedThisFrame(m_EnemyPepperedButton))
+	//{
+	//	m_Subject.Notify(m_pParentObject, int(Events::Enemy_Peppered));
+	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Enemy_Peppered));
+	//}
 }
 
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
@@ -73,7 +80,7 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 		{
 			if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
 			{
-				pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), false);
+				pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
 				m_Subject.Notify(m_pParentObject, int(Events::PeterPepper_Died));
 				if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
 				{
@@ -84,20 +91,20 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 	}
 }
 
-void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)
-{
-	m_DeahtButton = deahtButton;
-}
-
-void PeterPepper::SetObjectFellButton(PCController::ControllerButton objFellButton)
-{
-	m_ObjFellButton = objFellButton;
-}
-
-void PeterPepper::SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton)
-{
-	m_EnemyPepperedButton = enemyPepperedButton;
-}
+//void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)
+//{
+//	m_DeahtButton = deahtButton;
+//}
+//
+//void PeterPepper::SetObjectFellButton(PCController::ControllerButton objFellButton)
+//{
+//	m_ObjFellButton = objFellButton;
+//}
+//
+//void PeterPepper::SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton)
+//{
+//	m_EnemyPepperedButton = enemyPepperedButton;
+//}
 
 void dae::PeterPepper::SetSpawnLocation(float x, float y)
 {

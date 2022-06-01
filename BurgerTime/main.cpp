@@ -34,6 +34,8 @@
 #include "MrPickle.h"
 #include "EnemyControllerComponent.h"
 
+#include "PepperComponent.h"
+
 #include "PepperCountComponent.h"
 #include "HiScoreComponent.h"
 #include "LivesComponent.h"
@@ -94,6 +96,22 @@ int main(int, char* [])
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
 
 
+	//pepper object to throw on enemies
+	auto& pepperObj = sceneLevel1.CreateObject("pepperObj");
+	auto& pepperCmpt = pepperObj.AddComponent<PepperComponent>();
+	auto& pepperSpriteManager = pepperObj.AddComponent<SpriteManagerComponent>();
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Left.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Right.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Up.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
+	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
+	pepperCollider.Init({ 0,0,45,45 }, -100, true);
+	//pepperObj.SetLocalPosition(-100.f, -100.f);
+	pepperObj.SetLocalPosition(300.f, 300.f);
+	pepperCmpt.SetResetPos(-100.f, -100.f);
+
+	auto& peppercollidersubje = pepperCollider.GetSubject();
+	peppercollidersubje.AddObserver(pepperCmpt);
 
 	//peter pepper test object
 	auto& peterPepperObj = sceneLevel1.CreateObject("peterPepperObj");
@@ -106,18 +124,17 @@ int main(int, char* [])
 	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
 	peterSpriteManager.AddSprite("Charachters/peter/Peter_Death.png", 6, 1, 2, 45, 45);
 
-	auto& pepperCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	pepperCollider.Init({ 0,0,45,45 }, -1, true);
+	auto& peterCollider = peterPepperObj.AddComponent<RectColliderComponent>();
+	peterCollider.Init({ 0,0,45,45 }, -1, true);
 	peterPepperObj.AddComponent<MovementComponent>();
 	petercmpt.SetSpawnLocation(298.f, 563.f);
 	peterPepperObj.SetLocalPosition(298.f, 563.f);
 
-	auto& pettercollidersubje = pepperCollider.GetSubject();
+	auto& pettercollidersubje = peterCollider.GetSubject();
 	pettercollidersubje.AddObserver(petercmpt);
 
 	auto& mrHotDogObj = sceneLevel1.CreateObject("mrHotDogObj");
 	auto& mrHotDogcmpt = mrHotDogObj.AddComponent<MrHotDog>();
-	mrHotDogcmpt;
 	auto& mrHotDogSpriteManager = mrHotDogObj.AddComponent<SpriteManagerComponent>();
 	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
 	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
@@ -125,6 +142,7 @@ int main(int, char* [])
 	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
 	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
 	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
 
 	auto& mrHotDogCollider = mrHotDogObj.AddComponent<RectColliderComponent>();
 	mrHotDogCollider.Init({ 0,0,45,45 }, -2, true);
@@ -189,7 +207,7 @@ int main(int, char* [])
 	ladder6colliderCmpt.Init({ 0, 0, 4, 450 }, 15, true, { 255, 255, 0, 128 });
 
 	auto& ladderObj7 = sceneLevel1.CreateObject("ladderObj7");
-	ladderObj7.SetLocalPosition(385.f, 251.f);
+	ladderObj7.SetLocalPosition(385.f, 252.f);
 	ladderObj7.AddComponent<LadderComponent>();
 	auto& ladder7colliderCmpt = ladderObj7.AddComponent<RectColliderComponent>();
 	ladder7colliderCmpt.Init({ 0, 0, 4, 178 }, 16, true, { 255, 255, 0, 128 });

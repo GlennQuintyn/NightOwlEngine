@@ -8,6 +8,13 @@ namespace dae
 	class SpriteManagerComponent final : public BaseComponent
 	{
 	public:
+		enum class SpritePlayType
+		{
+			PlayOnce,
+			Looping,
+			PlayUntilNoMovement
+		};
+
 		SpriteManagerComponent(GameObject* pParentObject);
 		~SpriteManagerComponent() = default;
 
@@ -19,7 +26,8 @@ namespace dae
 		void LateUpdate() override {};
 		void Render() const override;
 
-		void PlaySprite(uint32_t index, bool loop = true);
+		//void PlaySprite(uint32_t index, bool loop = true);
+		void PlaySprite(uint32_t index, SpritePlayType = SpritePlayType::PlayUntilNoMovement);
 		void AddSprite(const std::string& filename, int columnCount, int rowCount, int fps, float width, float height);
 
 		//		void SetTexture(const std::string& filename);
@@ -31,12 +39,14 @@ namespace dae
 
 	private:
 		GameObject* m_pParentObject;
-
-		uint32_t m_CurrentSprite;
+		uint32_t m_CurrentSpriteIndex;
+		SpritePlayType m_CurrentSpritePlayType;
 
 		class Sprite;
 		std::unique_ptr<std::vector<Sprite>> m_pSpriteArray;
+
+
 		bool m_IsMoving;
-		bool m_Loop;
+		//bool m_Loop;
 	};
 }
