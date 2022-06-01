@@ -59,7 +59,7 @@ using namespace dae;
 
 int main(int, char* [])
 {
-	auto engine = new dae::NightOwlEngine(640, 900);
+	auto engine = new dae::NightOwlEngine(640, 900, "BURGERTIME");
 
 	engine->Initialize();
 
@@ -106,12 +106,17 @@ int main(int, char* [])
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
 	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
 	pepperCollider.Init({ 0,0,45,45 }, -100, true);
-	//pepperObj.SetLocalPosition(-100.f, -100.f);
-	pepperObj.SetLocalPosition(300.f, 300.f);
+	pepperObj.SetLocalPosition(-100.f, -100.f);
+	//pepperObj.SetLocalPosition(300.f, 300.f);
 	pepperCmpt.SetResetPos(-100.f, -100.f);
+	pepperCmpt.SetSpriteDuration(1.f);
 
 	auto& peppercollidersubje = pepperCollider.GetSubject();
 	peppercollidersubje.AddObserver(pepperCmpt);
+
+	//sally salt
+	//sally salt
+	//sally salt
 
 	//peter pepper test object
 	auto& peterPepperObj = sceneLevel1.CreateObject("peterPepperObj");
@@ -167,6 +172,15 @@ int main(int, char* [])
 
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdController1.SetPlayer(&peterPepperObj);
+	throwPepperCmdController1.SetPepper(&pepperObj);
+	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
+	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
+
+
 #pragma endregion
 
 #pragma region LadderSetup
@@ -497,32 +511,28 @@ int main(int, char* [])
 	//Static UI
 	//
 	auto& oneUpTextObject = sceneLevel1.CreateObject("oneUpTextObject");
-	/*auto& oneUpTextcomp = */oneUpTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 255, 0, 0 }, "1UP");
-	//oneUpTextcomp.SetFont(uiFont);
-	//oneUpTextcomp.SetTextColor(255, 0, 0);
-	//oneUpTextcomp.SetText("1UP");
+	oneUpTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 255, 0, 0 }, "1UP");
 	oneUpTextObject.SetLocalPosition(float(uiFontSize * 4), 5);
 
 	auto& hiScoreTextObject = sceneLevel1.CreateObject("hiScoreTextObject");
-	/*auto& hiScoreTextcomp = */hiScoreTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 255, 0, 0 }, "HI-SCORE");
-	//hiScoreTextcomp.SetFont(uiFont);
-	//hiScoreTextcomp.SetTextColor(255, 0, 0);
-	//hiScoreTextcomp.SetText("HI-SCORE");
+	hiScoreTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 255, 0, 0 }, "HI-SCORE");
 	hiScoreTextObject.SetLocalPosition(float(uiFontSize * 4) + (uiFontSize * 5), 5);
 
 	auto& pepperTextObject = sceneLevel1.CreateObject("pepperTextObject");
-	/*auto& pepperTextcomp = */pepperTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 0, 255, 0 }, "PEPPER");
-	//pepperTextcomp.SetFont(uiFont);
-	//pepperTextcomp.SetTextColor(0, 255, 0);
-	//pepperTextcomp.SetText("PEPPER");
+	pepperTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 0, 255, 0 }, "PEPPER");
 	pepperTextObject.SetLocalPosition(float(windowW - (uiFontSize * 7)), 5);
 
 	//
 	//Dynamic UI
 	//
 	auto& peterLivesObj = sceneLevel1.CreateObject("peterLivesObj");
-	peterLivesObj.AddComponent<LivesComponent>().SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
+	auto& livescmpt = peterLivesObj.AddComponent<LivesComponent>();
+	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
+	auto& petterPeppersubje = petercmpt.GetSubject();
+	petterPeppersubje.AddObserver(livescmpt);
+
+
 
 	auto& scoreObject = sceneLevel1.CreateObject("scoreObject");
 	auto& scoretextcomp = scoreObject.AddComponent<TextComponent>();
@@ -557,13 +567,6 @@ int main(int, char* [])
 	//ServiceLocator::GetSS().PlaySFX(1, 50);
 	//ServiceLocator::GetSS().PlaySFX(2, 80);
 	*/
-
-	//auto rendereerere = Renderer::GetInstance().GetSDLRenderer();
-	////SDL_renderD
-	//SDL_RenderDrawLine(rendereerere, 50, 50, 150, 150);
-	//
-	//SDL_RenderPresent(rendereerere);
-
 
 
 	/*

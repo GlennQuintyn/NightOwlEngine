@@ -73,6 +73,7 @@
     <ClCompile Include="PepperComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerTimePCH.h">
@@ -129,5 +130,6 @@
     <ClInclude Include="PepperComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="GameManager.h" />
   </ItemGroup>
 </Project>

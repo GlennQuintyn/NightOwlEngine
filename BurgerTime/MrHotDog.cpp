@@ -68,4 +68,8 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 			}
 		}
 	}
+	else if (event == static_cast<int>(Events::Player_Died))
+	{
+		m_pEnemyController->SetMovement(false);
+	}
 }

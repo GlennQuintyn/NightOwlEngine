@@ -1,7 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
 #include "Subject.h"
-//#include "Observer.h"
 
 namespace dae
 {
@@ -25,9 +24,6 @@ namespace dae
 
 		void SetDebugMode(bool drawDebug) { m_DebugRender = drawDebug; }
 		void SetDebugColliderColor(SDL_Color debugColor) { m_ColliderColor = debugColor; }
-
-		//int GetID() const { return m_IdNr; };
-		//void Notify(GameObject*, int) override {};
 
 		Subject& GetSubject() { return m_Subject; }
 		void UpdateOverlapping(RectColliderComponent* pOtherCollider);

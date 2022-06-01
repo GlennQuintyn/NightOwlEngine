@@ -50,7 +50,7 @@ void dae::LivesComponent::Notify(GameObject*, int event)
 {
 	switch (Events(event))
 	{
-	case dae::Events::PeterPepper_Died:
+	case dae::Events::Player_Died:
 		--m_CurrentLives;
 		if (m_CurrentLives < 0)
 			m_CurrentLives = 0;

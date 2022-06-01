@@ -4,7 +4,7 @@
 
 namespace dae
 {
-	//TODO: create only 1 active scene and a goto next scene or certain scene index
+	//TO: create only 1 active scene and a goto next scene or certain scene index
 
 	class SceneManager final : public Singleton<SceneManager>
 	{
@@ -19,6 +19,10 @@ namespace dae
 
 		~SceneManager() = default;
 
+		void SetActiveScene(size_t index);
+		void GotoNextScene();
+		void GotoPreviousScene();
+
 		SceneManager(const SceneManager& other) = delete;
 		SceneManager(SceneManager&& other) = delete;
 		SceneManager& operator=(const SceneManager& other) = delete;
@@ -29,5 +33,7 @@ namespace dae
 		SceneManager() = default;
 
 		std::vector<std::unique_ptr<Scene>> m_pScenes;
+
+		size_t m_ActiveSceneIndex;
 	};
 }

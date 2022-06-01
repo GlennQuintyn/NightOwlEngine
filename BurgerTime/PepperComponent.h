@@ -16,13 +16,17 @@ namespace dae
 
 		~PepperComponent() = default;
 
+		void  SetSpriteDuration(const float duration) { m_SpriteDuration = duration; };
 		void SetResetPos(const float xPos, const float yPos) { m_ResetPos = { xPos,yPos }; };
+
 		const float GetPepperedDuration() const { return m_PepperedDuration; };
+		void Reset();
+		void Thrown();
 
 		void Notify(GameObject* pObject, int event) override;
 
 		void LateInit() override {};
-		void Update() override {};
+		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
 
@@ -35,5 +39,8 @@ namespace dae
 		GameObject* m_pParentObject;
 		glm::vec2 m_ResetPos;
 		float m_PepperedDuration;
+		float m_SpriteDuration;
+		float m_TimeLeft;
+		bool m_hasBeenThrown;
 	};
 }

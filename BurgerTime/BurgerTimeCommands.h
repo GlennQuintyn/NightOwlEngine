@@ -198,4 +198,68 @@ namespace dae
 		MovementComponent* m_pMovementCmpt{};
 		SpriteManagerComponent* m_pSpriteManagerCmpt{};
 	};
+
+	class ThrowPepperCommand final : public Command
+	{
+	public:
+		void SetPepper(GameObject* p)
+		{
+			m_pPepperObject = p;
+
+			auto pCollider = m_pPepperObject->GetComponent<RectColliderComponent>();
+			if (!pCollider)
+			{
+				Logger::GetInstance().LogError("ThrowPepperCommand: no RectColliderComponent was found!");
+				return;
+			}
+			m_Size.x = pCollider->GetRectangle().w;
+			m_Size.y = pCollider->GetRectangle().h;
+		}
+		void SetPlayer(GameObject* p)
+		{
+			m_pPlayerObject = p;
+		}
+	private:
+		void Execute() override
+		{
+			auto pPlayerMovementcmpt = m_pPlayerObject->GetComponent<MovementComponent>();
+			auto pPlayerCollidercmpt = m_pPlayerObject->GetComponent<RectColliderComponent>();
+			auto pPepperSpriteManagercmpt = m_pPepperObject->GetComponent<SpriteManagerComponent>();
+
+			if (pPlayerMovementcmpt && pPlayerCollidercmpt)
+			{
+				auto& playerPos = m_pPlayerObject->GetWorldPosition();
+				auto pPepperCmpt = m_pPepperObject->GetComponent<PepperComponent>();
+
+				WalkingDirection direction = pPlayerMovementcmpt->GetLastWalkingDirection();
+				switch (direction)
+				{
+				case dae::WalkingDirection::Left:
+					m_pPepperObject->SetLocalPosition(playerPos.x - m_Size.x, playerPos.y);
+					pPepperSpriteManagercmpt->PlaySprite(0, SpriteManagerComponent::SpritePlayType::PlayOnce);
+					break;
+				case dae::WalkingDirection::Right:
+					pPepperSpriteManagercmpt->PlaySprite(1, SpriteManagerComponent::SpritePlayType::PlayOnce);
+					m_pPepperObject->SetLocalPosition(playerPos.x + pPlayerCollidercmpt->GetRectangle().w, playerPos.y);
+					break;
+				case dae::WalkingDirection::Up:
+					pPepperSpriteManagercmpt->PlaySprite(2, SpriteManagerComponent::SpritePlayType::PlayOnce);
+					m_pPepperObject->SetLocalPosition(playerPos.x, playerPos.y - m_Size.y);
+					break;
+				case dae::WalkingDirection::Down:
+					pPepperSpriteManagercmpt->PlaySprite(3, SpriteManagerComponent::SpritePlayType::PlayOnce);
+					m_pPepperObject->SetLocalPosition(playerPos.x, playerPos.y + pPlayerCollidercmpt->GetRectangle().h);
+					break;
+				default:
+					Logger::GetInstance().LogError("ThrowPepperCommand: invalid switch state reached!");
+					break;
+				}
+
+				pPepperCmpt->Thrown();
+			}
+		}
+		GameObject* m_pPepperObject{};
+		GameObject* m_pPlayerObject{};
+		glm::ivec2 m_Size{};
+	};
 }

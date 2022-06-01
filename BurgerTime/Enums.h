@@ -2,11 +2,11 @@
 
 namespace dae
 {
-	enum class Events
+	enum class Events : int
 	{
-		PeterPepper_Died = 0,
-		Item_Fell = 1,
-		Enemy_Peppered = 2
+		Player_Died = 10,
+		Item_Fell = 11,
+		Enemy_Peppered = 12
 	};
 
 	enum class SpriteIndices : uint32_t
@@ -18,5 +18,13 @@ namespace dae
 		WalkDown = 4,
 		Death = 5,
 		Peppered = 6
+	};
+
+	enum class WalkingDirection
+	{
+		Left,
+		Right,
+		Up,
+		Down
 	};
 }

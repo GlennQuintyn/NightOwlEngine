@@ -198,6 +198,7 @@ void dae::SpriteManagerComponent::Render() const
 //		Logger::GetInstance().LogWarning("SPRITEMANAGER: index was out of bounds");
 //}
 
+//index of the sprite, playtype: PlayOnce, Looping and PlayUntilNoMovement
 void dae::SpriteManagerComponent::PlaySprite(uint32_t index, SpritePlayType playType)
 {
 	//the PlayUntilNoMovement is for when a sprite should keep looping until no more input was given so that i would go to an idle frame/sprite animation
@@ -206,7 +207,7 @@ void dae::SpriteManagerComponent::PlaySprite(uint32_t index, SpritePlayType play
 		m_IsMoving = true;
 
 	//if its the same sprite don't do anything
-	if (index == m_CurrentSpriteIndex)
+	if (m_CurrentSpritePlayType != SpritePlayType::PlayOnce && index == m_CurrentSpriteIndex)
 		return;
 
 	if (index < m_pSpriteArray->size())

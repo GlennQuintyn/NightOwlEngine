@@ -88,7 +88,6 @@ namespace dae
 	};
 }
 
-
 dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_CanGoLeft{ false }
@@ -138,7 +137,10 @@ dae::MovementComponent::~MovementComponent()
 dae::GameObject* dae::MovementComponent::GetTouchingPlatformLeft()
 {
 	if (m_Enabled)
+	{
+		m_LastDirection = WalkingDirection::Left;
 		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)).GetLastTouchedColliderObj();
+	}
 	else
 		return nullptr;
 }
@@ -146,7 +148,10 @@ dae::GameObject* dae::MovementComponent::GetTouchingPlatformLeft()
 dae::GameObject* dae::MovementComponent::GetTouchingPlatformRight()
 {
 	if (m_Enabled)
+	{
+		m_LastDirection = WalkingDirection::Right;
 		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)).GetLastTouchedColliderObj();
+	}
 	else
 		return nullptr;
 }
@@ -154,7 +159,10 @@ dae::GameObject* dae::MovementComponent::GetTouchingPlatformRight()
 dae::GameObject* dae::MovementComponent::GetTouchingLadderUp()
 {
 	if (m_Enabled)
+	{
+		m_LastDirection = WalkingDirection::Up;
 		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderUp)).GetLastTouchedColliderObj();
+	}
 	else
 		return nullptr;
 }
@@ -162,7 +170,10 @@ dae::GameObject* dae::MovementComponent::GetTouchingLadderUp()
 dae::GameObject* dae::MovementComponent::GetTouchingLadderDown()
 {
 	if (m_Enabled)
+	{
+		m_LastDirection = WalkingDirection::Down;
 		return m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderDown)).GetLastTouchedColliderObj();
+	}
 	else
 		return nullptr;
 }

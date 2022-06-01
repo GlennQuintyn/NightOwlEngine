@@ -15,14 +15,10 @@
 #include <steam_api.h>
 #pragma warning (pop)
 
-#include "Texture2DComponent.h"
-#include "TextComponent.h"
-#include "FPSComponent.h"
-#include "TrashTheCacheComponent.h"
-//#include "LivesComponent.h"
-//#include "PeterPepper.h"
-//#include "ScoreComponent.h"
-//#include "Subject.h"
+//#include "Texture2DComponent.h"
+//#include "TextComponent.h"
+//#include "FPSComponent.h"
+//#include "TrashTheCacheComponent.h"
 
 using namespace std;
 
@@ -39,9 +35,10 @@ void PrintSDLVersion()
 		linked.major, linked.minor, linked.patch);
 }
 
-dae::NightOwlEngine::NightOwlEngine(int windowWidth, int windowHeight)
-	:m_WindowWidth{ windowWidth }
+dae::NightOwlEngine::NightOwlEngine(int windowWidth, int windowHeight, const std::string windowName)
+	: m_WindowWidth{ windowWidth }
 	, m_WindowHeight{ windowHeight }
+	, m_WindowName{ windowName }
 {
 }
 
@@ -55,7 +52,7 @@ void dae::NightOwlEngine::Initialize()
 	}
 
 	m_pWindow = SDL_CreateWindow(
-		"BURGERTIME",//"Programming 4 assignment"
+		m_WindowName.c_str(),//"BURGERTIME"//"Programming 4 assignment"
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		m_WindowWidth,//640,//640
@@ -217,11 +214,6 @@ void dae::NightOwlEngine::Cleanup()
 
 void dae::NightOwlEngine::Run()
 {
-	//Initialize();
-
-	//// tell the resource manager where it can find the game data
-	//ResourceManager::GetInstance().Init("../Data/");
-
 	//LoadGame();
 
 	auto& renderer = Renderer::GetInstance();
@@ -229,15 +221,12 @@ void dae::NightOwlEngine::Run()
 	auto& input = InputManager::GetInstance();
 	auto& time = Time::GetInstance();
 	auto& collider = ColliderManager::GetInstance();
-	//auto& SS = ServiceLocator::GetSS();
 
 	sceneManager.LateInit();
 
 	bool doContinue = true;
 	auto prevTime = chrono::high_resolution_clock::now();
 	float lag = 0.0f;
-
-	//float timer{};
 
 	while (doContinue)
 	{
@@ -251,8 +240,8 @@ void dae::NightOwlEngine::Run()
 		time.Update(deltaT);
 		doContinue = input.ProcessInput();
 		sceneManager.Update();
-
 		collider.Update();
+
 		//used for physics 
 		while (lag >= m_MsPerFrame)
 		{

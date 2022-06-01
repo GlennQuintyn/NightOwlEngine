@@ -9,7 +9,7 @@ namespace dae
 	{
 	public:
 
-		NightOwlEngine(int windowWidth, int windowHeight);
+		NightOwlEngine(int windowWidth, int windowHeight, const std::string windowName = "");
 		~NightOwlEngine() = default;
 
 		void Initialize();
@@ -24,5 +24,6 @@ namespace dae
 		int m_WindowWidth;
 		int m_WindowHeight;
 		SDL_Window* m_pWindow{};
+		std::string m_WindowName;
 	};
 }

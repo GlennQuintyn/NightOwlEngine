@@ -1,14 +1,11 @@
 #pragma once
-#include "BaseComponent.h"
-#include "PCController.h"
-#include "Observer.h"
-#include "Subject.h"
-
+#include <BaseComponent.h>
+#include <Observer.h>
+#include <Subject.h>
 
 namespace dae
 {
 	class GameObject;
-	class PepperComponent;
 
 	class PeterPepper final : public BaseComponent, public Observer
 	{
@@ -45,13 +42,7 @@ namespace dae
 		Subject m_Subject;
 		glm::ivec2 m_Size;
 		glm::vec2 m_SpawnLoc;
-		PepperComponent* m_pPepperCmpt;
 		bool m_IsAlive;
-
-		//PCController::ControllerButton m_DeahtButton;
-		//PCController::ControllerButton m_ObjFellButton;
-		//PCController::ControllerButton m_EnemyPepperedButton;
-
 	};
 }
 

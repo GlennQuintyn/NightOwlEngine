@@ -1,7 +1,8 @@
 #pragma once
 #include <BaseComponent.h>
-#include "RectColliderComponent.h"
 #include <array>
+#include "RectColliderComponent.h"
+#include "Enums.h"
 
 namespace dae
 {
@@ -27,6 +28,7 @@ namespace dae
 		GameObject* GetTouchingLadderDown();
 
 		void SetEnabled(bool enabled) { m_Enabled = enabled; };
+		WalkingDirection GetLastWalkingDirection() const { return m_LastDirection; };
 
 		void LateInit() override {};
 		void Update() override {};
@@ -39,6 +41,7 @@ namespace dae
 		class HitBoxObserver;
 		std::unique_ptr<std::array<HitBoxObserver, 4>> m_pImpl;
 
+		WalkingDirection m_LastDirection;
 		bool m_Enabled;
 
 		bool m_CanGoLeft;
