@@ -1,6 +1,7 @@
 #pragma once
 #include <BaseComponent.h>
 #include <Observer.h>
+#include <Subject.h>
 
 namespace dae
 {
@@ -21,6 +22,8 @@ namespace dae
 		void Render() const override {};
 		void Reset() override {};
 
+		Subject& GetSubject() { return m_Subject; }
+
 		void Notify(GameObject* pObject, int event) override;
 
 		void RestartCurrentLevel(bool withDelay = false);
@@ -35,11 +38,13 @@ namespace dae
 		enum class NextAction
 		{
 			Nothing,
+			ResetEnemiesAndPlayer,
 			RestartCurrentLevel,
 			ReturnToMainMenu
 		};
-		GameObject* m_pParentObject;
 
+		Subject m_Subject;
+		GameObject* m_pParentObject;
 		NextAction m_NextAction{};
 		float m_ResetDelay{ 4.5f };
 		float m_TimeLeft{};

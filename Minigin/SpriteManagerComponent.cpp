@@ -155,7 +155,7 @@ void dae::SpriteManagerComponent::Update()
 	case dae::SpriteManagerComponent::SpritePlayType::Looping:
 		m_pSpriteArray->at(m_CurrentSpriteIndex).Update();
 		break;
-	case dae::SpriteManagerComponent::SpritePlayType::PlayUntilNoMovement:
+	case dae::SpriteManagerComponent::SpritePlayType::LoopUntilNoMovement:
 		//if in the current frame there was no movement then it should play the idle frame
 		if (!m_IsMoving)
 		{
@@ -198,12 +198,12 @@ void dae::SpriteManagerComponent::Render() const
 //		Logger::GetInstance().LogWarning("SPRITEMANAGER: index was out of bounds");
 //}
 
-//index of the sprite, playtype: PlayOnce, Looping and PlayUntilNoMovement
+//index of the sprite, playtype: PlayOnce, Looping and LoopUntilNoMovement
 void dae::SpriteManagerComponent::PlaySprite(uint32_t index, SpritePlayType playType)
 {
-	//the PlayUntilNoMovement is for when a sprite should keep looping until no more input was given so that i would go to an idle frame/sprite animation
+	//the LoopUntilNoMovement is for when a sprite should keep looping until no more input was given so that i would go to an idle frame/sprite animation
 	m_CurrentSpritePlayType = playType;
-	if (m_CurrentSpritePlayType == SpritePlayType::PlayUntilNoMovement)
+	if (m_CurrentSpritePlayType == SpritePlayType::LoopUntilNoMovement)
 		m_IsMoving = true;
 
 	//if its the same sprite don't do anything
@@ -215,7 +215,7 @@ void dae::SpriteManagerComponent::PlaySprite(uint32_t index, SpritePlayType play
 		m_CurrentSpriteIndex = index;
 		m_pSpriteArray->at(m_CurrentSpriteIndex).Reset();
 
-		if (m_CurrentSpritePlayType == SpritePlayType::Looping || m_CurrentSpritePlayType == SpritePlayType::PlayUntilNoMovement)
+		if (m_CurrentSpritePlayType == SpritePlayType::Looping || m_CurrentSpritePlayType == SpritePlayType::LoopUntilNoMovement)
 			m_pSpriteArray->at(m_CurrentSpriteIndex).SetLoopState(true);
 		else
 			m_pSpriteArray->at(m_CurrentSpriteIndex).SetLoopState(false);

@@ -34,6 +34,8 @@
 #include "MrPickle.h"
 #include "EnemyControllerComponent.h"
 
+#include "GameManager.h"
+
 #include "PepperComponent.h"
 
 #include "PepperCountComponent.h"
@@ -66,13 +68,9 @@ int main(int, char* [])
 	// tell the resource manager where it can find the game data
 	ResourceManager::GetInstance().Init("../Data/");
 
-
+	//TODO: set all level AND main menu loading stuff into seperate functions
 #pragma region LoadGame
-
-	//std::cout << "\n\n-player 1:\n\tButton Y: Lose a life\n\tButton R1: add 25 to score\n\tButton R3: add 50 to score\n\n";
-	//std::cout << "-player 2:\n\tButton X: Lose a life\n\tButton L1: add 25 to score\n\tButton L3: add 50 to score\n\n";
-
-	//auto& sceneModeSelect = SceneManager::GetInstance().CreateScene("ModeSelect");
+	//auto& sceneModeSelect = SceneManager::GetInstance().CreateScene("MainMenu");
 	auto& sceneLevel1 = SceneManager::GetInstance().CreateScene("Level1");
 	//auto& sceneLevel2 = SceneManager::GetInstance().CreateScene("Level2");
 	//auto& sceneLevel3 = SceneManager::GetInstance().CreateScene("Level2");
@@ -96,6 +94,10 @@ int main(int, char* [])
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
 
 
+	auto& gameManagerObj = sceneLevel1.CreateObject("gameManagerObj");
+	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
+
+
 	//pepper object to throw on enemies
 	auto& pepperObj = sceneLevel1.CreateObject("pepperObj");
 	auto& pepperCmpt = pepperObj.AddComponent<PepperComponent>();
@@ -107,7 +109,6 @@ int main(int, char* [])
 	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
 	pepperCollider.Init({ 0,0,45,45 }, -100, true);
 	pepperObj.SetLocalPosition(-100.f, -100.f);
-	//pepperObj.SetLocalPosition(300.f, 300.f);
 	pepperCmpt.SetResetPos(-100.f, -100.f);
 	pepperCmpt.SetSpriteDuration(1.f);
 
@@ -137,31 +138,42 @@ int main(int, char* [])
 
 	auto& pettercollidersubje = peterCollider.GetSubject();
 	pettercollidersubje.AddObserver(petercmpt);
+	auto& petterPeppersubje = petercmpt.GetSubject();
 
-	auto& mrHotDogObj = sceneLevel1.CreateObject("mrHotDogObj");
-	auto& mrHotDogcmpt = mrHotDogObj.AddComponent<MrHotDog>();
-	auto& mrHotDogSpriteManager = mrHotDogObj.AddComponent<SpriteManagerComponent>();
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
-	mrHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+#pragma region Enemies
+	auto& mrHotDogObj1 = sceneLevel1.CreateObject("mrHotDogObj1");
+	auto& mrHotDogcmpt1 = mrHotDogObj1.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager1 = mrHotDogObj1.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager1.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
-	auto& mrHotDogCollider = mrHotDogObj.AddComponent<RectColliderComponent>();
-	mrHotDogCollider.Init({ 0,0,45,45 }, -2, true);
-	mrHotDogObj.AddComponent<MovementComponent>();
-	auto& mrHotDogController = mrHotDogObj.AddComponent<EnemyControllerComponent>();
-	mrHotDogController.SetPlayer1(&peterPepperObj);
-	//mrHotDogObj.SetLocalPosition(29, 162);
-	mrHotDogObj.SetLocalPosition(97, 320);
+	auto& mrHotDogCollider1 = mrHotDogObj1.AddComponent<RectColliderComponent>();
+	mrHotDogCollider1.Init({ 0,0,45,45 }, -2, true);
+	mrHotDogObj1.AddComponent<MovementComponent>();
+	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
+	mrHotDogController1.SetPlayer1(&peterPepperObj);
+	//mrHotDogObj1.SetLocalPosition(-18, 162);
+	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
 
-	auto& mrHotDogcollidersubje = mrHotDogCollider.GetSubject();
-	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt);
+	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
+	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+	petterPeppersubje.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+
+	auto& gameManagersubje = gameManagercmpt.GetSubject();
+	gameManagersubje.AddObserver(petercmpt);
+	gameManagersubje.AddObserver(mrHotDogcmpt1);
+	//the enemiesand peterpepper should observe the gamemanager for the reset post event
 
 #pragma region InputCommandsPeter
-	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+		inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
@@ -233,10 +245,10 @@ int main(int, char* [])
 	ladder8colliderCmpt.Init({ 0, 0, 4, 450 }, 17, true, { 255, 255, 0, 128 });
 
 	auto& ladderObj9 = sceneLevel1.CreateObject("ladderObj9");
-	ladderObj9.SetLocalPosition(519.f, 338.f);
+	ladderObj9.SetLocalPosition(519.f, 340.f);
 	ladderObj9.AddComponent<LadderComponent>();
 	auto& ladder9colliderCmpt = ladderObj9.AddComponent<RectColliderComponent>();
-	ladder9colliderCmpt.Init({ 0, 0, 3, 269 }, 18, true, { 255, 255, 0, 128 });
+	ladder9colliderCmpt.Init({ 0, 0, 3, 267 }, 18, true, { 255, 255, 0, 128 });
 
 	auto& ladderObj10 = sceneLevel1.CreateObject("ladderObj10");
 	ladderObj10.SetLocalPosition(586.f, 159.f);
@@ -513,6 +525,7 @@ int main(int, char* [])
 	//
 	//Static UI
 	//
+#pragma region Static UI
 	auto& oneUpTextObject = sceneLevel1.CreateObject("oneUpTextObject");
 	oneUpTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 255, 0, 0 }, "1UP");
 	oneUpTextObject.SetLocalPosition(float(uiFontSize * 4), 5);
@@ -524,6 +537,7 @@ int main(int, char* [])
 	auto& pepperTextObject = sceneLevel1.CreateObject("pepperTextObject");
 	pepperTextObject.AddComponent<TextComponent>().Setup(uiFont, SDL_Color{ 0, 255, 0 }, "PEPPER");
 	pepperTextObject.SetLocalPosition(float(windowW - (uiFontSize * 7)), 5);
+#pragma endregion
 
 	//
 	//Dynamic UI
@@ -532,16 +546,19 @@ int main(int, char* [])
 	auto& livescmpt = peterLivesObj.AddComponent<LivesComponent>();
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
-	auto& petterPeppersubje = petercmpt.GetSubject();
+	auto& livessubje = livescmpt.GetSubject();
+	livessubje.AddObserver(gameManagercmpt);
 	petterPeppersubje.AddObserver(livescmpt);
-
 
 
 	auto& scoreObject = sceneLevel1.CreateObject("scoreObject");
 	auto& scoretextcomp = scoreObject.AddComponent<TextComponent>();
 	scoretextcomp.Setup(uiFont);
-	scoreObject.AddComponent<ScoreComponent>().SetTextComponent(scoretextcomp);
+	auto& scoreCmpt = scoreObject.AddComponent<ScoreComponent>();
+	scoreCmpt.SetTextComponent(scoretextcomp);
 	scoreObject.SetLocalPosition(uiFontSize * 7.f, uiFontSize * 1.5f);
+	auto& scoresubje = scoreCmpt.GetSubject();
+	scoresubje.AddObserver(livescmpt);
 
 	//TODO: hi score component should read hi-score from file and observe the score object,
 	//if the score components value is bigger than the current high score update it
@@ -549,7 +566,9 @@ int main(int, char* [])
 	auto& hiScoreObject = sceneLevel1.CreateObject("scoreObject");
 	auto& hiScoretextcomp = hiScoreObject.AddComponent<TextComponent>();
 	hiScoretextcomp.Setup(uiFont);
-	hiScoreObject.AddComponent<HiScoreComponent>().SetTextComponent(hiScoretextcomp);
+	auto& hiScoreCmpt = hiScoreObject.AddComponent<HiScoreComponent>();
+	hiScoreCmpt.SetTextComponent(hiScoretextcomp);
+	hiScoreCmpt.SetScoreComponent(scoreCmpt);
 	hiScoreObject.SetLocalPosition(uiFontSize * 15.f, uiFontSize * 1.5f);
 
 	auto& pepperCountObject = sceneLevel1.CreateObject("pepperCountObject");

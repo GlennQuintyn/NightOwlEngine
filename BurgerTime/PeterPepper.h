@@ -20,13 +20,9 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
-		void Reset() override {};
+		void Reset() override;
 
 		void Notify(GameObject* pObject, int event) override;
-
-		//void SetDeathButton(PCController::ControllerButton deahtButton);
-		//void SetObjectFellButton(PCController::ControllerButton objFellButton);
-		//void SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton);
 
 		Subject& GetSubject() { return m_Subject; }
 
@@ -42,7 +38,7 @@ namespace dae
 		GameObject* m_pParentObject;
 		Subject m_Subject;
 		glm::ivec2 m_Size;
-		glm::vec2 m_SpawnLoc;
+		glm::vec2 m_SpawnPos;
 		bool m_IsAlive;
 	};
 }

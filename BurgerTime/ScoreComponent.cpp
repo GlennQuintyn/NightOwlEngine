@@ -15,9 +15,11 @@ using namespace dae;
 //extern SteamAchievements* g_SteamAchievements;
 
 ScoreComponent::ScoreComponent(GameObject* pParentObject)
-	: m_pParentObject{ nullptr }
+	: m_Subject{}
+	, m_pParentObject{ nullptr }
 	, m_pTextComponent{ nullptr }
 	, m_CurrentScore{}
+	, m_ExtraLifeTreshold{ 20'000 }//every 20 000 points the player gets another life
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;
@@ -44,10 +46,11 @@ void ScoreComponent::Notify(GameObject* pObject, int event)
 		break;
 	}
 
-	if (m_CurrentScore >= 500)
+	if (m_CurrentScore >= m_ExtraLifeTreshold)
 	{
-		if (SteamAchievements::g_SteamAchievements)
-			SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
+		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::ExtraLifeGained));
+		//if (SteamAchievements::g_SteamAchievements)
+		//	SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
 	}
 }
 

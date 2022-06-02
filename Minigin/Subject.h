@@ -1,6 +1,4 @@
 #pragma once
-//#include "BaseComponent.h"
-//#include "Observer.h"
 #include <vector>
 #include <memory>
 
@@ -9,13 +7,11 @@ namespace dae
 	class GameObject;
 	class Observer;
 
-	class Subject final// : public BaseComponent
+	class Subject final
 	{
 	public:
-		Subject(/*GameObject* pParentObject*/) = default;
+		Subject() = default;
 		~Subject() = default;
-
-		//void Update() {};
 
 		void AddObserver(Observer& observer);
 		void RemoveObserver(const Observer* observer);
@@ -28,7 +24,5 @@ namespace dae
 
 	private:
 		std::vector<Observer*> m_pObservers;
-		//GameObject* m_pParentObject;
-
 	};
 }

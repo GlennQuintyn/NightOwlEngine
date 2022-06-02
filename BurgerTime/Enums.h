@@ -6,7 +6,10 @@ namespace dae
 	{
 		Player_Died = 10,
 		Item_Fell = 11,
-		Enemy_Peppered = 12
+		Enemy_Peppered = 12,
+		Game_Over=13,
+		ExtraLifeGained,
+		ResetPos
 	};
 
 	enum class SpriteIndices : uint32_t

@@ -42,7 +42,7 @@ void LivesComponent::SetTexture(const std::string& filename, float sizeX, float 
 		m_IconSize.x = sizeX;
 		m_IconSize.y = sizeY;
 	}
-	//ResourceManager::GetInstance().Init
+
 	m_pTexture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
@@ -52,8 +52,16 @@ void dae::LivesComponent::Notify(GameObject*, int event)
 	{
 	case dae::Events::Player_Died:
 		--m_CurrentLives;
+
 		if (m_CurrentLives < 0)
+		{
 			m_CurrentLives = 0;
+			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Game_Over));
+		}
+		else
+		{
+			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Player_Died));
+		}
 		break;
 	}
 

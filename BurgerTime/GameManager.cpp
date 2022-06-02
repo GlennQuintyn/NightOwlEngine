@@ -1,10 +1,12 @@
 #include "BurgerTimePCH.h"
 #include "GameManager.h"
 #include "SceneManager.h"
+#include "Enums.h"
 
 dae::GameManager::GameManager(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_NextAction{ NextAction::Nothing }
+	, m_Subject{}
 	, m_ResetDelay{ 4.5f }
 	, m_TimeLeft{}
 	, m_TimerStarted{}
@@ -37,21 +39,31 @@ void dae::GameManager::Update()
 	}
 }
 
-void dae::GameManager::Notify(GameObject* pObject, int event)
+void dae::GameManager::Notify(GameObject*, int event)
 {
-	pObject;
-	event;
+	switch (static_cast<Events>(event))
+	{
+	case Events::Player_Died:
+		RestartCurrentLevel(true);
+		break;
+	case Events::Game_Over:
+		ReturnToMainMenu(true);
+		break;
+	}
 }
 
 void dae::GameManager::RestartCurrentLevel(bool withDelay)
 {
+	withDelay;
 	if (withDelay)
 	{
-
+		m_NextAction = NextAction::RestartCurrentLevel;
+		m_TimeLeft = m_ResetDelay;
 	}
 	else
 	{
-		//SceneManager::GetInstance().
+		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::ResetPos));
+		//SceneManager::GetInstance().();
 	}
 }
 
@@ -59,6 +71,11 @@ void dae::GameManager::ReturnToMainMenu(bool withDelay)
 {
 	if (withDelay)
 	{
-
+		m_NextAction = NextAction::RestartCurrentLevel;
+		m_TimeLeft = m_ResetDelay;
+	}
+	else
+	{
+		SceneManager::GetInstance().SetActiveScene(0);//scene 0 is the main menu scene
 	}
 }

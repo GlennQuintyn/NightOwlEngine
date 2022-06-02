@@ -14,21 +14,29 @@ dae::EnemyControllerComponent::EnemyControllerComponent(GameObject* pParentObjec
 	, m_pSpriteManagerCmpt{ nullptr }
 	, m_pPlayer1{ nullptr }
 	, m_pPlayer2{ nullptr }
-	, m_State{ MovementState::DownLadder }//TODO: FIX
+	, m_State{ MovementState::DownLadder }//TO: FIX
 	, m_PreviousState{}
 	, m_MovmentSpeed{ 75.f, 40.f }//x: horizontal, y: vertical
 	, m_Size{}
 {
 }
 
-void dae::EnemyControllerComponent::SetMovement(bool state)
+void dae::EnemyControllerComponent::SetMovement(bool enable, MovementState state)
 {
-	if (!state)
+	if (!enable)
 	{
-		m_PreviousState = m_State;
+		if (m_State != MovementState::NoMovement)
+			m_PreviousState = m_State;
+
 		m_State = MovementState::NoMovement;
 	}
-	else { m_State = m_PreviousState; }
+	else
+	{
+		if (state == MovementState::UsePrevious)
+			m_State = m_PreviousState;
+		else
+			m_State = state;
+	}
 }
 
 void dae::EnemyControllerComponent::LateInit()

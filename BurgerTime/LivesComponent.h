@@ -1,19 +1,7 @@
 #pragma once
-//#include <Texture2D.h>
-//disabling all warnings that come from this math library
-//#pragma warning(push)
-//#pragma warning( disable : 26495 )
-//#pragma warning( disable : 26812 )
-//#pragma warning( disable : 26819 )
-//#pragma warning( disable : 4201 )
-//#include <glm/glm.hpp>
-////#include <SDL.h>
-//#pragma warning (pop)
-//#include <memory>
-
-
-#include "BaseComponent.h"
-#include "Observer.h"
+#include <BaseComponent.h>
+#include <Observer.h>
+#include <Subject.h>
 
 namespace dae
 {
@@ -38,6 +26,8 @@ namespace dae
 			m_IconSize.x = x; m_IconSize.y = y;
 		};
 
+		Subject& GetSubject() { return m_Subject; }
+
 		void Notify(GameObject* pObject, int event) override;
 
 		void LateInit() override;
@@ -51,6 +41,7 @@ namespace dae
 		LivesComponent& operator=(const LivesComponent& other) = delete;
 		LivesComponent& operator=(LivesComponent&& other) = delete;
 	private:
+		Subject m_Subject;
 		std::shared_ptr<Texture2D> m_pTexture;
 		glm::vec2 m_IconSize;
 		GameObject* m_pParentObject;

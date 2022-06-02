@@ -1,10 +1,7 @@
 #include "BurgerTimePCH.h"
-//#include <stdio.h>
-//#include <sstream>
-//#include "Logger.h"
-
 #include "HiScoreComponent.h"
 #include "TextComponent.h"
+#include "ScoreComponent.h"
 
 using namespace dae;
 
@@ -26,11 +23,19 @@ void HiScoreComponent::LateInit()
 		Logger::GetInstance().LogError("HISCORECOMPONENT:\tTEXTCOMPONENT WAS NOT GIVEN!");
 	if (!m_pScoreComponent)
 		Logger::GetInstance().LogError("HISCORECOMPONENT:\tSCORECOMPONENT WAS NOT GIVEN!");
+
+	//TODO: Add-in score loading from file
+
+
+	m_pTextComponent->SetText(std::to_string(m_Score));//set intial score value
 }
 
 void HiScoreComponent::Update()
 {
-	m_pTextComponent->SetText(std::to_string(m_Score));
+	if (m_pScoreComponent->GetCurrentScore() > m_Score)
+	{
+		m_pTextComponent->SetText(std::to_string(m_Score));//update score value
+	}
 }
 
 void HiScoreComponent::SetTextComponent(TextComponent& textComponent)

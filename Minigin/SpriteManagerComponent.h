@@ -12,7 +12,7 @@ namespace dae
 		{
 			PlayOnce,
 			Looping,
-			PlayUntilNoMovement
+			LoopUntilNoMovement
 		};
 
 		SpriteManagerComponent(GameObject* pParentObject);
@@ -28,7 +28,7 @@ namespace dae
 		void Reset() override {};
 
 		//void PlaySprite(uint32_t index, bool loop = true);
-		void PlaySprite(uint32_t index, SpritePlayType = SpritePlayType::PlayUntilNoMovement);
+		void PlaySprite(uint32_t index, SpritePlayType = SpritePlayType::LoopUntilNoMovement);
 		void AddSprite(const std::string& filename, int columnCount, int rowCount, int fps, float width, float height);
 
 		SpriteManagerComponent(const SpriteManagerComponent& other) = delete;

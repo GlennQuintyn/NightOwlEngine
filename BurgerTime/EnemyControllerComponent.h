@@ -10,6 +10,18 @@ namespace dae
 	class EnemyControllerComponent final : public BaseComponent
 	{
 	public:
+		enum class MovementState
+		{
+			LadderDone,
+			Left,
+			Right,
+			PlatformDone,
+			UpLadder,
+			DownLadder,
+			NoMovement,
+			UsePrevious
+		};
+
 		EnemyControllerComponent(GameObject* pParentObject);
 
 		//make sure that component has a parent that isn't nullptr
@@ -17,7 +29,7 @@ namespace dae
 
 		~EnemyControllerComponent() = default;
 
-		void SetMovement(bool state);
+		void SetMovement(bool enable, MovementState state = MovementState::UsePrevious);
 
 		void SetPlayer1(GameObject* pPlayer1) { m_pPlayer1 = pPlayer1; };
 		void SetPlayer2(GameObject* pPlayer2) { m_pPlayer2 = pPlayer2; };
@@ -39,16 +51,6 @@ namespace dae
 		void MoveUp(const glm::vec2& pos);
 		void MoveDown(const glm::vec2& pos);
 
-		enum class MovementState
-		{
-			LadderDone,
-			Left,
-			Right,
-			PlatformDone,
-			UpLadder,
-			DownLadder,
-			NoMovement
-		};
 		glm::vec2 m_MovmentSpeed;
 		glm::ivec2 m_Size;
 

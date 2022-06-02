@@ -32,8 +32,6 @@ namespace dae
 			{
 				if (auto pLaddercmp = pObject->GetComponent<LadderComponent>())
 				{
-					//m_pLastTouchedColliderObj = pObject;
-
 					// if the event is a 0 that means the collider entered a ladder and if its 0 it exited one
 					switch (event)
 					{
@@ -55,8 +53,6 @@ namespace dae
 			{
 				if (auto pPlatformcmp = pObject->GetComponent<WalkingPlatformComponent>())
 				{
-					//m_pLastTouchedColliderObj = pObject;
-
 					// if the event is a 0 that means the collider entered a platform and if its 0 it exited one
 					switch (event)
 					{

@@ -61,6 +61,20 @@ void PeterPepper::Update()
 	//}
 }
 
+void dae::PeterPepper::Reset()
+{
+	m_pParentObject->SetLocalPosition(m_SpawnPos);
+
+	if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
+	{
+		pMovement->SetEnabled(true);
+	}
+	if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
+	{
+		pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Idle));
+	}
+}
+
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
 	if (!m_IsAlive)
@@ -82,6 +96,10 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 			}
 		}
 	}
+	else if (event == static_cast<int>(Events::ResetPos))
+	{
+		Reset();
+	}
 }
 
 //void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)
@@ -99,15 +117,9 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 //	m_EnemyPepperedButton = enemyPepperedButton;
 //}
 
+//spawn location only gets set at begin of level so movement should be active
 void dae::PeterPepper::SetSpawnLocation(float x, float y)
 {
-	m_SpawnLoc.x = x;
-	m_SpawnLoc.y = y;
-
-	//TODO: move to RESET FUNCTION
-	//spawn location only gets set at begin of level so movement should be active
-	if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
-	{
-		pMovement->SetEnabled(true);
-	}
+	m_SpawnPos.x = x;
+	m_SpawnPos.y = y;
 }
