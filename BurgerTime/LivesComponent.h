@@ -6,7 +6,6 @@
 namespace dae
 {
 	class GameObject;
-	class TextComponent;
 	class Texture2D;
 
 	class LivesComponent final : public BaseComponent, public Observer

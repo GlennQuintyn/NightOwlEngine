@@ -207,16 +207,16 @@ bool dae::InputManager::IsReleasedThisFrame(KeyboardKey keyboardButton) const
 #pragma endregion
 
 #pragma region Mouse Buttons
-bool dae::InputManager::IsPressed(MouseButtons mouseButton) const
+bool dae::InputManager::IsPressed(int mouseButton) const
 {
-	return m_CurrentMouseButtons & int(mouseButton);
+	return m_CurrentMouseButtons & mouseButton;
 }
-bool dae::InputManager::IsPressedThisFrame(MouseButtons mouseButton) const
+bool dae::InputManager::IsPressedThisFrame(int mouseButton) const
 {
-	return m_ButtonsPressedThisFrame & int(mouseButton);
+	return m_ButtonsPressedThisFrame & mouseButton;
 }
-bool dae::InputManager::IsReleasedThisFrame(MouseButtons mouseButton) const
+bool dae::InputManager::IsReleasedThisFrame(int mouseButton) const
 {
-	return m_ButtonsReleasedThisFrame & int(mouseButton);
+	return m_ButtonsReleasedThisFrame & mouseButton;
 }
 #pragma endregion

@@ -20,7 +20,7 @@ namespace dae
 		//virtual void LateUpdate() {};
 		//virtual void Render() const;
 
-		void LateInit() override {};
+		void LateInit() override;
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
@@ -49,6 +49,7 @@ namespace dae
 		GameObject* m_pParentObject;
 		int m_IdNr;//TODO: remove the ID
 		bool m_DebugRender;
+		bool m_Ready;
 	};
 }
 

@@ -36,6 +36,6 @@ namespace dae
 
 		std::vector<std::unique_ptr<Scene>> m_pScenes;
 
-		size_t m_ActiveSceneIndex;
+		size_t m_ActiveSceneIndex{};
 	};
 }

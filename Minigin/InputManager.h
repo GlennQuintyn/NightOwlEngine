@@ -1,5 +1,4 @@
 #pragma once
-//#include <XInput.h>
 #include "Singleton.h"
 
 #include "PCController.h"
@@ -167,11 +166,11 @@ namespace dae
 		bool IsReleasedThisFrame(KeyboardKey keyboardButton) const;
 
 		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
-		bool IsPressed(MouseButtons mouseButton) const;
+		bool IsPressed(int mouseButton) const;
 		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
-		bool IsPressedThisFrame(MouseButtons mouseButton) const;
+		bool IsPressedThisFrame(int mouseButton) const;
 		//uses a bit mask, if you want to test for more mouse buttons just continue the mask and cast to MouseButtons
-		bool IsReleasedThisFrame(MouseButtons mouseButton) const;
+		bool IsReleasedThisFrame(int mouseButton) const;
 
 		const glm::ivec2& GetMousePosition() { return m_MousePos; };
 
@@ -185,6 +184,7 @@ namespace dae
 		template<typename CommandType>
 		CommandType& AddCommand(KeyboardKey keyboardKey, ButtonPressState pressState);
 
+		//because not all mouses have the same buttons the enum is limited to the most used ones, you need to static_cast<int>() your MouseButtons or give the index of the button you want to add as a command
 		template<typename CommandType>
 		CommandType& AddCommand(int mouseButton, ButtonPressState pressState);
 
@@ -214,7 +214,7 @@ namespace dae
 
 		struct MouseButtonType
 		{
-			MouseButtons button;
+			int button;
 			ButtonPressState pressState;
 
 			std::strong_ordering operator<=>(MouseButtonType other) const

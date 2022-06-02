@@ -8,7 +8,8 @@ void dae::ColliderManager::RegisterRectCollider(RectColliderComponent* pCollider
 
 void dae::ColliderManager::Update()
 {
-	//Logger::GetInstance().LogInfo("COLLISION CHECK");
+	if (m_pRectColliderComponents.empty())
+		return;
 
 	for (size_t index1 = 0; index1 < m_pRectColliderComponents.size() - 1; index1++)
 	{

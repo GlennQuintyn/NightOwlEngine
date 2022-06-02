@@ -63,7 +63,6 @@ void dae::GameManager::RestartCurrentLevel(bool withDelay)
 	else
 	{
 		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::ResetPos));
-		//SceneManager::GetInstance().();
 	}
 }
 
@@ -71,11 +70,14 @@ void dae::GameManager::ReturnToMainMenu(bool withDelay)
 {
 	if (withDelay)
 	{
-		m_NextAction = NextAction::RestartCurrentLevel;
+		m_NextAction = NextAction::ReturnToMainMenu;
 		m_TimeLeft = m_ResetDelay;
 	}
 	else
 	{
-		SceneManager::GetInstance().SetActiveScene(0);//scene 0 is the main menu scene
+		//scene 0 should be the main menu scene
+		auto& scene = SceneManager::GetInstance();
+		scene.SetActiveScene(0);
+		scene.LateInit();
 	}
 }

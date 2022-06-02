@@ -24,7 +24,7 @@
 using namespace dae;
 
 LivesComponent::LivesComponent(GameObject* pParentObject)
-	: m_CurrentLives{ 3 }
+	: m_CurrentLives{ 1 }//3
 	, m_IconSize{ -1.f,-1.f }
 	, m_pParentObject{ nullptr }
 	, m_pTexture{ nullptr }
@@ -53,9 +53,9 @@ void dae::LivesComponent::Notify(GameObject*, int event)
 	case dae::Events::Player_Died:
 		--m_CurrentLives;
 
-		if (m_CurrentLives < 0)
+		if (m_CurrentLives < 1)
 		{
-			m_CurrentLives = 0;
+			//m_CurrentLives = 0;
 			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Game_Over));
 		}
 		else

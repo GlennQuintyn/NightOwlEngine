@@ -5,10 +5,12 @@ using namespace dae;
 
 void SceneManager::LateInit()
 {
-	for (const auto& scene : m_pScenes)
-	{
-		scene->LateInit();
-	}
+	m_pScenes[m_ActiveSceneIndex]->LateInit();
+
+	//for (const auto& scene : m_pScenes)
+	//{
+	//	scene->LateInit();
+	//}
 }
 
 void SceneManager::Update()
@@ -58,7 +60,7 @@ void dae::SceneManager::ResetActiveScene()
 
 void dae::SceneManager::SetActiveScene(size_t index)
 {
-	if (index<0 || index>m_pScenes.size() - 1)
+	if (index < 0 || index>m_pScenes.size() - 1)
 		return;
 
 	m_ActiveSceneIndex = index;
@@ -68,7 +70,7 @@ void dae::SceneManager::GotoNextScene()
 {
 	++m_ActiveSceneIndex;
 
-	if (m_ActiveSceneIndex + 1 > m_pScenes.size())
+	if (m_ActiveSceneIndex >= m_pScenes.size())
 		m_ActiveSceneIndex = 0;
 }
 

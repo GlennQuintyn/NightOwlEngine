@@ -11,8 +11,14 @@ dae::RectColliderComponent::RectColliderComponent(GameObject* pParentObject)
 	, m_ColliderColor{ 255, 255, 255, SDL_ALPHA_OPAQUE / 2 }
 	, m_IdNr{ 0 }
 	, m_DebugRender{ false }
+	, m_Ready{ false }
 {
 	ColliderManager::GetInstance().RegisterRectCollider(this);
+}
+
+void dae::RectColliderComponent::LateInit()
+{
+	m_Ready = true;
 }
 
 void dae::RectColliderComponent::Render() const
@@ -51,6 +57,9 @@ void dae::RectColliderComponent::Init(SDL_Rect colliderBox, int id, bool debugRe
 
 void dae::RectColliderComponent::UpdateOverlapping(RectColliderComponent* pOtherCollider)
 {
+	if (!m_Ready)
+		return;
+
 	SDL_Rect r1{ m_ColliderBox };//should get world position
 	SDL_Rect r2{ pOtherCollider->m_ColliderBox };
 

@@ -6,11 +6,12 @@
 #include "RectColliderComponent.h"
 #include "SpriteManagerComponent.h"
 #include "Enums.h"
+#include "MainMenuComponent.h"
 
 namespace dae
 {
-	int g_MovementSpeedHorizontal{ 100 };
-	int g_MovementSpeedVertical{ 75 };//50
+	const int g_MovementSpeedHorizontal{ 100 };
+	const int g_MovementSpeedVertical{ 75 };//50
 
 	class WalkLeftCommand final : public Command
 	{
@@ -262,4 +263,78 @@ namespace dae
 		GameObject* m_pPlayerObject{};
 		glm::ivec2 m_Size{};
 	};
+
+#pragma region MainMenuCommands
+
+	class NextButtonCommand final : public Command
+	{
+	public:
+		void SetMainMenuCmpt(MainMenuComponent* pMainMenu)
+		{
+			if (pMainMenu)
+				m_pMainMenu = pMainMenu;
+		}
+	private:
+		void Execute() override
+		{
+			m_pMainMenu->SelectNextButton();
+		}
+
+		MainMenuComponent* m_pMainMenu{};
+	};
+
+	class PreviousButtonCommand final : public Command
+	{
+	public:
+		void SetMainMenuCmpt(MainMenuComponent* pMainMenu)
+		{
+			if (pMainMenu)
+				m_pMainMenu = pMainMenu;
+		}
+
+	private:
+		void Execute() override
+		{
+			m_pMainMenu->SelectPreviousButton();
+		}
+
+		MainMenuComponent* m_pMainMenu{};
+	};
+
+	class MouseButtonCommand final : public Command
+	{
+	public:
+		void SetMainMenuCmpt(MainMenuComponent* pMainMenu)
+		{
+			if (pMainMenu)
+				m_pMainMenu = pMainMenu;
+		}
+
+	private:
+		void Execute() override
+		{
+			m_pMainMenu->CheckIfMouseInsideButton();
+		}
+
+		MainMenuComponent* m_pMainMenu{};
+	};
+
+	class PressSelectedButtonCommand final : public Command
+	{
+	public:
+		void SetMainMenuCmpt(MainMenuComponent* pMainMenu)
+		{
+			if (pMainMenu)
+				m_pMainMenu = pMainMenu;
+		}
+
+	private:
+		void Execute() override
+		{
+			m_pMainMenu->PressSelectedButton();
+		}
+
+		MainMenuComponent* m_pMainMenu{};
+	};
+#pragma endregion
 }
