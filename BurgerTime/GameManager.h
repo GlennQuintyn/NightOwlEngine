@@ -20,14 +20,16 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
-		void Reset() override {};
+		void Reset() override;
 
 		Subject& GetSubject() { return m_Subject; }
 
 		void Notify(GameObject* pObject, int event) override;
+		void SetMaxFullPlateCount(int count) { m_MaxPlateFullCount = count; };
 
 		void RestartCurrentLevel(bool withDelay = false);
 		void ReturnToMainMenu(bool withDelay = false);
+		void AdvanceToNextLevel(bool withDelay = false);
 
 		GameManager(const GameManager& other) = delete;
 		GameManager(GameManager&& other) = delete;
@@ -40,13 +42,16 @@ namespace dae
 			Nothing,
 			ResetEnemiesAndPlayer,
 			RestartCurrentLevel,
-			ReturnToMainMenu
+			ReturnToMainMenu,
+			AdvanceToNextLevel
 		};
 
 		Subject m_Subject;
 		GameObject* m_pParentObject;
 		NextAction m_NextAction{};
-		float m_ResetDelay{ 4.5f };
+		int m_PlateFullCount;
+		int m_MaxPlateFullCount;
+		float m_Delay;
 		float m_TimeLeft{};
 		bool m_TimerStarted{};
 	};

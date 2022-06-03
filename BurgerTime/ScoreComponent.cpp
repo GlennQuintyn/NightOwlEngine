@@ -12,13 +12,13 @@
 
 using namespace dae;
 
-//extern SteamAchievements* g_SteamAchievements;
+int ScoreComponent::m_CurrentScore{};
 
 ScoreComponent::ScoreComponent(GameObject* pParentObject)
 	: m_Subject{}
 	, m_pParentObject{ nullptr }
 	, m_pTextComponent{ nullptr }
-	, m_CurrentScore{}
+
 	, m_ExtraLifeTreshold{ 20'000 }//every 20 000 points the player gets another life
 {
 	if (pParentObject)
@@ -32,25 +32,47 @@ void ScoreComponent::SetTextComponent(TextComponent& pTextComponent)
 	m_pTextComponent = &pTextComponent;
 }
 
-void ScoreComponent::Notify(GameObject* pObject, int event)
+void ScoreComponent::Notify(GameObject*, int event)
 {
-	pObject;
-
+	//harcoded points switch for each event that should give the player points
 	switch (Events(event))
 	{
 	case dae::Events::Item_Fell:
-		m_CurrentScore += 25;
-		break;
-	case dae::Events::Enemy_Peppered:
 		m_CurrentScore += 50;
+		break;
+	case dae::Events::Mr_HotDog_Died:
+		m_CurrentScore += 100;
+		break;
+	case dae::Events::Mr_Egg_Died:
+		m_CurrentScore += 300;
+		break;
+	case dae::Events::Mr_Pickle_Died:
+		m_CurrentScore += 200;
+		break;
+	case dae::Events::Drop_Enemy_1:
+		m_CurrentScore += 500;
+		break;
+	case dae::Events::Drop_Enemy_2:
+		m_CurrentScore += 1000;
+		break;
+	case dae::Events::Drop_Enemy_3:
+		m_CurrentScore += 2000;
+		break;
+	case dae::Events::Drop_Enemy_4:
+		m_CurrentScore += 4000;
+		break;
+	case dae::Events::Drop_Enemy_5:
+		m_CurrentScore += 8000;
+		break;
+	case dae::Events::Drop_Enemy_6:
+		m_CurrentScore += 16'000;
 		break;
 	}
 
+	//if the player reaches a certain point ammount it should give the player an extra life
 	if (m_CurrentScore >= m_ExtraLifeTreshold)
 	{
-		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::ExtraLifeGained));
-		//if (SteamAchievements::g_SteamAchievements)
-		//	SteamAchievements::g_SteamAchievements->SetAchievement("ACH_WIN_ONE_GAME");
+		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Extra_Life_Gained));
 	}
 }
 

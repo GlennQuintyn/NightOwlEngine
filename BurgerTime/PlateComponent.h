@@ -1,6 +1,7 @@
 #pragma once
 #include <BaseComponent.h>
 #include <Observer.h>
+#include <Subject.h>
 
 namespace dae
 {
@@ -25,7 +26,7 @@ namespace dae
 		void Render() const override {};
 		void Reset() override;
 
-		//Subject& GetSubject() { return m_Subject; }
+		Subject& GetSubject() { return m_Subject; }
 		void Notify(GameObject* pObject, int event) override;
 
 		PlateComponent(const PlateComponent& other) = delete;
@@ -34,12 +35,11 @@ namespace dae
 		PlateComponent& operator=(PlateComponent&& other) = delete;
 
 	private:
+		Subject m_Subject;
 		GameObject* m_pParentObject;
 		RectColliderComponent* m_pCollidermpt;
 		int m_IngredientsCount;
 		int m_MaxIngredientsCount;
+		int m_IntialColliderHeight;
 	};
 }
-
-
-

@@ -23,9 +23,10 @@
 
 using namespace dae;
 
+int LivesComponent::m_CurrentLives = 3;
+
 LivesComponent::LivesComponent(GameObject* pParentObject)
-	: m_CurrentLives{ 1 }//3
-	, m_IconSize{ -1.f,-1.f }
+	: m_IconSize{ -1.f,-1.f }
 	, m_pParentObject{ nullptr }
 	, m_pTexture{ nullptr }
 {

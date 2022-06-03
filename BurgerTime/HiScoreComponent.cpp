@@ -5,11 +5,12 @@
 
 using namespace dae;
 
+int HiScoreComponent::m_Score{};
+
 HiScoreComponent::HiScoreComponent(GameObject* pParentObject)
 	: m_pParentObject{ nullptr }
 	, m_pTextComponent{ nullptr }
 	, m_pScoreComponent{ nullptr }
-	, m_Score{}
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;

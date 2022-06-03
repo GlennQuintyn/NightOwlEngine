@@ -32,6 +32,7 @@ namespace dae
 		void SetMovement(bool enable, MovementState state = MovementState::UsePrevious);
 
 		void SetPlayer1(GameObject* pPlayer1) { m_pPlayer1 = pPlayer1; };
+		//set player 2 to nullptr to remove from AI path checking logic
 		void SetPlayer2(GameObject* pPlayer2) { m_pPlayer2 = pPlayer2; };
 
 		void LateInit() override;

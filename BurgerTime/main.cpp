@@ -72,7 +72,7 @@ int main(int, char* [])
 	//TO: set all level AND main menu loading stuff into seperate functions
 	LoadMainMenu(engine);
 
-
+	//TODO: remove the code below
 	if (false)
 	{
 
@@ -656,8 +656,6 @@ int main(int, char* [])
 		subje2.AddObserver(scorecomp2);*/
 
 	engine->Run();
-
-	//SceneManager::GetInstance().LateInit();
 
 	engine->Cleanup();
 	delete engine;

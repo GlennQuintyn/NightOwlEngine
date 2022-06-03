@@ -148,12 +148,18 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 	{
 		m_pEnemyController->SetMovement(false);
 	}
-	else if (event == static_cast<int>(Events::ResetPos))
+	else if (event == static_cast<int>(Events::Reset_Pos))
 	{
 		//m_ResetInNextUpdate = true;
 		//Reset();
 		PlaceOffScreen();
 		m_State = EnemyState::WaitingToMove;
 		m_DurationLeft = m_RespawnDelay;
+	}
+	else if (event == static_cast<int>(Events::Game_Won))
+	{
+		//m_State = EnemyState::WaitingToMove;
+		m_pEnemyController->SetMovement(false);
+		//Reset();
 	}
 }

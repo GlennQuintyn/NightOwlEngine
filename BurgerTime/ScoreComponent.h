@@ -39,7 +39,7 @@ namespace dae
 		Subject m_Subject;
 		GameObject* m_pParentObject;
 		TextComponent* m_pTextComponent;
-		int m_CurrentScore;
+		static int m_CurrentScore;
 		int m_ExtraLifeTreshold;
 	};
 }

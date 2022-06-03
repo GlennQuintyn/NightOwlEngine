@@ -44,6 +44,6 @@ namespace dae
 		std::shared_ptr<Texture2D> m_pTexture;
 		glm::vec2 m_IconSize;
 		GameObject* m_pParentObject;
-		int m_CurrentLives;
+		static int m_CurrentLives;
 	};
 }

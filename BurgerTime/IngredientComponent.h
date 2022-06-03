@@ -53,5 +53,7 @@ namespace dae
 		bool m_ColliderLeftHit;
 		bool m_ColliderCenterHit;
 		bool m_ColliderRightHit;
+
+		bool m_FallExtraLevel;
 	};
 }

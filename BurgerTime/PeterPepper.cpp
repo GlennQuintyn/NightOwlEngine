@@ -61,20 +61,6 @@ void PeterPepper::Update()
 	//}
 }
 
-void dae::PeterPepper::Reset()
-{
-	m_pParentObject->SetLocalPosition(m_SpawnPos);
-
-	if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
-	{
-		pMovement->SetEnabled(true);
-	}
-	if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
-	{
-		pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Idle));
-	}
-}
-
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
 	if (!m_IsAlive)
@@ -96,30 +82,40 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 			}
 		}
 	}
-	else if (event == static_cast<int>(Events::ResetPos))
+	else if (event == static_cast<int>(Events::Reset_Pos))
 	{
 		Reset();
 	}
+	else if (event == static_cast<int>(Events::Game_Won))
+	{
+		if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
+		{
+			pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Won), SpriteManagerComponent::SpritePlayType::Looping);
+		}
+		if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
+		{
+			pMovement->SetEnabled(false);
+		}
+	}
 }
-
-//void PeterPepper::SetDeathButton(PCController::ControllerButton deahtButton)
-//{
-//	m_DeahtButton = deahtButton;
-//}
-//
-//void PeterPepper::SetObjectFellButton(PCController::ControllerButton objFellButton)
-//{
-//	m_ObjFellButton = objFellButton;
-//}
-//
-//void PeterPepper::SetPepperEnemyButton(PCController::ControllerButton enemyPepperedButton)
-//{
-//	m_EnemyPepperedButton = enemyPepperedButton;
-//}
 
 //spawn location only gets set at begin of level so movement should be active
 void dae::PeterPepper::SetSpawnLocation(float x, float y)
 {
 	m_SpawnPos.x = x;
 	m_SpawnPos.y = y;
+}
+
+void dae::PeterPepper::Reset()
+{
+	m_pParentObject->SetLocalPosition(m_SpawnPos);
+
+	if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
+	{
+		pMovement->SetEnabled(true);
+	}
+	if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
+	{
+		pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Idle));
+	}
 }

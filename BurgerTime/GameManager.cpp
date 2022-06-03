@@ -7,7 +7,9 @@ dae::GameManager::GameManager(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_NextAction{ NextAction::Nothing }
 	, m_Subject{}
-	, m_ResetDelay{ 4.5f }
+	, m_PlateFullCount{}
+	, m_MaxPlateFullCount{}
+	, m_Delay{ 4.5f }
 	, m_TimeLeft{}
 	, m_TimerStarted{}
 {
@@ -29,6 +31,9 @@ void dae::GameManager::Update()
 			case dae::GameManager::NextAction::ReturnToMainMenu:
 				ReturnToMainMenu();
 				break;
+			case dae::GameManager::NextAction::AdvanceToNextLevel:
+				AdvanceToNextLevel();
+				break;
 			default:
 				Logger::GetInstance().LogError("GameManager: invalid switch state reached!");
 				break;
@@ -37,6 +42,12 @@ void dae::GameManager::Update()
 			m_NextAction = NextAction::Nothing;
 		}
 	}
+}
+
+void dae::GameManager::Reset()
+{
+	m_NextAction = NextAction::Nothing;
+	m_MaxPlateFullCount = 0;
 }
 
 void dae::GameManager::Notify(GameObject*, int event)
@@ -49,6 +60,14 @@ void dae::GameManager::Notify(GameObject*, int event)
 	case Events::Game_Over:
 		ReturnToMainMenu(true);
 		break;
+	case Events::Plate_Full:
+		++m_PlateFullCount;
+		if (m_PlateFullCount >= m_MaxPlateFullCount)
+		{
+			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Game_Won));
+			AdvanceToNextLevel(true);
+		}
+		break;
 	}
 }
 
@@ -58,11 +77,11 @@ void dae::GameManager::RestartCurrentLevel(bool withDelay)
 	if (withDelay)
 	{
 		m_NextAction = NextAction::RestartCurrentLevel;
-		m_TimeLeft = m_ResetDelay;
+		m_TimeLeft = m_Delay;
 	}
 	else
 	{
-		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::ResetPos));
+		m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Reset_Pos));
 	}
 }
 
@@ -71,13 +90,28 @@ void dae::GameManager::ReturnToMainMenu(bool withDelay)
 	if (withDelay)
 	{
 		m_NextAction = NextAction::ReturnToMainMenu;
-		m_TimeLeft = m_ResetDelay;
+		m_TimeLeft = m_Delay;
 	}
 	else
 	{
 		//scene 0 should be the main menu scene
 		auto& scene = SceneManager::GetInstance();
 		scene.SetActiveScene(0);
+		scene.LateInit();
+	}
+}
+
+void dae::GameManager::AdvanceToNextLevel(bool withDelay)
+{
+	if (withDelay)
+	{
+		m_NextAction = NextAction::AdvanceToNextLevel;
+		m_TimeLeft = m_Delay;
+	}
+	else
+	{
+		auto& scene = SceneManager::GetInstance();
+		scene.GotoNextScene();
 		scene.LateInit();
 	}
 }

@@ -35,6 +35,6 @@ namespace dae
 		GameObject* m_pParentObject;
 		TextComponent* m_pTextComponent;
 		ScoreComponent* m_pScoreComponent;
-		int m_Score;
+		static int m_Score;
 	};
 }

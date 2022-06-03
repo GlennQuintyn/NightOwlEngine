@@ -52,5 +52,6 @@ namespace dae
 		NightOwlEngine* m_pEngine;
 		size_t m_SelectedButtonIndex;
 		GameMode m_GameMode;
+		bool m_ScenesLoaded;
 	};
 }

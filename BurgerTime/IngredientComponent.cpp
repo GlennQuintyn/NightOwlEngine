@@ -1,10 +1,12 @@
 #include "BurgerTimePCH.h"
 #include "IngredientComponent.h"
-#include "GameObject.h"
+#include <GameObject.h>
+#include <RectColliderComponent.h>
+
 #include "WalkingPlatformComponent.h"
 #include "PlateComponent.h"
-#include "RectColliderComponent.h"
 #include "PeterPepper.h"
+#include "Enums.h"
 
 namespace dae
 {
@@ -41,8 +43,13 @@ namespace dae
 dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_pPlatformObject{ nullptr }
+	, m_Subject{}
 	, m_FallSpeed{ 150.f }
 	, m_State{ IngridientState::Falling }
+	, m_ColliderLeftHit{ false }
+	, m_ColliderCenterHit{ false }
+	, m_ColliderRightHit{ false }
+	, m_FallExtraLevel{ false }
 {
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
@@ -93,6 +100,8 @@ void dae::IngredientComponent::Update()
 			{
 				m_pParentObject->SetLocalPosition(pos.x, posCollider.y - pCollider->GetRectangle().h * 2.f);
 
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Item_Fell));
+
 				m_pPlatformObject = nullptr;
 				m_State = IngridientState::OnPlatform;
 				m_ColliderLeftHit = false;
@@ -115,20 +124,23 @@ void dae::IngredientComponent::Update()
 
 void dae::IngredientComponent::Notify(GameObject* pObject, int event)
 {
-	if (auto pPlatform = pObject->GetComponent<WalkingPlatformComponent>())
+	if (event == 0)
 	{
-		if (event == 0)
+		if (auto pPlatform = pObject->GetComponent<WalkingPlatformComponent>())
+		{
 			m_pPlatformObject = pObject;
-	}
-	else if (pObject->GetComponent<IngredientComponent>())
-	{
-		if (event == 0 && m_State != IngridientState::OnPlate)
-			m_State = IngridientState::Falling;
-	}
-	else if (pObject->GetComponent<PlateComponent>())
-	{
-		if (event == 0)
+		}
+		//for when it hits another ingriedient (normall ingredient falls ontop of it) hits it it should start falling
+		//TODO: add logic that if enemy died on ingredient when it started falling it should fall another level
+		else if (pObject->GetComponent<IngredientComponent>())
+		{
+			if (m_State != IngridientState::OnPlate)
+				m_State = IngridientState::Falling;
+		}
+		else if (pObject->GetComponent<PlateComponent>())
+		{
 			m_State = IngridientState::OnPlate;
+		}
 	}
 }
 
