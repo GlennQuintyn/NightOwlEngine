@@ -17,10 +17,10 @@ namespace dae
 		//make sure that component has a parent that isn't nullptr
 		MovementComponent(std::nullptr_t) = delete;
 
-		bool CanGoLeft()const { return m_CanGoLeft; };
-		bool CanGoRight()const { return m_CanGoRight; };
-		bool CanGoUp()const { return m_CanGoUp; };
-		bool CanGoDown()const { return m_CanGoDown; };
+		bool CanGoLeft()const { return m_CanGoLeft && m_Enabled; };
+		bool CanGoRight()const { return m_CanGoRight && m_Enabled; };
+		bool CanGoUp()const { return m_CanGoUp && m_Enabled; };
+		bool CanGoDown()const { return m_CanGoDown && m_Enabled; };
 
 		GameObject* GetTouchingPlatformLeft();
 		GameObject* GetTouchingPlatformRight();

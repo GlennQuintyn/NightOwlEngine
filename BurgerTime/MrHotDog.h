@@ -2,11 +2,12 @@
 #include <BaseComponent.h>
 #include <Observer.h>
 #include "EnemyControllerComponent.h"
+#include "Enums.h"
 
 namespace dae
 {
 	class GameObject;
-	//class EnemyControllerComponent;
+	class IngredientComponent;
 
 	class MrHotDog final : public BaseComponent, public Observer
 	{
@@ -24,6 +25,9 @@ namespace dae
 		//location to (re)spawn at and the direction the AI should walk in initially when (re)spawning
 		void SetRespawnPosAndWalkDirection(float x, float y, EnemyControllerComponent::MovementState direction);
 
+		//when the enemy is either dead, peppered or wating to move (respawn delay) he is safe to touch
+		bool IsHostile() { return m_State == EnemyState::Moving; };
+
 		void LateInit() override;
 		void Update() override;
 		void LateUpdate() override {};
@@ -38,15 +42,16 @@ namespace dae
 	private:
 		//places enemy ofscreen so the collider logic can reset
 		void PlaceOffScreen();
-		enum class EnemyState
-		{
-			Moving,
-			Dead,
-			Peppered,
-			WaitingToMove
-		};
+		//enum class EnemyState
+		//{
+		//	Moving,
+		//	Dead,
+		//	Peppered,
+		//	WaitingToMove
+		//};
 
 		GameObject* m_pParentObject;
+		IngredientComponent* m_pIngredientWalkingOn;
 		EnemyControllerComponent* m_pEnemyController;
 		glm::vec2 m_RespawnPos;
 		EnemyState m_State;
@@ -55,6 +60,5 @@ namespace dae
 		float m_RespawnDelay;
 		float m_DurationLeft;
 		bool m_ResetInNextUpdate;
-		//bool m_IsDead;
 	};
 }

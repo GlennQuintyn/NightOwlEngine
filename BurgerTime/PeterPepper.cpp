@@ -37,6 +37,12 @@ void PeterPepper::LateInit()
 		m_Size.x = pCollidercmpt->GetRectangle().w;
 		m_Size.y = pCollidercmpt->GetRectangle().h;
 	}
+
+	//enable movemetn at the start
+	if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
+	{
+		pMovement->SetEnabled(true);
+	}
 }
 
 void PeterPepper::Update()
@@ -69,16 +75,25 @@ void dae::PeterPepper::Notify(GameObject* pObject, int event)
 	//if it entered a ingredient collider while it was falling, then it should DIE and play its death anim (not looping)
 	if (event == 0)
 	{
-		if (pObject->GetComponent<MrHotDog>() || pObject->GetComponent<MrEgg>() || pObject->GetComponent<MrPickle>())
+		if (auto pEnemyHotDog = pObject->GetComponent<MrHotDog>())
 		{
-			if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
+			if (pEnemyHotDog->IsHostile())
 			{
-				pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
-				m_Subject.Notify(m_pParentObject, int(Events::Player_Died));
-				if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
-				{
-					pMovement->SetEnabled(false);
-				}
+				EnemyTouchedMe();
+			}
+		}
+		else if (auto pEnemyEgg = pObject->GetComponent<MrEgg>())
+		{
+			if (pEnemyEgg->IsHostile())
+			{
+				EnemyTouchedMe();
+			}
+		}
+		else if (auto pEnemyPickle = pObject->GetComponent<MrPickle>())
+		{
+			if (pEnemyPickle->IsHostile())
+			{
+				EnemyTouchedMe();
 			}
 		}
 	}
@@ -104,6 +119,19 @@ void dae::PeterPepper::SetSpawnLocation(float x, float y)
 {
 	m_SpawnPos.x = x;
 	m_SpawnPos.y = y;
+}
+
+void dae::PeterPepper::EnemyTouchedMe()
+{
+	if (auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>())
+	{
+		pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
+		m_Subject.Notify(m_pParentObject, int(Events::Player_Died));
+		if (auto pMovement = m_pParentObject->GetComponent<MovementComponent>())
+		{
+			pMovement->SetEnabled(false);
+		}
+	}
 }
 
 void dae::PeterPepper::Reset()

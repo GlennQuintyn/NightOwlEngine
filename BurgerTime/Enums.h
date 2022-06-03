@@ -42,4 +42,12 @@ namespace dae
 		Up,
 		Down
 	};
+
+	enum class EnemyState
+	{
+		Moving,
+		Dead,
+		Peppered,
+		WaitingToMove
+	};
 }

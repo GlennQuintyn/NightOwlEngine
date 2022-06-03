@@ -16,7 +16,8 @@ dae::EnemyControllerComponent::EnemyControllerComponent(GameObject* pParentObjec
 	, m_pPlayer2{ nullptr }
 	, m_State{ MovementState::DownLadder }//TO: FIX
 	, m_PreviousState{}
-	, m_MovmentSpeed{ 75.f, 40.f }//x: horizontal, y: vertical
+	//, m_MovmentSpeed{ 75.f, 40.f }//x: horizontal, y: vertical
+	, m_MovmentSpeed{ 25.f, 20.f }//x: horizontal, y: vertical
 	, m_Size{}
 {
 }
@@ -44,18 +45,22 @@ void dae::EnemyControllerComponent::LateInit()
 	if (!m_pPlayer1)
 	{
 		Logger::GetInstance().LogError("EnemyControllerComponent: No player was given!");
+		return;
 	}
 
 	m_pMovementCmpt = m_pParentObject->GetComponent<MovementComponent>();
 	if (!m_pMovementCmpt)
 	{
 		Logger::GetInstance().LogError("EnemyControllerComponent: No MovementComponent was found!");
+		return;
 	}
+	m_pMovementCmpt->SetEnabled(true);
 
 	m_pSpriteManagerCmpt = m_pParentObject->GetComponent<SpriteManagerComponent>();
 	if (!m_pSpriteManagerCmpt)
 	{
 		Logger::GetInstance().LogError("EnemyControllerComponent: No SpriteManagerComponent was found!");
+		return;
 	}
 
 	auto pCollider = m_pParentObject->GetComponent<RectColliderComponent>();

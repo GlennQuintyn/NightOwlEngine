@@ -35,6 +35,9 @@ namespace dae
 		PeterPepper& operator=(PeterPepper&& other) = delete;
 
 	private:
+
+		void EnemyTouchedMe();
+
 		GameObject* m_pParentObject;
 		Subject m_Subject;
 		glm::ivec2 m_Size;

@@ -21,10 +21,12 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
-		void Reset() override {};
+		void Reset() override;
 
 		void Notify(GameObject* pObject, int event) override;
 		Subject& GetSubject() { return m_Subject; }
+
+		void SetSpawnLocation(float x, float y);
 
 		bool IsFalling() const;
 
@@ -38,14 +40,18 @@ namespace dae
 		{
 			Falling,
 			OnPlatform,
-			OnPlate
+			OnPlate,
+			//is to stop the ingredients from sticking together when needing to fall an extra level
+			Wait
 		};
 
 		Subject m_Subject;
+		glm::vec2 m_SpawnPos;
 		GameObject* m_pParentObject;
 		GameObject* m_pPlatformObject;
 		const float m_FallSpeed;
 		IngridientState m_State;
+		int m_EnemyOnIngredientCount;
 
 		class HitBoxObserver;
 		std::unique_ptr<std::array<HitBoxObserver, 3>> m_pImpl;
@@ -55,5 +61,6 @@ namespace dae
 		bool m_ColliderRightHit;
 
 		bool m_FallExtraLevel;
+		bool m_HasSettled;
 	};
 }

@@ -81,7 +81,7 @@ void dae::MainMenuComponent::SelectPreviousButton()
 
 	--m_SelectedButtonIndex;
 	if (m_SelectedButtonIndex < 0)
-		m_SelectedButtonIndex = m_pButtons.size() - 1;
+		m_SelectedButtonIndex = static_cast<int>(m_pButtons.size()) - 1;
 
 	m_pButtons[m_SelectedButtonIndex]->SetSelectedState(true);
 }

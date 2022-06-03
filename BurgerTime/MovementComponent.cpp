@@ -90,7 +90,7 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	, m_CanGoRight{ false }
 	, m_CanGoUp{ false }
 	, m_CanGoDown{ false }
-	, m_Enabled{ true }
+	, m_Enabled{ false }//start out false by default so that object doesn't move when scene isn't active (has to be set false at end of scene and true lateinit of scene)
 {
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
@@ -102,10 +102,10 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	colliderRcmpt.Init({ 47,42,3,3 }, 1, true, { 0, 255, 0, 128 });
 	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
 	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
-	colliderUPcmpt.Init({ 20,-3,4,3 }, 2, true, { 0, 0, 255, 128 });
+	colliderUPcmpt.Init({ 20,-3,5,3 }, 2, true, { 0, 0, 255, 128 });
 	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
 	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
-	colliderDowncmpt.Init({ 20,48,4,3 }, 3, true, { 0, 255, 255, 128 });
+	colliderDowncmpt.Init({ 20,48,5,3 }, 3, true, { 0, 255, 255, 128 });
 
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(
 		new std::array<HitBoxObserver, 4>{

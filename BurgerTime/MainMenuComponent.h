@@ -50,7 +50,7 @@ namespace dae
 		std::vector<ButtonComponent*> m_pButtons;
 		GameObject* m_pParentObject;
 		NightOwlEngine* m_pEngine;
-		size_t m_SelectedButtonIndex;
+		int m_SelectedButtonIndex;
 		GameMode m_GameMode;
 		bool m_ScenesLoaded;
 	};

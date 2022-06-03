@@ -7,6 +7,9 @@
 #include "PlateComponent.h"
 #include "PeterPepper.h"
 #include "Enums.h"
+#include "MrHotDog.h"
+#include "MrEgg.h"
+#include "MrPickle.h"
 
 namespace dae
 {
@@ -44,12 +47,16 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_pPlatformObject{ nullptr }
 	, m_Subject{}
-	, m_FallSpeed{ 150.f }
+	, m_SpawnPos{}
+	//, m_FallSpeed{ 150.f }
+	, m_FallSpeed{ 50.f }
 	, m_State{ IngridientState::Falling }
+	, m_EnemyOnIngredientCount{}
 	, m_ColliderLeftHit{ false }
 	, m_ColliderCenterHit{ false }
 	, m_ColliderRightHit{ false }
 	, m_FallExtraLevel{ false }
+	, m_HasSettled{ false }
 {
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
@@ -98,15 +105,31 @@ void dae::IngredientComponent::Update()
 			//if the ingredient is below the the platform it should stop falling and loc into the correct position
 			if (posCollider.y - pCollider->GetRectangle().h * 2.f <= pos.y)
 			{
-				m_pParentObject->SetLocalPosition(pos.x, posCollider.y - pCollider->GetRectangle().h * 2.f);
+				//when the ingredients spawn in or get reset they first fall into their starting platform,
+				//this falsely triggers the Item_Fell event, after the first time they have settled
+				if (m_HasSettled)
+					m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Item_Fell));
+				else
+					m_HasSettled = true;
 
-				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Item_Fell));
-
+				m_EnemyOnIngredientCount = 0;//reset counter each time it falls on a platform
 				m_pPlatformObject = nullptr;
-				m_State = IngridientState::OnPlatform;
-				m_ColliderLeftHit = false;
-				m_ColliderCenterHit = false;
-				m_ColliderRightHit = false;
+
+
+				//if it needs to fall an extra leve it should just pass by the first platform it hits
+				if (!m_FallExtraLevel)
+				{
+					m_pParentObject->SetLocalPosition(pos.x, posCollider.y - pCollider->GetRectangle().h * 2.f);
+					m_ColliderLeftHit = false;
+					m_ColliderCenterHit = false;
+					m_ColliderRightHit = false;
+					m_State = IngridientState::OnPlatform;
+				}
+				else
+				{
+					//m_State
+					m_FallExtraLevel = false;
+				}
 			}
 		}
 		break;
@@ -114,12 +137,48 @@ void dae::IngredientComponent::Update()
 	case dae::IngredientComponent::IngridientState::OnPlatform:
 	{
 		if (m_ColliderLeftHit && m_ColliderCenterHit && m_ColliderRightHit)
+		{
+			//when it goes into the falling state,
+			//check how many enemies are on it and then send correct point event
+			switch (m_EnemyOnIngredientCount)
+			{
+			case 1:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_1));
+				break;
+			case 2:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_2));
+				break;
+			case 3:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_3));
+				break;
+			case 4:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_4));
+				break;
+			case 5:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_5));
+				break;
+			case 6:
+				m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Drop_Enemy_6));
+				break;
+			}
+
+			if (m_EnemyOnIngredientCount > 0)
+			{
+				m_FallExtraLevel = true;
+			}
+
 			m_State = IngridientState::Falling;
+		}
 		break;
 	}
-	default:
-		break;
 	}
+}
+
+void dae::IngredientComponent::Reset()
+{
+	m_HasSettled = false;
+	m_EnemyOnIngredientCount = 0;
+	m_pParentObject->SetLocalPosition(m_SpawnPos);
 }
 
 void dae::IngredientComponent::Notify(GameObject* pObject, int event)
@@ -131,17 +190,58 @@ void dae::IngredientComponent::Notify(GameObject* pObject, int event)
 			m_pPlatformObject = pObject;
 		}
 		//for when it hits another ingriedient (normall ingredient falls ontop of it) hits it it should start falling
-		//TODO: add logic that if enemy died on ingredient when it started falling it should fall another level
 		else if (pObject->GetComponent<IngredientComponent>())
 		{
 			if (m_State != IngridientState::OnPlate)
-				m_State = IngridientState::Falling;
+			{
+				if (m_FallExtraLevel)
+				{
+					m_State = IngridientState::Wait;
+				}
+				else
+				{
+					m_State = IngridientState::Falling;
+				}
+			}
 		}
 		else if (pObject->GetComponent<PlateComponent>())
 		{
 			m_State = IngridientState::OnPlate;
+			//falling on a plate also counts as giving points
+			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Item_Fell));
+			//reset counter when it falls on a plate
+			m_EnemyOnIngredientCount = 0;
+		}
+		//if it is one of the enemies enters increase the counter
+		else if (pObject->GetComponent<MrHotDog>() || pObject->GetComponent<MrEgg>() || pObject->GetComponent<MrPickle>())
+		{
+			++m_EnemyOnIngredientCount;
 		}
 	}
+	else if (event == 1)
+	{
+		//if it is one of the enemies leavesd decrease the counter
+		if (pObject->GetComponent<MrHotDog>() || pObject->GetComponent<MrEgg>() || pObject->GetComponent<MrPickle>())
+		{
+			--m_EnemyOnIngredientCount;
+		}
+		else if (m_State == IngridientState::Wait && pObject->GetComponent<IngredientComponent>())
+		{
+			//if (m_State != IngridientState::OnPlate)
+			//{
+				//if (!m_FallExtraLevel)
+				//{
+			m_State = IngridientState::Falling;
+			//}
+		//}
+		}
+	}
+}
+
+void dae::IngredientComponent::SetSpawnLocation(float x, float y)
+{
+	m_SpawnPos.x = x;
+	m_SpawnPos.y = y;
 }
 
 bool dae::IngredientComponent::IsFalling() const

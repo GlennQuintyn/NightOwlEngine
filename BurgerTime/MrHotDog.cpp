@@ -1,14 +1,15 @@
 #include "BurgerTimePCH.h"
 #include "MrHotDog.h"
-#include "GameObject.h"
+#include <GameObject.h>
+#include <SpriteManagerComponent.h>
 #include "IngredientComponent.h"
-#include "SpriteManagerComponent.h"
-#include "Enums.h"
 #include "PepperComponent.h"
+//#include "Enums.h"
 //#include "EnemyControllerComponent.h"
 
 dae::MrHotDog::MrHotDog(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
+	, m_pIngredientWalkingOn{ nullptr }
 	, m_pEnemyController{ nullptr }
 	, m_RespawnPos{}
 	, m_State{}
@@ -34,6 +35,12 @@ void dae::MrHotDog::LateInit()
 		Logger::GetInstance().LogError("MrHotDog: No EnemyControllerComponent was found!");
 	}
 
+	//enable movemetn at the start
+	//if (m_pEnemyController)
+	//{
+	//	m_pEnemyController->SetMovement(true);
+	//}
+
 	Reset();
 }
 
@@ -45,9 +52,23 @@ void dae::MrHotDog::Update()
 		m_ResetInNextUpdate = false;
 	}
 
+	//if he walks on a falling ingredient he should die as it falls from out under him
+	if (m_pIngredientWalkingOn && m_pIngredientWalkingOn->IsFalling())
+	{
+		m_State = EnemyState::Dead;
+		m_DurationLeft = m_DeathDurationLength;
+		m_pEnemyController->SetMovement(false);
+
+		auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
+		if (pSpriteManager)
+		{
+			pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
+		}
+	}
+
 	switch (m_State)
 	{
-	case dae::MrHotDog::EnemyState::Dead:
+	case EnemyState::Dead:
 		m_DurationLeft -= Time::GetInstance().GetDeltaT();
 		if (m_DurationLeft <= 0.f)
 		{
@@ -63,7 +84,7 @@ void dae::MrHotDog::Update()
 			}
 		}
 		break;
-	case dae::MrHotDog::EnemyState::Peppered:
+	case EnemyState::Peppered:
 		m_DurationLeft -= Time::GetInstance().GetDeltaT();
 		if (m_DurationLeft <= 0.f)
 		{
@@ -71,7 +92,7 @@ void dae::MrHotDog::Update()
 			m_pEnemyController->SetMovement(true);
 		}
 		break;
-	case dae::MrHotDog::EnemyState::WaitingToMove:
+	case EnemyState::WaitingToMove:
 		m_DurationLeft -= Time::GetInstance().GetDeltaT();
 		if (m_DurationLeft <= 0.f)
 		{
@@ -89,6 +110,7 @@ void dae::MrHotDog::Reset()
 
 void dae::MrHotDog::PlaceOffScreen()
 {
+	//placing ofscreen lets the colliderboxes reset
 	m_ResetInNextUpdate = true;
 	m_pParentObject->SetLocalPosition(-1000.f, -1000.f);
 }
@@ -100,16 +122,21 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 	{
 		auto pIngredient = pObject->GetComponent<IngredientComponent>();
 
-		if (pIngredient && pIngredient->IsFalling())
+		if (pIngredient)
 		{
-			m_State = EnemyState::Dead;
-			m_DurationLeft = m_DeathDurationLength;
-			m_pEnemyController->SetMovement(false);
+			m_pIngredientWalkingOn = pIngredient;
 
-			auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
-			if (pSpriteManager)
+			if (pIngredient->IsFalling())
 			{
-				pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
+				m_State = EnemyState::Dead;
+				m_DurationLeft = m_DeathDurationLength;
+				m_pEnemyController->SetMovement(false);
+
+				auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
+				if (pSpriteManager)
+				{
+					pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
+				}
 			}
 		}
 
@@ -131,17 +158,13 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 			}
 		}
 	}
-	else if (event == 1)//if the ingredient fals out from under the enemy than its a different score
+	else if (event == 1)
 	{
 		auto pIngredient = pObject->GetComponent<IngredientComponent>();
 
-		if (pIngredient && pIngredient->IsFalling())
+		if (pIngredient)
 		{
-			//auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
-			//if (pSpriteManager)
-			//{
-			//	pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
-			//}
+			m_pIngredientWalkingOn = nullptr;
 		}
 	}
 	else if (event == static_cast<int>(Events::Player_Died))
