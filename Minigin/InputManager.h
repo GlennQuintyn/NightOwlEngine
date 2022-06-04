@@ -178,6 +178,8 @@ namespace dae
 		//adds a new controller up to 4, when the input manager gets constructed a controller gets added automatically
 		void AddController();
 
+		//TODO: Add RemoveCommands function to remove or even disable certain commands
+
 		template<typename CommandType>
 		CommandType& AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState);
 
@@ -223,9 +225,9 @@ namespace dae
 			}
 		};
 
-		std::map<ControllerButtonType, std::unique_ptr<Command>> m_MapOfControllerCommands;
-		std::map<KeyboardKeyType, std::unique_ptr<Command>> m_MapOfKeyboardCommands;
-		std::map<MouseButtonType, std::unique_ptr<Command>> m_MapOfMouseCommands;
+		std::multimap<ControllerButtonType, std::unique_ptr<Command>> m_MapOfControllerCommands;
+		std::multimap<KeyboardKeyType, std::unique_ptr<Command>> m_MapOfKeyboardCommands;
+		std::multimap<MouseButtonType, std::unique_ptr<Command>> m_MapOfMouseCommands;
 		std::vector<std::unique_ptr<PCController>> m_pPCControllers;
 
 		const Uint8* m_pCurrenStates;
@@ -245,7 +247,8 @@ namespace dae
 	inline CommandType& InputManager::AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState)
 	{
 		auto pCommand = new CommandType{};
-		m_MapOfControllerCommands[{controllerButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		//m_MapOfControllerCommands[{controllerButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		m_MapOfControllerCommands.insert(std::make_pair(ControllerButtonType(controllerButton, pressState), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 
@@ -253,7 +256,8 @@ namespace dae
 	inline CommandType& InputManager::AddCommand(KeyboardKey keyboardKey, ButtonPressState pressState)
 	{
 		auto pCommand = new CommandType{};
-		m_MapOfKeyboardCommands[{keyboardKey, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		//m_MapOfKeyboardCommands[{keyboardKey, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		m_MapOfKeyboardCommands.insert(std::make_pair(KeyboardKeyType(keyboardKey, pressState), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 
@@ -261,7 +265,8 @@ namespace dae
 	inline CommandType& InputManager::AddCommand(int mouseButton, ButtonPressState pressState)
 	{
 		auto pCommand = new CommandType{};
-		m_MapOfMouseCommands[{mouseButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		//m_MapOfMouseCommands[{mouseButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
+		m_MapOfMouseCommands.insert(std::make_pair(MouseButtonType(mouseButton, pressState), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 }
