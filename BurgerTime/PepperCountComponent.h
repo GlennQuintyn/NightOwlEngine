@@ -25,6 +25,9 @@ namespace dae
 
 		void SetTextComponent(TextComponent& pTextComponent);
 
+		//if there is pepper available it gets decremented and returns true other wise action returns false
+		bool UsePepper();
+
 		PepperCountComponent(const PepperCountComponent& other) = delete;
 		PepperCountComponent(PepperCountComponent&& other) = delete;
 		PepperCountComponent& operator=(const PepperCountComponent& other) = delete;

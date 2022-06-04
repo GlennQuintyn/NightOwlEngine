@@ -1,12 +1,12 @@
 #pragma once
-#include "Command.h"
-#include "GameObject.h"
-#include "TimeSingleton.h"
-#include "MovementComponent.h"
-#include "RectColliderComponent.h"
-#include "SpriteManagerComponent.h"
+#include <Command.h>
+#include <GameObject.h>
+#include <RectColliderComponent.h>
+#include <SpriteManagerComponent.h>
 #include "Enums.h"
+#include "MovementComponent.h"
 #include "MainMenuComponent.h"
+#include "PepperCountComponent.h"
 
 namespace dae
 {
@@ -220,9 +220,18 @@ namespace dae
 		{
 			m_pPlayerObject = p;
 		}
+		void SetPepperCountComponent(PepperCountComponent* p)
+		{
+			m_pPepperCountCmpt = p;
+		}
+
 	private:
 		void Execute() override
 		{
+			//if there is no pepper left to throw cancel the pepper throwing
+			if (!m_pPepperCountCmpt->UsePepper())
+				return;
+
 			auto pPlayerMovementcmpt = m_pPlayerObject->GetComponent<MovementComponent>();
 			auto pPlayerCollidercmpt = m_pPlayerObject->GetComponent<RectColliderComponent>();
 			auto pPepperSpriteManagercmpt = m_pPepperObject->GetComponent<SpriteManagerComponent>();
@@ -261,6 +270,7 @@ namespace dae
 		}
 		GameObject* m_pPepperObject{};
 		GameObject* m_pPlayerObject{};
+		PepperCountComponent* m_pPepperCountCmpt{};
 		glm::ivec2 m_Size{};
 	};
 

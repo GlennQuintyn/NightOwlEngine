@@ -45,28 +45,6 @@ void PeterPepper::LateInit()
 	}
 }
 
-void PeterPepper::Update()
-{
-	if (!m_IsAlive)
-		return;
-
-	//if (InputManager::GetInstance().IsPressedThisFrame(m_DeahtButton))
-	//{
-	//	m_Subject.Notify(m_pParentObject, int(Events::PeterPepper_Died));
-	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::PeterPepper_Died));
-	//}
-	//if (InputManager::GetInstance().IsPressedThisFrame(m_ObjFellButton))
-	//{
-	//	m_Subject.Notify(m_pParentObject, int(Events::Item_Fell));
-	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Item_Fell));
-	//}
-	//if (InputManager::GetInstance().IsPressedThisFrame(m_EnemyPepperedButton))
-	//{
-	//	m_Subject.Notify(m_pParentObject, int(Events::Enemy_Peppered));
-	//	//m_pParentObject->GetComponent<Subject>()->Notify(m_pParentObject, int(Events::Enemy_Peppered));
-	//}
-}
-
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
 	if (!m_IsAlive)

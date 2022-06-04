@@ -248,27 +248,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
 #pragma endregion
 
-#pragma region InputCommandsPeter
-	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
-	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
-	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
-	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
-	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
-	throwPepperCmdController1.SetPlayer(&peterPepperObj);
-	throwPepperCmdController1.SetPepper(&pepperObj);
-	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
-	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
-	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
-#pragma endregion
-
 #pragma region LadderSetup
 	auto& ladderObj1 = sceneLevel1.CreateObject("ladderObj1");
 	ladderObj1.SetLocalPosition(51.f, 342.f);
@@ -675,7 +654,6 @@ void dae::MainMenuComponent::LoadLevel1()
 
 
 
-
 	//TODO: hi score component should read hi-score from file and observe the score object,
 	//if the score components value is bigger than the current high score update it
 
@@ -688,10 +666,35 @@ void dae::MainMenuComponent::LoadLevel1()
 	hiScoreObject.SetLocalPosition(uiFontSize * 15.f, uiFontSize * 1.5f);
 
 	auto& pepperCountObject = sceneLevel1.CreateObject("pepperCountObject");
-	auto& pepperCountComp = pepperCountObject.AddComponent<TextComponent>();
-	pepperCountComp.Setup(uiFont);
-	pepperCountObject.AddComponent<PepperCountComponent>().SetTextComponent(pepperCountComp);
+	auto& pepperCountTextComp = pepperCountObject.AddComponent<TextComponent>();
+	pepperCountTextComp.Setup(uiFont);
+	auto& pepperCountCmpt = pepperCountObject.AddComponent<PepperCountComponent>();
+	pepperCountCmpt.SetTextComponent(pepperCountTextComp);
 	pepperCountObject.SetLocalPosition(windowW - (uiFontSize * 2.f), uiFontSize * 1.5f);
+#pragma endregion
+
+
+#pragma region InputCommandsPeter
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+
+	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdController1.SetPlayer(&peterPepperObj);
+	throwPepperCmdController1.SetPepper(&pepperObj);
+	throwPepperCmdController1.SetPepperCountComponent(&pepperCountCmpt);
+	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
+	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
+	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
 #pragma endregion
 
 
@@ -727,7 +730,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	SDL_GetWindowSize(m_pEngine->GetWindow(), &windowW, &windowH);
 
 	auto& backgroundObject = sceneLevel2.CreateObject("backgroundObject");
-	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level1.png");
+	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level2.png");
 
 	auto& fpsCounterObj = sceneLevel2.CreateObject("fpsCounterObj");
 	auto& fpstextComponent = fpsCounterObj.AddComponent<TextComponent>();
@@ -736,6 +739,49 @@ void dae::MainMenuComponent::LoadLevel2()
 	fpsCounterObj.SetLocalPosition(5.f, 5.f);
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 255, 255, 0 });
+
+	auto& gameManagerObj = sceneLevel2.CreateObject("gameManagerObj");
+	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
+	gameManagercmpt.SetMaxFullPlateCount(4);
+
+	//pepper object to throw on enemies
+	auto& pepperObj = sceneLevel2.CreateObject("pepperObj");
+	auto& pepperCmpt = pepperObj.AddComponent<PepperComponent>();
+	auto& pepperSpriteManager = pepperObj.AddComponent<SpriteManagerComponent>();
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Left.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Right.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Up.png", 4, 1, 4, 45, 45);
+	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
+	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
+	pepperCollider.Init({ 0,0,45,45 }, -100, true);
+	pepperObj.SetLocalPosition(-100.f, -100.f);
+	pepperCmpt.SetResetPos(-100.f, -100.f);
+	pepperCmpt.SetSpriteDuration(1.f);
+
+	auto& peppercollidersubje = pepperCollider.GetSubject();
+	peppercollidersubje.AddObserver(pepperCmpt);
+	auto& peterPepperObj = sceneLevel2.CreateObject("peterPepperObj");
+	auto& petercmpt = peterPepperObj.AddComponent<PeterPepper>();
+	auto& peterSpriteManager = peterPepperObj.AddComponent<SpriteManagerComponent>();
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Idle.png", 1, 1, 0, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Left.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Right.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Up.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Walking_Down.png", 4, 1, 16, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Death.png", 6, 1, 2, 45, 45);
+	peterSpriteManager.AddSprite("Charachters/peter/Peter_Won.png", 2, 1, 2, 45, 45);
+
+	auto& peterCollider = peterPepperObj.AddComponent<RectColliderComponent>();
+	peterCollider.Init({ 0,0,45,45 }, -1, true);
+	peterPepperObj.AddComponent<MovementComponent>();
+	petercmpt.SetSpawnLocation(298.f, 563.f);
+	peterPepperObj.SetLocalPosition(298.f, 563.f);
+	auto& pettercollidersubje = peterCollider.GetSubject();
+	pettercollidersubje.AddObserver(petercmpt);
+	auto& petterPeppersubje = petercmpt.GetSubject();
+
+
+
 }
 
 void dae::MainMenuComponent::LoadLevel3()
@@ -749,7 +795,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	SDL_GetWindowSize(m_pEngine->GetWindow(), &windowW, &windowH);
 
 	auto& backgroundObject = sceneLevel3.CreateObject("backgroundObject");
-	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level1.png");
+	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level3.png");
 
 	auto& fpsCounterObj = sceneLevel3.CreateObject("fpsCounterObj");
 	auto& fpstextComponent = fpsCounterObj.AddComponent<TextComponent>();

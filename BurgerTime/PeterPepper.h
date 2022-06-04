@@ -17,7 +17,7 @@ namespace dae
 		PeterPepper(std::nullptr_t) = delete;
 
 		void LateInit() override;
-		void Update() override;
+		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
 		void Reset() override;

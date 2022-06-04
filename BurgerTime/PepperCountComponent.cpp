@@ -23,6 +23,17 @@ void PepperCountComponent::SetTextComponent(TextComponent& pTextComponent)
 	m_pTextComponent = &pTextComponent;
 }
 
+bool dae::PepperCountComponent::UsePepper()
+{
+	if (m_PepperCount > 0)
+	{
+		--m_PepperCount;
+		return true;
+	}
+
+	return false;
+}
+
 void PepperCountComponent::LateInit()
 {
 	if (!m_pTextComponent)
