@@ -336,6 +336,7 @@ int main(int, char* [])
 		auto& bunBottomcollider1 = bunBottomObj1.AddComponent<RectColliderComponent>();
 		bunBottomcollider1.Init({ 0, 0, 88, 20 }, 100, true, { 133, 0, 133, 255 });
 		bunBottomObj1.SetLocalPosition(75.f, 595.f);
+		bunBottomcmpt1.SetSpawnLocation(75.f, 595.f);
 		auto& bunBottomSubje1 = bunBottomcollider1.GetSubject();
 		bunBottomSubje1.AddObserver(bunBottomcmpt1);
 

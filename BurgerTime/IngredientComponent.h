@@ -7,6 +7,7 @@
 namespace dae
 {
 	class GameObject;
+	class RectColliderComponent;
 
 	class IngredientComponent final : public BaseComponent, public Observer
 	{
@@ -17,7 +18,7 @@ namespace dae
 
 		~IngredientComponent() = default;
 
-		void LateInit() override {};
+		void LateInit() override;
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
@@ -49,6 +50,10 @@ namespace dae
 		glm::vec2 m_SpawnPos;
 		GameObject* m_pParentObject;
 		GameObject* m_pPlatformObject;
+		RectColliderComponent* m_ColliderLeft;
+		RectColliderComponent* m_ColliderCenter;
+		RectColliderComponent* m_ColliderRight;
+
 		const float m_FallSpeed;
 		IngridientState m_State;
 		int m_EnemyOnIngredientCount;

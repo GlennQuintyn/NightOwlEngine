@@ -48,8 +48,8 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	, m_pPlatformObject{ nullptr }
 	, m_Subject{}
 	, m_SpawnPos{}
-	//, m_FallSpeed{ 150.f }
-	, m_FallSpeed{ 50.f }
+	, m_FallSpeed{ 150.f }
+	//, m_FallSpeed{ 50.f }
 	, m_State{ IngridientState::Falling }
 	, m_EnemyOnIngredientCount{}
 	, m_ColliderLeftHit{ false }
@@ -61,15 +61,24 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("colliderLObj");
-	auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
-	colliderLcmpt.Init({ 15,0,2,22 }, 0, true, { 255, 0, 0, 255 });
-	auto& colliderCenterObj = colliderLogicObj.CreateAddChild("colliderCenterObj");
-	auto& colliderCentercmpt = colliderCenterObj.AddComponent<RectColliderComponent>();
-	colliderCentercmpt.Init({ 43,0,2,22 }, 1, true, { 0, 255, 0, 255 });
-	auto& colliderRObj = colliderLogicObj.CreateAddChild("colliderRObj");
-	auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
-	colliderRcmpt.Init({ 72,0,2,22 }, 2, true, { 0, 0, 255, 255 });
+	//auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
+	//colliderLcmpt.Init({ 15,0,2,10 }, 0, true, { 255, 0, 0, 255 });
+	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
+	m_ColliderLeft->Init({ 15,0,2,10 }, 0, true, { 255, 0, 0, 255 });
 
+	auto& colliderCenterObj = colliderLogicObj.CreateAddChild("colliderCenterObj");
+	//auto& colliderCentercmpt = colliderCenterObj.AddComponent<RectColliderComponent>();
+	//colliderCentercmpt.Init({ 43,0,2,10 }, 1, true, { 0, 255, 0, 255 });
+	m_ColliderCenter = &colliderCenterObj.AddComponent<RectColliderComponent>();
+	m_ColliderCenter->Init({ 43,0,2,10 }, 1, true, { 0, 255, 0, 255 });
+
+
+	auto& colliderRObj = colliderLogicObj.CreateAddChild("colliderRObj");
+	//auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
+	//colliderRcmpt.Init({ 72,0,2,10 }, 2, true, { 0, 0, 255, 255 });
+	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
+	m_ColliderRight->Init({ 72,0,2,10 }, 2, true, { 0, 0, 255, 255 });
+	
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 3>>(
 		new std::array<HitBoxObserver, 3>{
 		HitBoxObserver(m_ColliderLeftHit),
@@ -78,12 +87,27 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	);
 
 	//initializing observer system
-	auto& subjectL = colliderLcmpt.GetSubject();
+	//auto& subjectL = colliderLcmpt.GetSubject();
+	auto& subjectL = m_ColliderLeft->GetSubject();
 	subjectL.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)));
-	auto& subjectCenter = colliderCentercmpt.GetSubject();
+	//auto& subjectCenter = colliderCentercmpt.GetSubject();
+	auto& subjectCenter = m_ColliderCenter->GetSubject();
 	subjectCenter.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderCenter)));
-	auto& subjectR = colliderRcmpt.GetSubject();
+	//auto& subjectR = colliderRcmpt.GetSubject();
+	auto& subjectR = m_ColliderRight->GetSubject();
 	subjectR.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)));
+}
+
+void dae::IngredientComponent::LateInit()
+{
+	if (auto pCollider = m_pParentObject->GetComponent<RectColliderComponent>())
+	{
+		int sceneId = pCollider->GetSceneId();
+
+		m_ColliderLeft->SetSceneId(sceneId);
+		m_ColliderCenter->SetSceneId(sceneId);
+		m_ColliderRight->SetSceneId(sceneId);
+	}
 }
 
 void dae::IngredientComponent::Update()
@@ -103,7 +127,7 @@ void dae::IngredientComponent::Update()
 			auto pCollider = m_pPlatformObject->GetComponent<RectColliderComponent>();
 
 			//if the ingredient is below the the platform it should stop falling and loc into the correct position
-			if (posCollider.y - pCollider->GetRectangle().h * 2.f <= pos.y)
+			if (posCollider.y - pCollider->GetRectangle().h * 4.f <= pos.y)
 			{
 				//when the ingredients spawn in or get reset they first fall into their starting platform,
 				//this falsely triggers the Item_Fell event, after the first time they have settled
@@ -119,7 +143,7 @@ void dae::IngredientComponent::Update()
 				//if it needs to fall an extra leve it should just pass by the first platform it hits
 				if (!m_FallExtraLevel)
 				{
-					m_pParentObject->SetLocalPosition(pos.x, posCollider.y - pCollider->GetRectangle().h * 2.f);
+					m_pParentObject->SetLocalPosition(pos.x, posCollider.y - pCollider->GetRectangle().h * 4.f);
 					m_ColliderLeftHit = false;
 					m_ColliderCenterHit = false;
 					m_ColliderRightHit = false;
@@ -178,6 +202,7 @@ void dae::IngredientComponent::Reset()
 {
 	m_HasSettled = false;
 	m_EnemyOnIngredientCount = 0;
+	m_State = IngridientState::Falling;
 	m_pParentObject->SetLocalPosition(m_SpawnPos);
 }
 

@@ -9,7 +9,7 @@ dae::PlateComponent::PlateComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_Subject{}
 	, m_pCollidermpt{ nullptr }
-	, m_IngredientsCount{ 0 }//TODO: RESET TO 0
+	, m_IngredientsCount{ 3 }//TODO: RESET TO 0
 	, m_MaxIngredientsCount{}
 	, m_IntialColliderHeight{}
 {

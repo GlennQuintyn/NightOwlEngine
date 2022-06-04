@@ -111,7 +111,18 @@ void dae::GameManager::AdvanceToNextLevel(bool withDelay)
 	else
 	{
 		auto& scene = SceneManager::GetInstance();
-		scene.GotoNextScene();
-		scene.LateInit();
+		if (scene.GetActiveScene() == 3)//there are only 3 levels in the game
+		{
+			//if level 3(last level) was won the player will go back to level 1 and go through all the levels again until he dies, or the end of time comes
+			//whatever comes first
+			scene.SetActiveScene(1);
+		}
+		else
+		{
+			scene.GotoNextScene();
+		}
+
+		//scene.LateInit();
+		scene.ResetActiveScene();
 	}
 }

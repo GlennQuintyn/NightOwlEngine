@@ -16,12 +16,12 @@ namespace dae
 		void FixedUpdate(float deltaT);
 		void LateUpdate();
 		void Render();
-
 		void ResetActiveScene();
 
 		~SceneManager() = default;
 
-		void SetActiveScene(size_t index);
+		void SetActiveScene(int index);
+		const int GetActiveScene() const { return m_ActiveSceneIndex; };
 		void GotoNextScene();
 		void GotoPreviousScene();
 
@@ -36,6 +36,6 @@ namespace dae
 
 		std::vector<std::unique_ptr<Scene>> m_pScenes;
 
-		size_t m_ActiveSceneIndex{};
+		int m_ActiveSceneIndex{};
 	};
 }

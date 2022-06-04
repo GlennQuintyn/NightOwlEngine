@@ -58,7 +58,7 @@ void dae::SceneManager::ResetActiveScene()
 	m_pScenes[m_ActiveSceneIndex]->Reset();
 }
 
-void dae::SceneManager::SetActiveScene(size_t index)
+void dae::SceneManager::SetActiveScene(int index)
 {
 	if (index < 0 || index>m_pScenes.size() - 1)
 		return;
@@ -79,7 +79,7 @@ void dae::SceneManager::GotoPreviousScene()
 	--m_ActiveSceneIndex;
 
 	if (m_ActiveSceneIndex < 0)
-		m_ActiveSceneIndex = m_pScenes.size() - 1;
+		m_ActiveSceneIndex = static_cast<int>(m_pScenes.size()) - 1;
 }
 
 Scene& SceneManager::CreateScene(const std::string_view name)

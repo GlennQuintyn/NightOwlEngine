@@ -68,30 +68,29 @@ bool InputManager::ProcessInput()
 
 	m_PrevMouseButtons = m_CurrentMouseButtons;
 
-	//controller command code
-	for (size_t index = 0; index < m_pPCControllers.size(); index++)
-	{
-		m_pPCControllers[index]->Update();
+	for (auto& controller : m_pPCControllers)
+		controller->Update();
 
-		for (auto& pCommandPair : m_MapOfControllerCommands)
+	//controller command code
+	for (auto& pCommandPair : m_MapOfControllerCommands)
+	{
+		switch (pCommandPair.first.pressState)
 		{
-			switch (pCommandPair.first.pressState)
-			{
-			case ButtonPressState::PressedContinuous:
-				if (IsPressed(pCommandPair.first.button, index))
-					pCommandPair.second->Execute();
-				break;
-			case ButtonPressState::OnPressed:
-				if (IsPressedThisFrame(pCommandPair.first.button, index))
-					pCommandPair.second->Execute();
-				break;
-			case ButtonPressState::Released:
-				if (IsReleasedThisFrame(pCommandPair.first.button, index))
-					pCommandPair.second->Execute();
-				break;
-			}
+		case ButtonPressState::PressedContinuous:
+			if (IsPressed(pCommandPair.first.button, pCommandPair.first.index))
+				pCommandPair.second->Execute();
+			break;
+		case ButtonPressState::OnPressed:
+			if (IsPressedThisFrame(pCommandPair.first.button, pCommandPair.first.index))
+				pCommandPair.second->Execute();
+			break;
+		case ButtonPressState::Released:
+			if (IsReleasedThisFrame(pCommandPair.first.button, pCommandPair.first.index))
+				pCommandPair.second->Execute();
+			break;
 		}
 	}
+
 
 	//keyboard command code
 	for (auto& keyboardCommand : m_MapOfKeyboardCommands)

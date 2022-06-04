@@ -30,7 +30,7 @@ namespace dae
 		void SetEnabled(bool enabled) { m_Enabled = enabled; };
 		WalkingDirection GetLastWalkingDirection() const { return m_LastDirection; };
 
-		void LateInit() override {};
+		void LateInit() override;
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override {};
@@ -43,6 +43,10 @@ namespace dae
 		std::unique_ptr<std::array<HitBoxObserver, 4>> m_pImpl;
 
 		WalkingDirection m_LastDirection;
+		RectColliderComponent* m_ColliderLeft;
+		RectColliderComponent* m_ColliderRight;
+		RectColliderComponent* m_ColliderUp;
+		RectColliderComponent* m_ColliderDown;
 		bool m_Enabled;
 
 		bool m_CanGoLeft;

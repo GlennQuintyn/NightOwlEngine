@@ -15,16 +15,14 @@ namespace dae
 
 		~RectColliderComponent() = default;
 
-		//virtual void LateInit() {};
-		//virtual void Update() {};
-		//virtual void LateUpdate() {};
-		//virtual void Render() const;
-
 		void LateInit() override;
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
 		void Reset() override {};
+
+		const int GetSceneId() const { return m_SceneIdNr; };
+		void SetSceneId(int id) { m_SceneIdNr = id; };
 
 		void Init(SDL_Rect colliderBox, int id, bool debugRender = false, SDL_Color debugColor = { 255, 255, 255, SDL_ALPHA_OPAQUE / 2 });
 
@@ -47,7 +45,7 @@ namespace dae
 		std::vector<RectColliderComponent*> m_pOtherOverlappingColliders;
 		SDL_Color m_ColliderColor;
 		GameObject* m_pParentObject;
-		int m_IdNr;//TODO: remove the ID
+		int m_SceneIdNr;
 		bool m_DebugRender;
 		bool m_Ready;
 	};

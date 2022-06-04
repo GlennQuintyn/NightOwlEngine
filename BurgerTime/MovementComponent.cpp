@@ -86,6 +86,11 @@ namespace dae
 
 dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
+	, m_LastDirection{}
+	, m_ColliderLeft{ nullptr }
+	, m_ColliderRight{ nullptr }
+	, m_ColliderUp{ nullptr }
+	, m_ColliderDown{ nullptr }
 	, m_CanGoLeft{ false }
 	, m_CanGoRight{ false }
 	, m_CanGoUp{ false }
@@ -95,17 +100,31 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("Lcollider");
-	auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
-	colliderLcmpt.Init({ -3,42,3,3 }, 0, true, { 255, 0, 0, 128 });
+	//auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
+	//colliderLcmpt.Init({ -3,42,3,3 }, -1, true, { 255, 0, 0, 128 });
+	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
+	m_ColliderLeft->Init({ -3,42,3,3 }, -1, true, { 255, 0, 0, 128 });
+
 	auto& colliderRObj = colliderLogicObj.CreateAddChild("Rcollider");
-	auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
-	colliderRcmpt.Init({ 47,42,3,3 }, 1, true, { 0, 255, 0, 128 });
+	//auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
+	//colliderRcmpt.Init({ 47,42,3,3 }, -1, true, { 0, 255, 0, 128 });	
+	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
+	m_ColliderRight->Init({ 47,42,3,3 }, -1, true, { 0, 255, 0, 128 });
+
 	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
-	auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
-	colliderUPcmpt.Init({ 20,-3,5,3 }, 2, true, { 0, 0, 255, 128 });
+	//auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
+	//colliderUPcmpt.Init({ 20,/*-3*/27,5,3 }, -1, true, { 0, 0, 255, 128 });
+	m_ColliderUp = &colliderUPObj.AddComponent<RectColliderComponent>();
+	m_ColliderUp->Init({ 20,/*-3*/27,5,3 }, -1, true, { 0, 0, 255, 128 });
+
 	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
-	auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
-	colliderDowncmpt.Init({ 20,48,5,3 }, 3, true, { 0, 255, 255, 128 });
+	//auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
+	//colliderDowncmpt.Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
+	m_ColliderDown = &colliderDOWNObj.AddComponent<RectColliderComponent>();
+	m_ColliderDown->Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
+
+		
+		
 
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(
 		new std::array<HitBoxObserver, 4>{
@@ -116,13 +135,17 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	);
 
 	//initializing observer system
-	auto& subjectL = colliderLcmpt.GetSubject();
+	//auto& subjectL = colliderLcmpt.GetSubject();
+	auto& subjectL = m_ColliderLeft->GetSubject();
 	subjectL.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)));
-	auto& subjectR = colliderRcmpt.GetSubject();
+	//auto& subjectR = colliderRcmpt.GetSubject();
+	auto& subjectR = m_ColliderRight->GetSubject();
 	subjectR.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)));
-	auto& subjectUp = colliderUPcmpt.GetSubject();
+	//auto& subjectUp = colliderUPcmpt.GetSubject();
+	auto& subjectUp = m_ColliderUp->GetSubject();
 	subjectUp.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderUp)));
-	auto& subjectDown = colliderDowncmpt.GetSubject();
+	//auto& subjectDown = colliderDowncmpt.GetSubject();
+	auto& subjectDown = m_ColliderDown->GetSubject();
 	subjectDown.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderDown)));
 }
 
@@ -172,4 +195,17 @@ dae::GameObject* dae::MovementComponent::GetTouchingLadderDown()
 	}
 	else
 		return nullptr;
+}
+
+void dae::MovementComponent::LateInit()
+{
+	if (auto pCollider = m_pParentObject->GetComponent<RectColliderComponent>())
+	{
+		int sceneId = pCollider->GetSceneId();
+
+		m_ColliderLeft->SetSceneId(sceneId);
+		m_ColliderRight->SetSceneId(sceneId);
+		m_ColliderUp->SetSceneId(sceneId);
+		m_ColliderDown->SetSceneId(sceneId);
+	}
 }

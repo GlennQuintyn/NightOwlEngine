@@ -52,6 +52,10 @@ namespace dae
 		NightOwlEngine* m_pEngine;
 		int m_SelectedButtonIndex;
 		GameMode m_GameMode;
-		bool m_ScenesLoaded;
+
+		bool m_ScenesLoadedBefore;
+
+		bool m_CoopLoadedBefore;
+		bool m_VersusLoadedBefore;
 	};
 }

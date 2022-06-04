@@ -11,6 +11,8 @@ namespace dae
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
+		//TODO: move keyboard and mouse input code to seperate classes
+
 		enum class KeyboardKey
 		{
 #pragma region letters
@@ -181,7 +183,7 @@ namespace dae
 		//TODO: Add RemoveCommands function to remove or even disable certain commands
 
 		template<typename CommandType>
-		CommandType& AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState);
+		CommandType& AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState, int controllerIndex = 0);
 
 		template<typename CommandType>
 		CommandType& AddCommand(KeyboardKey keyboardKey, ButtonPressState pressState);
@@ -196,38 +198,27 @@ namespace dae
 		{
 			PCController::ControllerButton button;
 			ButtonPressState pressState;
-
-			std::strong_ordering operator<=>(ControllerButtonType other) const
-			{
-				return other.button <=> button;
-			}
+			int index;
 		};
 
 		struct KeyboardKeyType
 		{
 			KeyboardKey key;
 			ButtonPressState pressState;
-
-			std::strong_ordering operator<=>(KeyboardKeyType other) const
-			{
-				return other.key <=> key;
-			}
 		};
 
 		struct MouseButtonType
 		{
 			int button;
 			ButtonPressState pressState;
-
-			std::strong_ordering operator<=>(MouseButtonType other) const
-			{
-				return other.button <=> button;
-			}
 		};
 
-		std::multimap<ControllerButtonType, std::unique_ptr<Command>> m_MapOfControllerCommands;
-		std::multimap<KeyboardKeyType, std::unique_ptr<Command>> m_MapOfKeyboardCommands;
-		std::multimap<MouseButtonType, std::unique_ptr<Command>> m_MapOfMouseCommands;
+		//std::multimap<ControllerButtonType, std::unique_ptr<Command>> m_MapOfControllerCommands;
+		//std::multimap<KeyboardKeyType, std::unique_ptr<Command>> m_MapOfKeyboardCommands;
+		//std::multimap<MouseButtonType, std::unique_ptr<Command>> m_MapOfMouseCommands;
+		std::vector<std::pair<ControllerButtonType, std::unique_ptr<Command>>> m_MapOfControllerCommands;
+		std::vector<std::pair<KeyboardKeyType, std::unique_ptr<Command>>> m_MapOfKeyboardCommands;
+		std::vector<std::pair<MouseButtonType, std::unique_ptr<Command>>> m_MapOfMouseCommands;
 		std::vector<std::unique_ptr<PCController>> m_pPCControllers;
 
 		const Uint8* m_pCurrenStates;
@@ -243,12 +234,13 @@ namespace dae
 		int m_ButtonsReleasedThisFrame;
 	};
 
+	//default controller index 0
 	template<typename CommandType>
-	inline CommandType& InputManager::AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState)
+	inline CommandType& InputManager::AddCommand(PCController::ControllerButton controllerButton, ButtonPressState pressState, int controllerIndex)
 	{
 		auto pCommand = new CommandType{};
 		//m_MapOfControllerCommands[{controllerButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
-		m_MapOfControllerCommands.insert(std::make_pair(ControllerButtonType(controllerButton, pressState), std::move(std::unique_ptr<Command>(pCommand))));
+		m_MapOfControllerCommands.emplace_back(std::make_pair(ControllerButtonType(controllerButton, pressState, controllerIndex), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 
@@ -257,7 +249,7 @@ namespace dae
 	{
 		auto pCommand = new CommandType{};
 		//m_MapOfKeyboardCommands[{keyboardKey, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
-		m_MapOfKeyboardCommands.insert(std::make_pair(KeyboardKeyType(keyboardKey, pressState), std::move(std::unique_ptr<Command>(pCommand))));
+		m_MapOfKeyboardCommands.emplace_back(std::make_pair(KeyboardKeyType(keyboardKey, pressState), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 
@@ -266,7 +258,7 @@ namespace dae
 	{
 		auto pCommand = new CommandType{};
 		//m_MapOfMouseCommands[{mouseButton, pressState}] = std::move(std::unique_ptr<Command>(pCommand));
-		m_MapOfMouseCommands.insert(std::make_pair(MouseButtonType(mouseButton, pressState), std::move(std::unique_ptr<Command>(pCommand))));
+		m_MapOfMouseCommands.emplace_back(std::make_pair(MouseButtonType(mouseButton, pressState), std::move(std::unique_ptr<Command>(pCommand))));
 		return *pCommand;
 	}
 }

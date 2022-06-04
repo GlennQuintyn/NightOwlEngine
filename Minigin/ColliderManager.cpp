@@ -1,5 +1,6 @@
 #include "NightOwlEnginePCH.h"
 #include "ColliderManager.h"
+#include "SceneManager.h"
 
 void dae::ColliderManager::RegisterRectCollider(RectColliderComponent* pCollider)
 {
@@ -11,35 +12,25 @@ void dae::ColliderManager::Update()
 	if (m_pRectColliderComponents.empty())
 		return;
 
+	int activeSceneIndex = SceneManager::GetInstance().GetActiveScene();
+
 	for (size_t index1 = 0; index1 < m_pRectColliderComponents.size() - 1; index1++)
 	{
+		//if the index of the first collider is not from the active scene don't update it.
+		if (m_pRectColliderComponents[index1]->GetSceneId() != activeSceneIndex)
+			continue;
+
 		for (size_t index2 = index1 + 1; index2 < m_pRectColliderComponents.size(); index2++)
 		{
-			m_pRectColliderComponents[index1]->UpdateOverlapping(m_pRectColliderComponents[index2]);
+			//if the index of the 2nd collider is not from the active scene, don't update it.
+			if (m_pRectColliderComponents[index2]->GetSceneId() != activeSceneIndex)
+				continue;
 
-			//if (IsOverlapping(m_pRectColliderComponents[index1]->GetRectangle(), m_pRectColliderComponents[index2]->GetRectangle()))
-			//{
-			//	//m_pRectColliderComponents[index1]->GetSubject().Notify(nullptr, 0);
-			//	//m_pRectColliderComponents[index2]->GetSubject().Notify(nullptr, 0);
-			//
-			//	//m_pRectColliderPairs.emplace_back(m_pRectColliderComponents[index1], m_pRectColliderComponents[index2]);
-			//}
-			//else
-			//{
-			//	auto it = std::find(m_pRectColliderPairs.begin(), m_pRectColliderPairs.end(), std::make_pair(m_pRectColliderComponents[index1], m_pRectColliderComponents[index2]));
-			//	if (it != m_pRectColliderPairs.end())
-			//	{
-			//		it->first->GetSubject().Notify(nullptr, 1);
-			//		it->second->GetSubject().Notify(nullptr, 1);
-			//	}
-			//	//for (auto& pCollider : m_pRectColliderPairs)
-			//	//{
-			//	//	if (pCollider.first == m_pRectColliderComponents[index1] &&
-			//	//		pCollider.second == m_pRectColliderComponents[index2])
-			//	//	{
-			//	//	}
-			//	//}
-			//}
+			//check if they belong to the same scene
+			if (m_pRectColliderComponents[index1]->GetSceneId() == m_pRectColliderComponents[index2]->GetSceneId())
+			{
+				m_pRectColliderComponents[index1]->UpdateOverlapping(m_pRectColliderComponents[index2]);
+			}
 		}
 	}
 }

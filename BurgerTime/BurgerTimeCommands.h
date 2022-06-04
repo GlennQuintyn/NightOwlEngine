@@ -13,6 +13,8 @@ namespace dae
 	const int g_MovementSpeedHorizontal{ 100 };
 	const int g_MovementSpeedVertical{ 75 };//50
 
+	//TODO: fix the player centering on the ladder code to also use the x and y offsets
+
 	class WalkLeftCommand final : public Command
 	{
 	public:
