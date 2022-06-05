@@ -4,22 +4,22 @@
 #include <NightOwlEngine.h>
 
 #pragma region Components importing
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
+#include <InputManager.h>
+#include <SceneManager.h>
+#include <Renderer.h>
+#include <ResourceManager.h>
 
-#include "Scene.h"
-#include "GameObject.h"
+#include <Scene.h>
+#include <GameObject.h>
 
-#include "Texture2DComponent.h"
-#include "TextComponent.h"
-#include "FPSComponent.h"
+#include <Texture2DComponent.h>
+#include <TextComponent.h>
+#include <FPSComponent.h>
 
-#include "Subject.h"
-#include "SpriteComponent.h"
-#include "RectColliderComponent.h"
-#include "SpriteManagerComponent.h"
+#include <Subject.h>
+#include <SpriteComponent.h>
+#include <RectColliderComponent.h>
+#include <SpriteManagerComponent.h>
 
 #include "MovementComponent.h"
 #include "PeterPepper.h"
@@ -28,7 +28,7 @@
 #include "MrPickle.h"
 #include "EnemyControllerComponent.h"
 
-#include "GameManager.h"
+#include "LevelManager.h"
 
 #include "PepperComponent.h"
 
@@ -45,7 +45,7 @@
 #include "PlateComponent.h"
 #pragma endregion
 
-#include "BurgerTimeCommands.h"//TODO: SHOULD BE uncommented again
+#include "BurgerTimeCommands.h"
 #include "ServiceLocator.h"
 #include "SDLSoundSystem.h"
 
@@ -68,7 +68,7 @@ void dae::MainMenuComponent::SelectNextButton()
 	m_pButtons[m_SelectedButtonIndex]->SetSelectedState(false);
 
 	++m_SelectedButtonIndex;
-	if (m_SelectedButtonIndex >= m_pButtons.size())
+	if (m_SelectedButtonIndex >= static_cast<int>(m_pButtons.size()))
 		m_SelectedButtonIndex = 0;
 
 	m_pButtons[m_SelectedButtonIndex]->SetSelectedState(true);
@@ -106,18 +106,36 @@ void dae::MainMenuComponent::PressSelectedButton()
 	//can just SinglePlayer = 0, Coop = 1, Versus = 2
 	m_GameMode = static_cast<GameMode>(m_SelectedButtonIndex);
 
-	if (m_GameMode == GameMode::Coop || m_GameMode == GameMode::Versus)
+	//loading levels
+	if (!m_ScenesLoadedBefore)
 	{
-		//this shouldn't be needed and it should just automatically add/remove controllers
-		InputManager::GetInstance().AddController();
+		if (m_GameMode == GameMode::Coop || m_GameMode == GameMode::Versus)
+		{
+			//this shouldn't be needed and it should just automatically add/remove controllers
+			InputManager::GetInstance().AddController();
+		}
+
+		LoadLevel1();
+		LoadLevel2();
+		LoadLevel3();
 	}
 
-	//loading levels
-	LoadLevel1();
-	LoadLevel2();
-	LoadLevel3();
+	for (auto& pLevelManager : m_pLevelManagers)
+	{
+		pLevelManager->SetGameMode(m_GameMode);
+	}
 
-	//once all scenes have been loaded in with correct game mode
+	//m_pLevelManagers;
+
+	/*
+	//SetGameMode
+	//SetEnemyPlayer
+	//SetCoopPlayer
+	AddEnemy
+	SetPepperObject
+	*/
+
+	//once all scenes have been loaded in start scene of level 1
 	auto& scene = SceneManager::GetInstance();
 	scene.GotoNextScene();
 	m_ScenesLoadedBefore = true;//so that they objects aren't added multiple times to their respected scene
@@ -165,11 +183,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	int windowW{}, windowH{};
 	SDL_GetWindowSize(m_pEngine->GetWindow(), &windowW, &windowH);
 
-	if (!m_ScenesLoadedBefore)
-	{
-
-	}
-
 	auto& backgroundObject = sceneLevel1.CreateObject("backgroundObject");
 	backgroundObject.AddComponent<Texture2DComponent>().SetTexture("Level/Level1.png");
 
@@ -181,11 +194,13 @@ void dae::MainMenuComponent::LoadLevel1()
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
 
+	auto& levelManagerObj = sceneLevel1.CreateObject("Obj");
+	auto& levelManagercmpt = levelManagerObj.AddComponent<LevelManager>();
+	levelManagercmpt.SetMaxFullPlateCount(4);
+	levelManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
 
-	auto& gameManagerObj = sceneLevel1.CreateObject("gameManagerObj");
-	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
-	gameManagercmpt.SetMaxFullPlateCount(4);
-	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
+	//register the level manager so that it gets updated when the gamemodechanges
+	m_pLevelManagers.emplace_back(&levelManagercmpt);
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -204,10 +219,6 @@ void dae::MainMenuComponent::LoadLevel1()
 
 	auto& peppercollidersubje = pepperCollider.GetSubject();
 	peppercollidersubje.AddObserver(pepperCmpt);
-
-	//sally salt
-	//sally salt
-	//sally salt
 
 	//peter pepper test object
 	auto& peterPepperObj = sceneLevel1.CreateObject("peterPepperObj");
@@ -230,9 +241,65 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& pettercollidersubje = peterCollider.GetSubject();
 	pettercollidersubje.AddObserver(petercmpt);
 	auto& petterPeppersubje = petercmpt.GetSubject();
+
+
+	//sally salt
+	auto& sallySaltObj = sceneLevel1.CreateObject("sallySaltObj");
+	auto& sallycmpt = sallySaltObj.AddComponent<PeterPepper>();
+	auto& sallySpriteManager = sallySaltObj.AddComponent<SpriteManagerComponent>();
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Idle.png", 1, 1, 0, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Left.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Right.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Up.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Down.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Death.png", 6, 1, 2, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
+
+	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
+	sallyCollider.Init({ 0,1,45,44 }, 1, true);
+	sallySaltObj.AddComponent<MovementComponent>();
+	sallycmpt.SetSpawnLocation(298.f, 384.f);
+	sallySaltObj.SetLocalPosition(298.f, 384.f);
+
+	auto& sallyColliderSubje = sallyCollider.GetSubject();
+	sallyColliderSubje.AddObserver(sallycmpt);
+	auto& sallySaltSubje = sallycmpt.GetSubject();
+
+	//if not in coop mode to begin with then disable the coop player object then 
+	if (m_GameMode != GameMode::Coop)
+		sallySaltObj.SetEnabledState(false);
+	else
+		sallySaltObj.SetEnabledState(true);
+
+	levelManagercmpt.SetNormalPlayer(&peterPepperObj);
+	levelManagercmpt.SetCoopPlayer(&sallySaltObj);
+	levelManagercmpt.SetPepperObject(&pepperObj);
 #pragma endregion
 
 #pragma region Enemies
+#pragma region EnemyPlayer
+	auto& playerHotDogObj = sceneLevel1.CreateObject("playerHotDogObj");
+	auto& playerHotDogCmpt = playerHotDogObj.AddComponent<MrHotDog>();
+	playerHotDogCmpt.SetControlledByHuman(true);
+	auto& playerHotDogSpriteManager = playerHotDogObj.AddComponent<SpriteManagerComponent>();
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
+	playerHotDogCollider.Init({ 0,1,45,44 }, 1, true);
+	playerHotDogObj.AddComponent<MovementComponent>();
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
+	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
+#pragma endregion
+
+#pragma region Enemy1
 	auto& mrHotDogObj1 = sceneLevel1.CreateObject("mrHotDogObj1");
 	auto& mrHotDogcmpt1 = mrHotDogObj1.AddComponent<MrHotDog>();
 	auto& mrHotDogSpriteManager1 = mrHotDogObj1.AddComponent<SpriteManagerComponent>();
@@ -249,12 +316,63 @@ void dae::MainMenuComponent::LoadLevel1()
 	mrHotDogCollider1.Init({ 0,1,45,44 }, 1, true);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
-	mrHotDogController1.SetPlayer1(&peterPepperObj);
-	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
 
+	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+	switch (m_GameMode)
+	{
+	case dae::GameMode::Coop://set enemy player and player 2, then let it fall through to add player 1
+
+		mrHotDogController1.SetPlayer2(&sallySaltObj);
+		//mrHotDogController2.SetPlayer2(&sallySaltObj);
+		//mrHotDogController3.SetPlayer2(&sallySaltObj);
+		//mrEggController1.SetPlayer2(&sallySaltObj);
+
+	case dae::GameMode::SinglePlayer:
+		playerHotDogObj.SetEnabledState(false);
+		mrHotDogController1.SetPlayer1(&peterPepperObj);
+		//mrHotDogController2.SetPlayer1(&peterPepperObj);
+		//mrHotDogController2.SetPlayer1(&peterPepperObj);
+		//mrEggController1.SetPlayer1(&peterPepperObj);
+
+		break;
+	case dae::GameMode::Versus: //if in versus mode to begin with then disable the normal enemie objects
+		playerHotDogObj.SetEnabledState(true);
+
+		mrHotDogObj1.SetEnabledState(false);
+		//mrHotDogObj2.SetEnabledState(false);
+		//mrHotDogObj3.SetEnabledState(false);
+		//mrEggObj1.SetEnabledState(false);
+		break;
+	}
+
+	//register enemy player to the levelmanager
+	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
+
+	//register enemies to the levelmanager
+	levelManagercmpt.AddEnemy(&mrHotDogObj1);
+	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	//levelManagercmpt.AddEnemy(&mrHotDogObj3);
+	//levelManagercmpt.AddEnemy(&mrEggObj1);
+
+
+	//let the enemies observe the player(s)
+	petterPeppersubje.AddObserver(playerHotDogCmpt);
+
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
+	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	//petterPeppersubje.AddObserver(mrHotDogcmpt3);
+	//petterPeppersubje.AddObserver(mrEggcmpt1);
+
+	sallySaltSubje.AddObserver(playerHotDogCmpt);
+
+	sallySaltSubje.AddObserver(mrHotDogcmpt1);
+	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	//sallySaltSubje.AddObserver(mrHotDogcmpt3);
+	//sallySaltSubje.AddObserver(mrEggcmpt1);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -645,9 +763,10 @@ void dae::MainMenuComponent::LoadLevel1()
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
-	livessubje.AddObserver(gameManagercmpt);
-	petterPeppersubje.AddObserver(livescmpt);
+	livessubje.AddObserver(levelManagercmpt);
 
+	petterPeppersubje.AddObserver(livescmpt);
+	sallySaltSubje.AddObserver(livescmpt);
 
 	auto& scoreObject = sceneLevel1.CreateObject("scoreObject");
 	auto& scoretextcomp = scoreObject.AddComponent<TextComponent>();
@@ -677,8 +796,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	bunTopSubje4.AddObserver(scoreCmpt);
 #pragma endregion
 
-
-
 	//TODO: hi score component should read hi-score from file and observe the score object,
 	//if the score components value is bigger than the current high score update it
 
@@ -699,15 +816,13 @@ void dae::MainMenuComponent::LoadLevel1()
 #pragma endregion
 
 #pragma region InputCommandsPlayer
-	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
+	//peter pepper input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
@@ -719,24 +834,42 @@ void dae::MainMenuComponent::LoadLevel1()
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
+
+
+	//sally salt input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+
+	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
+	throwPepperCmdController2.SetPlayer(&sallySaltObj);
+	throwPepperCmdController2.SetPepper(&pepperObj);
+	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
+
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
+	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
+	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 #pragma endregion
 
-	auto& gameManagersubje = gameManagercmpt.GetSubject();
-	gameManagersubje.AddObserver(petercmpt);
-	if (m_GameMode == GameMode::Coop)
-	{
-		//add extra player
-	}
+	auto& levelManagersubje = levelManagercmpt.GetSubject();
+	levelManagersubje.AddObserver(petercmpt);
+	levelManagersubje.AddObserver(sallycmpt);
 
-	gameManagersubje.AddObserver(mrHotDogcmpt1);
-	//gameManagersubje.AddObserver(mrHotDogcmpt2);
-	//gameManagersubje.AddObserver(mrHotDogcmpt3);
-	//gameManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrHotDogcmpt1);
+	//levelManagersubje.AddObserver(mrHotDogcmpt2);
+	//levelManagersubje.AddObserver(mrHotDogcmpt3);
+	//levelManagersubje.AddObserver(mrEggcmpt1);
 
-	plateSubje1.AddObserver(gameManagercmpt);
-	plateSubje2.AddObserver(gameManagercmpt);
-	plateSubje3.AddObserver(gameManagercmpt);
-	plateSubje4.AddObserver(gameManagercmpt);
+	plateSubje1.AddObserver(levelManagercmpt);
+	plateSubje2.AddObserver(levelManagercmpt);
+	plateSubje3.AddObserver(levelManagercmpt);
+	plateSubje4.AddObserver(levelManagercmpt);
 
 #pragma endregion
 
@@ -764,10 +897,13 @@ void dae::MainMenuComponent::LoadLevel2()
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 255, 255, 0 });
 
-	auto& gameManagerObj = sceneLevel2.CreateObject("gameManagerObj");
-	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
-	gameManagercmpt.SetMaxFullPlateCount(4);
-	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
+	auto& levelManagerObj = sceneLevel2.CreateObject("levelManagerObj");
+	auto& levelManagercmpt = levelManagerObj.AddComponent<LevelManager>();
+	levelManagercmpt.SetMaxFullPlateCount(4);
+	levelManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
+
+	//register the level manager so that it gets updated when the gamemodechanges
+	m_pLevelManagers.emplace_back(&levelManagercmpt);
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -805,9 +941,63 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& pettercollidersubje = peterCollider.GetSubject();
 	pettercollidersubje.AddObserver(petercmpt);
 	auto& petterPeppersubje = petercmpt.GetSubject();
+
+	//sally salt
+	auto& sallySaltObj = sceneLevel2.CreateObject("sallySaltObj");
+	auto& sallycmpt = sallySaltObj.AddComponent<PeterPepper>();
+	auto& sallySpriteManager = sallySaltObj.AddComponent<SpriteManagerComponent>();
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Idle.png", 1, 1, 0, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Left.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Right.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Up.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Down.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Death.png", 6, 1, 2, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
+
+	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
+	sallyCollider.Init({ 0,1,45,44 }, 2, true);
+	sallySaltObj.AddComponent<MovementComponent>();
+	sallycmpt.SetSpawnLocation(298.f, 162.f);
+	sallySaltObj.SetLocalPosition(298.f, 162.f);
+
+	auto& sallyColliderSubje = sallyCollider.GetSubject();
+	sallyColliderSubje.AddObserver(sallycmpt);
+	auto& sallySaltSubje = sallycmpt.GetSubject();
+
+	//the 2nd level manager will enable or disable the player(s) depending on the mode that was selected,
+	//so by default its disabled
+	peterPepperObj.SetEnabledState(false);
+	sallySaltObj.SetEnabledState(false);
+	pepperObj.SetEnabledState(false);
+
+	levelManagercmpt.SetNormalPlayer(&peterPepperObj);
+	levelManagercmpt.SetCoopPlayer(&sallySaltObj);
+	levelManagercmpt.SetPepperObject(&pepperObj);
 #pragma endregion
 
 #pragma region Enemies
+#pragma region EnemyPlayer
+	auto& playerHotDogObj = sceneLevel2.CreateObject("playerHotDogObj");
+	auto& playerHotDogCmpt = playerHotDogObj.AddComponent<MrHotDog>();
+	playerHotDogCmpt.SetControlledByHuman(true);
+	auto& playerHotDogSpriteManager = playerHotDogObj.AddComponent<SpriteManagerComponent>();
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
+	playerHotDogCollider.Init({ 0,1,45,44 }, 2, true);
+	playerHotDogObj.AddComponent<MovementComponent>();
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
+	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
+#pragma endregion
+#pragma region Enemy1
 	auto& mrHotDogObj1 = sceneLevel2.CreateObject("mrHotDogObj1");
 	auto& mrHotDogcmpt1 = mrHotDogObj1.AddComponent<MrHotDog>();
 	auto& mrHotDogSpriteManager1 = mrHotDogObj1.AddComponent<SpriteManagerComponent>();
@@ -824,12 +1014,48 @@ void dae::MainMenuComponent::LoadLevel2()
 	mrHotDogCollider1.Init({ 0,1,45,44 }, 2, true);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
-	mrHotDogController1.SetPlayer1(&peterPepperObj);
 	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
-
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+
+
+	//always set the first player, the 2nd player will be set or unset in the level manager once the leve becomes active
+	mrHotDogController1.SetPlayer1(&peterPepperObj);
+
+	//register enemies to the levelmanager
+	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
+
+	levelManagercmpt.AddEnemy(&mrHotDogObj1);
+	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	//levelManagercmpt.AddEnemy(&mrHotDogObj3);
+	//levelManagercmpt.AddEnemy(&mrPickleObj1);
+
+
+	//the 2nd level manager will enable or disable the enemies depending on the mode that was selected,
+	//so by default its disabled
+	playerHotDogObj.SetEnabledState(false);
+
+	mrHotDogObj1.SetEnabledState(false);
+	//mrHotDogObj2.SetEnabledState(false);
+	//mrHotDogObj3.SetEnabledState(false);
+	//mrEggObj1.SetEnabledState(false);
+
+	//let the enemies observe the player(s)
+	petterPeppersubje.AddObserver(playerHotDogCmpt);
+
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
+	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	//petterPeppersubje.AddObserver(mrHotDogcmpt3);
+	//petterPeppersubje.AddObserver(mrEggcmpt1);
+
+	sallySaltSubje.AddObserver(playerHotDogCmpt);
+
+	sallySaltSubje.AddObserver(mrHotDogcmpt1);
+	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	//sallySaltSubje.AddObserver(mrHotDogcmpt3);
+	//sallySaltSubje.AddObserver(mrEggcmpt1);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -1214,9 +1440,9 @@ void dae::MainMenuComponent::LoadLevel2()
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
-	livessubje.AddObserver(gameManagercmpt);
+	livessubje.AddObserver(levelManagercmpt);
 	petterPeppersubje.AddObserver(livescmpt);
-
+	sallySaltSubje.AddObserver(livescmpt);
 
 	auto& scoreObject = sceneLevel2.CreateObject("scoreObject");
 	auto& scoretextcomp = scoreObject.AddComponent<TextComponent>();
@@ -1246,8 +1472,6 @@ void dae::MainMenuComponent::LoadLevel2()
 	bunTopSubje4.AddObserver(scoreCmpt);
 #pragma endregion
 
-
-
 	//TODO: hi score component should read hi-score from file and observe the score object,
 	//if the score components value is bigger than the current high score update it
 
@@ -1268,15 +1492,13 @@ void dae::MainMenuComponent::LoadLevel2()
 #pragma endregion
 
 #pragma region InputCommandsPlayer
+	//peter pepper input
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
@@ -1288,26 +1510,43 @@ void dae::MainMenuComponent::LoadLevel2()
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
+
+	//sally salt input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+
+	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
+	throwPepperCmdController2.SetPlayer(&sallySaltObj);
+	throwPepperCmdController2.SetPepper(&pepperObj);
+	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
+
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
+	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
+	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 #pragma endregion
 
 
 
-	auto& gameManagersubje = gameManagercmpt.GetSubject();
-	gameManagersubje.AddObserver(petercmpt);
-	if (m_GameMode == GameMode::Coop)
-	{
-		//add extra player
-	}
+	auto& levelManagersubje = levelManagercmpt.GetSubject();
+	levelManagersubje.AddObserver(petercmpt);
+	levelManagersubje.AddObserver(sallycmpt);
 
-	gameManagersubje.AddObserver(mrHotDogcmpt1);
-	//gameManagersubje.AddObserver(mrHotDogcmpt2);
-	//gameManagersubje.AddObserver(mrHotDogcmpt3);
-	//gameManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrHotDogcmpt1);
+	//levelManagersubje.AddObserver(mrHotDogcmpt2);
+	//levelManagersubje.AddObserver(mrHotDogcmpt3);
+	//levelManagersubje.AddObserver(mrEggcmpt1);
 
-	plateSubje1.AddObserver(gameManagercmpt);
-	plateSubje2.AddObserver(gameManagercmpt);
-	plateSubje3.AddObserver(gameManagercmpt);
-	plateSubje4.AddObserver(gameManagercmpt);
+	plateSubje1.AddObserver(levelManagercmpt);
+	plateSubje2.AddObserver(levelManagercmpt);
+	plateSubje3.AddObserver(levelManagercmpt);
+	plateSubje4.AddObserver(levelManagercmpt);
 
 	sceneLevel2.LateInit();//intialize the new scene
 }
@@ -1333,10 +1572,13 @@ void dae::MainMenuComponent::LoadLevel3()
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 255, 0, 0 });
 
-	auto& gameManagerObj = sceneLevel3.CreateObject("gameManagerObj");
-	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
-	gameManagercmpt.SetMaxFullPlateCount(3);
-	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
+	auto& levelManagerObj = sceneLevel3.CreateObject("levelManagerObj");
+	auto& levelManagercmpt = levelManagerObj.AddComponent<LevelManager>();
+	levelManagercmpt.SetMaxFullPlateCount(3);
+	levelManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
+
+	//register the level manager so that it gets updated when the gamemodechanges
+	m_pLevelManagers.emplace_back(&levelManagercmpt);
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -1353,6 +1595,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	pepperCmpt.SetResetPos(-100.f, -100.f);
 	pepperCmpt.SetSpriteDuration(1.f);
 
+	//PeterPepper
 	auto& peppercollidersubje = pepperCollider.GetSubject();
 	peppercollidersubje.AddObserver(pepperCmpt);
 	auto& peterPepperObj = sceneLevel3.CreateObject("peterPepperObj");
@@ -1374,9 +1617,63 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& pettercollidersubje = peterCollider.GetSubject();
 	pettercollidersubje.AddObserver(petercmpt);
 	auto& petterPeppersubje = petercmpt.GetSubject();
+
+	//Sally Salt
+	auto& sallySaltObj = sceneLevel3.CreateObject("sallySaltObj");
+	auto& sallycmpt = sallySaltObj.AddComponent<PeterPepper>();
+	auto& sallySpriteManager = sallySaltObj.AddComponent<SpriteManagerComponent>();
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Idle.png", 1, 1, 0, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Left.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Right.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Up.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Walking_Down.png", 4, 1, 16, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Death.png", 6, 1, 2, 45, 45);
+	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
+
+	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
+	sallyCollider.Init({ 0,1,45,44 }, 3, true);
+	sallySaltObj.AddComponent<MovementComponent>();
+	sallycmpt.SetSpawnLocation(298.f, 387.f);
+	sallySaltObj.SetLocalPosition(298.f, 387.f);
+
+	auto& sallyColliderSubje = sallyCollider.GetSubject();
+	sallyColliderSubje.AddObserver(sallycmpt);
+	auto& sallySaltSubje = sallycmpt.GetSubject();
+
+	//the 3rd level manager will enable or disable the player(s) depending on the mode that was selected,
+	//so by default its disabled
+	peterPepperObj.SetEnabledState(false);
+	sallySaltObj.SetEnabledState(false);
+	pepperObj.SetEnabledState(false);
+
+	levelManagercmpt.SetNormalPlayer(&peterPepperObj);
+	levelManagercmpt.SetCoopPlayer(&sallySaltObj);
+	levelManagercmpt.SetPepperObject(&pepperObj);
 #pragma endregion
 
 #pragma region Enemies
+#pragma region EnemyPlayer
+	auto& playerHotDogObj = sceneLevel3.CreateObject("playerHotDogObj");
+	auto& playerHotDogCmpt = playerHotDogObj.AddComponent<MrHotDog>();
+	playerHotDogCmpt.SetControlledByHuman(true);
+	auto& playerHotDogSpriteManager = playerHotDogObj.AddComponent<SpriteManagerComponent>();
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
+	playerHotDogCollider.Init({ 0,1,45,44 }, 3, true);
+	playerHotDogObj.AddComponent<MovementComponent>();
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
+	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
+#pragma endregion
+#pragma region Enemy1
 	auto& mrHotDogObj1 = sceneLevel3.CreateObject("mrHotDogObj1");
 	auto& mrHotDogcmpt1 = mrHotDogObj1.AddComponent<MrHotDog>();
 	auto& mrHotDogSpriteManager1 = mrHotDogObj1.AddComponent<SpriteManagerComponent>();
@@ -1393,12 +1690,54 @@ void dae::MainMenuComponent::LoadLevel3()
 	mrHotDogCollider1.Init({ 0,1,45,44 }, 3, true);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
-	mrHotDogController1.SetPlayer1(&peterPepperObj);
 	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
-
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+	//always set the first player, the 2nd player will be set or unset in the level manager once the leve becomes active
+	mrHotDogController1.SetPlayer1(&peterPepperObj);
+
+	//the 3nd level manager will enable or disable the enemies depending on the mode that was selected,
+	//so by default its disabled
+	playerHotDogObj.SetEnabledState(false);
+
+	mrHotDogObj1.SetEnabledState(false);
+	//mrHotDogObj2.SetEnabledState(false);
+	//mrEggObj1.SetEnabledState(false);
+	//mrPickleObj1.SetEnabledState(false);
+	//mrPickleObj2.SetEnabledState(false);
+	//mrPickleObj3.SetEnabledState(false);
+
+	//register enemies to the levelmanager
+	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
+
+	levelManagercmpt.AddEnemy(&mrHotDogObj1);
+	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	//levelManagercmpt.AddEnemy(&mrEggObj1);
+	//levelManagercmpt.AddEnemy(&mrPickleObj1);
+	//levelManagercmpt.AddEnemy(&mrPickleObj2);
+	//levelManagercmpt.AddEnemy(&mrPickleObj3);
+
+
+	//let the enemies observe the player(s)
+	petterPeppersubje.AddObserver(playerHotDogCmpt);
+
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
+	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	//petterPeppersubje.AddObserver(mrEggcmpt1);
+	//petterPeppersubje.AddObserver(mrPicklecmpt1);
+	//petterPeppersubje.AddObserver(mrPicklecmpt2);
+	//petterPeppersubje.AddObserver(mrPicklecmpt3);
+
+	sallySaltSubje.AddObserver(playerHotDogCmpt);
+
+	sallySaltSubje.AddObserver(mrHotDogcmpt1);
+	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	//sallySaltSubje.AddObserver(mrEggcmpt1);
+	//sallySaltSubje.AddObserver(mrPicklecmpt1);
+	//sallySaltSubje.AddObserver(mrPicklecmpt2);
+	//sallySaltSubje.AddObserver(mrPicklecmpt3);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -1907,8 +2246,9 @@ void dae::MainMenuComponent::LoadLevel3()
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
-	livessubje.AddObserver(gameManagercmpt);
+	livessubje.AddObserver(levelManagercmpt);
 	petterPeppersubje.AddObserver(livescmpt);
+	sallySaltSubje.AddObserver(livescmpt);
 
 
 	auto& scoreObject = sceneLevel3.CreateObject("scoreObject");
@@ -1963,15 +2303,13 @@ void dae::MainMenuComponent::LoadLevel3()
 #pragma endregion
 
 #pragma region InputCommandsPlayer
+	//peter pepper input
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
@@ -1983,29 +2321,44 @@ void dae::MainMenuComponent::LoadLevel3()
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
+
+
+	//sally salt input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+
+	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
+	throwPepperCmdController2.SetPlayer(&sallySaltObj);
+	throwPepperCmdController2.SetPepper(&pepperObj);
+	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
+
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
+	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
+	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 #pragma endregion
 
+	auto& levelManagersubje = levelManagercmpt.GetSubject();
+	levelManagersubje.AddObserver(petercmpt);
+	levelManagersubje.AddObserver(sallycmpt);
 
+	levelManagersubje.AddObserver(mrHotDogcmpt1);
+	//levelManagersubje.AddObserver(mrHotDogcmpt2);
+	//levelManagersubje.AddObserver(mrHotDogcmpt3);
+	//levelManagersubje.AddObserver(mrEggcmpt1);
 
-
-	auto& gameManagersubje = gameManagercmpt.GetSubject();
-	gameManagersubje.AddObserver(petercmpt);
-	if (m_GameMode == GameMode::Coop)
-	{
-		//add extra player
-	}
-
-	gameManagersubje.AddObserver(mrHotDogcmpt1);
-	//gameManagersubje.AddObserver(mrHotDogcmpt2);
-	//gameManagersubje.AddObserver(mrHotDogcmpt3);
-	//gameManagersubje.AddObserver(mrEggcmpt1);
-
-	plateSubje1.AddObserver(gameManagercmpt);
-	plateSubje2.AddObserver(gameManagercmpt);
-	plateSubje3.AddObserver(gameManagercmpt);
-	plateSubje4.AddObserver(gameManagercmpt);
-	plateSubje5.AddObserver(gameManagercmpt);
-	plateSubje6.AddObserver(gameManagercmpt);
+	plateSubje1.AddObserver(levelManagercmpt);
+	plateSubje2.AddObserver(levelManagercmpt);
+	plateSubje3.AddObserver(levelManagercmpt);
+	plateSubje4.AddObserver(levelManagercmpt);
+	plateSubje5.AddObserver(levelManagercmpt);
+	plateSubje6.AddObserver(levelManagercmpt);
 
 
 

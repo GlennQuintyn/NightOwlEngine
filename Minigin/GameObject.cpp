@@ -34,6 +34,7 @@ GameObject::GameObject(const std::string_view objectName, Scene* pScene, GameObj
 	, m_Name{}
 	, m_pParent{ pParent }
 	, m_pScene{ pScene }
+	, m_Enabled{ true }//enabled by default
 	, m_TransformIsDirty{ false }
 	, m_PositionIsDirty{ false }
 	, m_RotationIsDirty{ false }
@@ -97,8 +98,9 @@ void GameObject::LateInit()
 
 void GameObject::Update()
 {
-	//checks if anything needs updating and then updates it
-	//UpdateTransform();
+	//if not enabled then it doesn't need to update and neither does its components and children
+	if (!m_Enabled)
+		return;
 
 	for (auto& component : m_pComponents)
 	{
@@ -111,8 +113,16 @@ void GameObject::Update()
 	}
 }
 
-void GameObject::FixedUpdate(float)
+void GameObject::FixedUpdate(float deltaT)
 {
+	//if not enabled then it doesn't need to update and neither does its components and children
+	if (!m_Enabled)
+		return;
+
+	for (auto& child : m_pChildren)
+	{
+		child->FixedUpdate(deltaT);
+	}
 }
 
 void GameObject::LateUpdate()
@@ -130,6 +140,10 @@ void GameObject::LateUpdate()
 
 void GameObject::Render() const
 {
+	//if not enabled then it doesn't need to rendered and neither does its components and children
+	if (!m_Enabled)
+		return;
+
 	for (const auto& component : m_pComponents)
 	{
 		component.first->Render();
@@ -164,7 +178,15 @@ Scene* GameObject::GetScene()
 		return m_pParent->GetScene();
 }
 
-//TODO: Fix adding a child and parent code for the transform stuff
+void dae::GameObject::SetEnabledState(bool enabled)
+{
+	m_Enabled = enabled;
+
+	for (auto& pChild : m_pChildren)
+	{
+		pChild->SetEnabledState(enabled);
+	}
+}
 
 void GameObject::SetParent(GameObject * pParent, bool keepWorldPosition)
 {
@@ -313,7 +335,7 @@ GameObject& GameObject::CreateAddChild(const std::string_view childName)
 }
 #pragma endregion
 
-#pragma region transform code
+#pragma region Transform_Code
 #pragma region GetWorldTransforms
 const Transform& dae::GameObject::GetWorldTransform()
 {
@@ -366,7 +388,6 @@ const float dae::GameObject::GetWorldZDept()
 	return m_WorldTransform.zDept;
 }
 #pragma endregion
-
 
 #pragma region SettingLocalTransform
 void dae::GameObject::SetLocalTransform(const Transform & transform)

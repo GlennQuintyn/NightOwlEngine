@@ -1,11 +1,13 @@
 #pragma once
 #include <BaseComponent.h>
 #include "ButtonComponent.h"
+#include "Enums.h"
 
 namespace dae
 {
 	class GameObject;
 	class NightOwlEngine;
+	class LevelManager;
 
 	class MainMenuComponent final : public BaseComponent
 	{
@@ -39,15 +41,8 @@ namespace dae
 		void LoadLevel2();
 		void LoadLevel3();
 
-		enum class GameMode : size_t
-		{
-			SinglePlayer = 0,
-			Coop = 1,
-			Versus = 2,
-			MainMenu = 3
-		};
-
 		std::vector<ButtonComponent*> m_pButtons;
+		std::vector<LevelManager*> m_pLevelManagers;
 		GameObject* m_pParentObject;
 		NightOwlEngine* m_pEngine;
 		int m_SelectedButtonIndex;

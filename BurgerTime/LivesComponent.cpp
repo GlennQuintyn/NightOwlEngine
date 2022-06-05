@@ -56,7 +56,10 @@ void dae::LivesComponent::Notify(GameObject*, int event)
 
 		if (m_CurrentLives < 1)
 		{
-			//m_CurrentLives = 0;
+			//incase both players die on the same frame,
+			//that the ui doesn't show a negative player health icon
+			m_CurrentLives = 0;
+
 			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Game_Over));
 		}
 		else
@@ -72,11 +75,6 @@ void LivesComponent::LateInit()
 {
 	if (!m_pTexture)
 		Logger::GetInstance().LogError("LIVESCOMPONENT:\tTEXTURE WAS NOT GIVEN!");
-}
-
-void LivesComponent::Update()
-{
-	//m_pTextComponent->SetText("Lives: " + std::to_string(m_CurrentLives));
 }
 
 void LivesComponent::Render() const

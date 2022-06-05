@@ -48,6 +48,9 @@ namespace dae
 
 		Scene* GetScene();
 
+		const bool IsEnabled() const { return m_Enabled; };
+		void SetEnabledState(bool enabled); 
+
 		void SetParent(GameObject* parent, bool keepWorldPosition = true);
 		GameObject* GetParent() const { return m_pParent; };
 
@@ -96,6 +99,8 @@ namespace dae
 		Scene* m_pScene;
 
 		static unsigned int m_ObjIdCounter;
+
+		bool m_Enabled;
 
 		bool m_TransformIsDirty;
 		bool m_PositionIsDirty;

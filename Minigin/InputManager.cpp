@@ -158,7 +158,7 @@ bool InputManager::IsPressed(PCController::ControllerButton controllerButton, si
 	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
 	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
 	{
-		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		//Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
 		return false;
 	}
 	return m_pPCControllers[contollerIndex]->IsPressed(controllerButton);
@@ -169,7 +169,7 @@ bool InputManager::IsPressedThisFrame(PCController::ControllerButton controllerB
 	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
 	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
 	{
-		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		//Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
 		return false;
 	}
 	return m_pPCControllers[contollerIndex]->IsPressedThisFrame(controllerButton);
@@ -180,7 +180,7 @@ bool InputManager::IsReleasedThisFrame(PCController::ControllerButton controller
 	//if there are no controllers or the index is bigger than 3 (max 4 controllers so indices go from 0->3)
 	if (contollerIndex > 3 || contollerIndex >= m_pPCControllers.size())
 	{
-		Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
+		//Logger::GetInstance().LogWarning("INPUTMANAGER:\tGiven controller index was out of bounds");
 		return false;
 	}
 	return m_pPCControllers[contollerIndex]->IsReleasedThisFrame(controllerButton);

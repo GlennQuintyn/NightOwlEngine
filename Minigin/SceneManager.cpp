@@ -60,7 +60,7 @@ void dae::SceneManager::ResetActiveScene()
 
 void dae::SceneManager::SetActiveScene(int index)
 {
-	if (index < 0 || index>m_pScenes.size() - 1)
+	if (index < 0 || index > static_cast<int>(m_pScenes.size()) - 1)
 		return;
 
 	m_ActiveSceneIndex = index;
@@ -70,7 +70,7 @@ void dae::SceneManager::GotoNextScene()
 {
 	++m_ActiveSceneIndex;
 
-	if (m_ActiveSceneIndex >= m_pScenes.size())
+	if (m_ActiveSceneIndex >= static_cast<int>(m_pScenes.size()))
 		m_ActiveSceneIndex = 0;
 }
 

@@ -25,6 +25,8 @@ namespace dae
 		//location to (re)spawn at and the direction the AI should walk in initially when (re)spawning
 		void SetRespawnPosAndWalkDirection(float x, float y, EnemyControllerComponent::MovementState direction);
 
+		void SetControlledByHuman(bool state) { m_ControlledByHuman = state; };
+
 		//when the enemy is either dead, peppered or wating to move (respawn delay) he is safe to touch
 		bool IsHostile() { return m_State == EnemyState::Moving; };
 
@@ -42,17 +44,13 @@ namespace dae
 	private:
 		//places enemy ofscreen so the collider logic can reset
 		void PlaceOffScreen();
-		//enum class EnemyState
-		//{
-		//	Moving,
-		//	Dead,
-		//	Peppered,
-		//	WaitingToMove
-		//};
 
 		GameObject* m_pParentObject;
 		IngredientComponent* m_pIngredientWalkingOn;
 		EnemyControllerComponent* m_pEnemyController;
+		
+		MovementComponent* m_pMovementCmpt;
+
 		glm::vec2 m_RespawnPos;
 		EnemyState m_State;
 		EnemyControllerComponent::MovementState m_SpawnWalkDirection;
@@ -60,5 +58,6 @@ namespace dae
 		float m_RespawnDelay;
 		float m_DurationLeft;
 		bool m_ResetInNextUpdate;
+		bool m_ControlledByHuman;
 	};
 }

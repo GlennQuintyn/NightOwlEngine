@@ -9,17 +9,25 @@
 
 #include "NightOwlEngine.h"
 
-#pragma region Components importing
+#include <ResourceManager.h>
+#include <SceneManager.h>
 #include "InputManager.h"
-#include "SceneManager.h"
+
+#include <GameObject.h>
+#include <Texture2DComponent.h>
+#include <TextComponent.h>
+
+#include "MainMenuComponent.h"
+#include "ButtonComponent.h"
+
+#include "BurgerTimeCommands.h"
+
+/*
+#pragma region Components importing
 #include "Renderer.h"
-#include "ResourceManager.h"
 
 #include "Scene.h"
-#include "GameObject.h"
 
-#include "Texture2DComponent.h"
-#include "TextComponent.h"
 #include "FPSComponent.h"
 
 #include "Subject.h"
@@ -50,13 +58,9 @@
 #include "IngredientComponent.h"
 #include "PlateComponent.h"
 #pragma endregion
-
-#include "BurgerTimeCommands.h"
-#include "ServiceLocator.h"
-#include "SDLSoundSystem.h"
+*/
 
 void LoadMainMenu(dae::NightOwlEngine* pEngine);
-//void InitializeScenesAndObject();
 
 using namespace dae;
 
@@ -71,11 +75,13 @@ int main(int, char* [])
 
 	//TO: set all level AND main menu loading stuff into seperate functions
 	LoadMainMenu(engine);
-
+	
+	
 	//TODO: remove the code below
+
 	if (false)
 	{
-
+/*
 #pragma region LoadGame
 		auto& sceneLevel1 = SceneManager::GetInstance().CreateScene("Level1");
 		//auto& sceneLevel2 = SceneManager::GetInstance().CreateScene("Level2");
@@ -583,6 +589,7 @@ int main(int, char* [])
 #pragma endregion
 #pragma endregion
 
+*/
 	}
 
 	/*sound system testing code
@@ -594,10 +601,9 @@ int main(int, char* [])
 	//ServiceLocator::GetSS().PlaySFX(0, 40);
 	//ServiceLocator::GetSS().PlaySFX(1, 50);
 	//ServiceLocator::GetSS().PlaySFX(2, 80);
-	*/
+	
 
 
-	/*
 		//
 		//onbserver testing code
 		//
@@ -654,7 +660,9 @@ int main(int, char* [])
 		peterPepperComp2.SetPepperEnemyButton(PCController::ControllerButton::Button_L_THUMB);
 		auto& subje2 = peterPepperComp2.GetSubject();
 		subje2.AddObserver(livescomp2);
-		subje2.AddObserver(scorecomp2);*/
+		subje2.AddObserver(scorecomp2);
+
+	*/
 
 	engine->Run();
 
@@ -725,4 +733,6 @@ void LoadMainMenu(dae::NightOwlEngine* pEngine)
 	auto& nameTextCmpt = nameObject.AddComponent<TextComponent>();
 	nameTextCmpt.Setup(nameFont, { 255,255,255,255 }, "Glenn Quintyn");
 	nameObject.SetLocalPosition(10.f, windowH - nameFontSize - 5.f);
+
+
 }

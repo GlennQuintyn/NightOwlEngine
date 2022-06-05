@@ -30,7 +30,7 @@ namespace dae
 		void Notify(GameObject* pObject, int event) override;
 
 		void LateInit() override;
-		void Update() override;
+		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
 		void Reset() override {};

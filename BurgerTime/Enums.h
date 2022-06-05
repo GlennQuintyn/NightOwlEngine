@@ -50,4 +50,13 @@ namespace dae
 		Peppered,
 		WaitingToMove
 	};
+
+	enum class GameMode : size_t
+	{
+		SinglePlayer = 0,
+		Coop = 1,
+		Versus = 2,
+		MainMenu = 3
+	};
+
 }

@@ -1,11 +1,10 @@
 #pragma once
 #include "BaseComponent.h"
+#include "GameObject.h"
 #include "Subject.h"
 
 namespace dae
 {
-	class GameObject;
-
 	class RectColliderComponent final : public BaseComponent//, public Observer
 	{
 	public:
@@ -28,6 +27,8 @@ namespace dae
 
 		void SetDebugMode(bool drawDebug) { m_DebugRender = drawDebug; }
 		void SetDebugColliderColor(SDL_Color debugColor) { m_ColliderColor = debugColor; }
+
+		const bool IsEnabled() const { return m_pParentObject->IsEnabled(); };
 
 		Subject& GetSubject() { return m_Subject; }
 		void UpdateOverlapping(RectColliderComponent* pOtherCollider);

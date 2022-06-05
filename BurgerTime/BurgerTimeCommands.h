@@ -6,6 +6,7 @@
 #include "Enums.h"
 #include "MovementComponent.h"
 #include "MainMenuComponent.h"
+#include "PepperComponent.h"
 #include "PepperCountComponent.h"
 
 namespace dae
@@ -40,6 +41,10 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			//if the object is not enabled it shouldn't execute the commands
+			if (!m_pObject->IsEnabled())
+				return;
+
 			if (m_pMovementCmpt->CanGoLeft())
 			{
 				auto pPlatform = m_pMovementCmpt->GetTouchingPlatformLeft();
@@ -87,6 +92,10 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			//if the object is not enabled it shouldn't execute the commands
+			if (!m_pObject->IsEnabled())
+				return;
+
 			if (m_pMovementCmpt->CanGoRight())
 			{
 				auto pPlatform = m_pMovementCmpt->GetTouchingPlatformRight();
@@ -134,6 +143,10 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			//if the object is not enabled it shouldn't execute the commands
+			if (!m_pObject->IsEnabled())
+				return;
+
 			if (m_pMovementCmpt->CanGoUp())
 			{
 				auto pLadder = m_pMovementCmpt->GetTouchingLadderUp();
@@ -181,6 +194,10 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			//if the object is not enabled it shouldn't execute the commands
+			if (!m_pObject->IsEnabled())
+				return;
+
 			if (m_pMovementCmpt->CanGoDown())
 			{
 				auto pLadder = m_pMovementCmpt->GetTouchingLadderDown();
@@ -230,6 +247,10 @@ namespace dae
 	private:
 		void Execute() override
 		{
+			//if the object is not enabled it shouldn't execute the commands
+			if (!m_pPepperObject->IsEnabled())
+				return;
+
 			//if there is no pepper left to throw cancel the pepper throwing
 			if (!m_pPepperCountCmpt->UsePepper())
 				return;
@@ -267,7 +288,8 @@ namespace dae
 					break;
 				}
 
-				pPepperCmpt->Thrown();
+				if (pPepperCmpt)
+					pPepperCmpt->Thrown();
 			}
 		}
 		GameObject* m_pPepperObject{};
@@ -289,7 +311,9 @@ namespace dae
 	private:
 		void Execute() override
 		{
-			m_pMainMenu->SelectNextButton();
+			//only executee main menu commands when the active scene is the main menu
+			if (SceneManager::GetInstance().GetActiveScene() == 0)
+				m_pMainMenu->SelectNextButton();
 		}
 
 		MainMenuComponent* m_pMainMenu{};
@@ -307,7 +331,9 @@ namespace dae
 	private:
 		void Execute() override
 		{
-			m_pMainMenu->SelectPreviousButton();
+			//only executee main menu commands when the active scene is the main menu
+			if (SceneManager::GetInstance().GetActiveScene() == 0)
+				m_pMainMenu->SelectPreviousButton();
 		}
 
 		MainMenuComponent* m_pMainMenu{};
@@ -325,7 +351,9 @@ namespace dae
 	private:
 		void Execute() override
 		{
-			m_pMainMenu->CheckIfMouseInsideButton();
+			//only executee main menu commands when the active scene is the main menu
+			if (SceneManager::GetInstance().GetActiveScene() == 0)
+				m_pMainMenu->CheckIfMouseInsideButton();
 		}
 
 		MainMenuComponent* m_pMainMenu{};
@@ -343,7 +371,9 @@ namespace dae
 	private:
 		void Execute() override
 		{
-			m_pMainMenu->PressSelectedButton();
+			//only executee main menu commands when the active scene is the main menu
+			if (SceneManager::GetInstance().GetActiveScene() == 0)
+				m_pMainMenu->PressSelectedButton();
 		}
 
 		MainMenuComponent* m_pMainMenu{};

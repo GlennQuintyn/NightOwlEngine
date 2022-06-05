@@ -4,13 +4,13 @@
 #include <SpriteManagerComponent.h>
 #include "IngredientComponent.h"
 #include "PepperComponent.h"
-//#include "Enums.h"
-//#include "EnemyControllerComponent.h"
+#include "MovementComponent.h"
 
 dae::MrHotDog::MrHotDog(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_pIngredientWalkingOn{ nullptr }
 	, m_pEnemyController{ nullptr }
+	, m_pMovementCmpt{ nullptr }
 	, m_RespawnPos{}
 	, m_State{}
 	, m_SpawnWalkDirection{}
@@ -18,8 +18,10 @@ dae::MrHotDog::MrHotDog(GameObject* pParentObject)
 	, m_RespawnDelay{ 1.f }
 	, m_DurationLeft{ 0.f }
 	, m_ResetInNextUpdate{ false }
+	, m_ControlledByHuman{ false }
 {
 }
+
 
 void dae::MrHotDog::SetRespawnPosAndWalkDirection(float x, float y, EnemyControllerComponent::MovementState direction)
 {
@@ -29,17 +31,23 @@ void dae::MrHotDog::SetRespawnPosAndWalkDirection(float x, float y, EnemyControl
 
 void dae::MrHotDog::LateInit()
 {
-	m_pEnemyController = m_pParentObject->GetComponent<EnemyControllerComponent>();
-	if (!m_pEnemyController)
+	//when mr hotdog is controlled by a human it doesn't need an enemy controller
+	if (!m_ControlledByHuman)
 	{
-		Logger::GetInstance().LogError("MrHotDog: No EnemyControllerComponent was found!");
+		m_pEnemyController = m_pParentObject->GetComponent<EnemyControllerComponent>();
+		if (!m_pEnemyController)
+		{
+			Logger::GetInstance().LogError("MrHotDog: No EnemyControllerComponent was found!");
+		}
 	}
-
-	//enable movemetn at the start
-	//if (m_pEnemyController)
-	//{
-	//	m_pEnemyController->SetMovement(true);
-	//}
+	else
+	{
+		m_pMovementCmpt = m_pParentObject->GetComponent<MovementComponent>();
+		if (!m_pMovementCmpt)
+		{
+			Logger::GetInstance().LogError("MrHotDog: No MovementComponent was found!");
+		}
+	}
 
 	Reset();
 }
@@ -57,7 +65,11 @@ void dae::MrHotDog::Update()
 	{
 		m_State = EnemyState::Dead;
 		m_DurationLeft = m_DeathDurationLength;
-		m_pEnemyController->SetMovement(false);
+
+		if (!m_ControlledByHuman)
+			m_pEnemyController->SetMovement(false);
+		else
+			m_pMovementCmpt->SetEnabled(false);
 
 		auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
 		if (pSpriteManager)
@@ -89,14 +101,22 @@ void dae::MrHotDog::Update()
 		if (m_DurationLeft <= 0.f)
 		{
 			m_State = EnemyState::Moving;
-			m_pEnemyController->SetMovement(true);
+
+			if (!m_ControlledByHuman)
+				m_pEnemyController->SetMovement(true);
+			else
+				m_pMovementCmpt->SetEnabled(true);
 		}
 		break;
 	case EnemyState::WaitingToMove:
 		m_DurationLeft -= Time::GetInstance().GetDeltaT();
 		if (m_DurationLeft <= 0.f)
 		{
-			m_pEnemyController->SetMovement(true, m_SpawnWalkDirection);
+			if (!m_ControlledByHuman)
+				m_pEnemyController->SetMovement(true, m_SpawnWalkDirection);
+			else
+				m_pMovementCmpt->SetEnabled(true);
+
 			m_State = EnemyState::Moving;
 		}
 		break;
@@ -130,7 +150,11 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 			{
 				m_State = EnemyState::Dead;
 				m_DurationLeft = m_DeathDurationLength;
-				m_pEnemyController->SetMovement(false);
+
+				if (!m_ControlledByHuman)
+					m_pEnemyController->SetMovement(false);
+				else
+					m_pMovementCmpt->SetEnabled(false);
 
 				auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
 				if (pSpriteManager)
@@ -148,7 +172,12 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 		if (pPepper)
 		{
 			m_DurationLeft = pPepper->GetPepperedDuration();
-			m_pEnemyController->SetMovement(false);
+
+			if (!m_ControlledByHuman)
+				m_pEnemyController->SetMovement(false);
+			else
+				m_pMovementCmpt->SetEnabled(false);
+
 			m_State = EnemyState::Peppered;
 
 			auto pSpriteManager = m_pParentObject->GetComponent<SpriteManagerComponent>();
@@ -169,7 +198,10 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 	}
 	else if (event == static_cast<int>(Events::Player_Died))
 	{
-		m_pEnemyController->SetMovement(false);
+		if (!m_ControlledByHuman)
+			m_pEnemyController->SetMovement(false);
+		else
+			m_pMovementCmpt->SetEnabled(false);
 	}
 	else if (event == static_cast<int>(Events::Reset_Pos))
 	{
@@ -181,8 +213,9 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 	}
 	else if (event == static_cast<int>(Events::Game_Won))
 	{
-		//m_State = EnemyState::WaitingToMove;
-		m_pEnemyController->SetMovement(false);
-		//Reset();
+		if (!m_ControlledByHuman)
+			m_pEnemyController->SetMovement(false);
+		else
+			m_pMovementCmpt->SetEnabled(false);
 	}
 }

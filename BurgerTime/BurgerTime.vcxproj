@@ -209,7 +209,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     </ClCompile>
     <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="EnemyControllerComponent.cpp" />
-    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="HiScoreComponent.cpp" />
     <ClCompile Include="MainMenuComponent.cpp" />
     <ClCompile Include="MrEgg.cpp" />
@@ -233,7 +233,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="EnemyControllerComponent.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="HiScoreComponent.h" />
     <ClInclude Include="MainMenuComponent.h" />
     <ClInclude Include="MrEgg.h" />

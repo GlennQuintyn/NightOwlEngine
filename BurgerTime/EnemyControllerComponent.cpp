@@ -16,7 +16,7 @@ dae::EnemyControllerComponent::EnemyControllerComponent(GameObject* pParentObjec
 	, m_pPlayer2{ nullptr }
 	, m_State{ MovementState::DownLadder }//TO: FIX
 	, m_PreviousState{}
-	, m_MovmentSpeed{ 75.f, 40.f }//x: horizontal, y: vertical
+	, m_MovmentSpeed{ 65.f, 40.f }//x: horizontal, y: vertical
 	//, m_MovmentSpeed{ 25.f, 20.f }//x: horizontal, y: vertical
 	, m_Size{}
 {
