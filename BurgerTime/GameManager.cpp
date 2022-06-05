@@ -9,6 +9,7 @@ dae::GameManager::GameManager(GameObject* pParentObject)
 	, m_Subject{}
 	, m_PlateFullCount{}
 	, m_MaxPlateFullCount{}
+	, m_LastSceneIndex{}
 	, m_Delay{ 4.5f }
 	, m_TimeLeft{}
 	, m_TimerStarted{}
@@ -111,7 +112,7 @@ void dae::GameManager::AdvanceToNextLevel(bool withDelay)
 	else
 	{
 		auto& scene = SceneManager::GetInstance();
-		if (scene.GetActiveScene() == 3)//there are only 3 levels in the game
+		if (scene.GetActiveScene() == m_LastSceneIndex)
 		{
 			//if level 3(last level) was won the player will go back to level 1 and go through all the levels again until he dies, or the end of time comes
 			//whatever comes first

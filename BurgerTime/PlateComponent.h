@@ -36,10 +36,10 @@ namespace dae
 
 	private:
 		Subject m_Subject;
+		SDL_Rect m_IntialCollider;
 		GameObject* m_pParentObject;
 		RectColliderComponent* m_pCollidermpt;
 		int m_IngredientsCount;
 		int m_MaxIngredientsCount;
-		int m_IntialColliderHeight;
 	};
 }

@@ -11,7 +11,7 @@ dae::PlateComponent::PlateComponent(GameObject* pParentObject)
 	, m_pCollidermpt{ nullptr }
 	, m_IngredientsCount{ 3 }//TODO: RESET TO 0
 	, m_MaxIngredientsCount{}
-	, m_IntialColliderHeight{}
+	, m_IntialCollider{}
 {
 }
 
@@ -24,7 +24,7 @@ void dae::PlateComponent::LateInit()
 		return;
 	}
 
-	m_IntialColliderHeight = m_pCollidermpt->GetRectangle().h;
+	m_IntialCollider = m_pCollidermpt->GetRectangle();
 }
 
 void dae::PlateComponent::Notify(GameObject* pObject, int event)
@@ -33,11 +33,13 @@ void dae::PlateComponent::Notify(GameObject* pObject, int event)
 	{
 		if (event == 0)
 		{
-			auto yes = pObject->GetComponent<RectColliderComponent>();
+			auto pCollider = pObject->GetComponent<RectColliderComponent>();
 			auto& colliderBox = m_pCollidermpt->GetRectangle();
 			//increase the collider box size
-			m_pCollidermpt->SetRectangle({ colliderBox.x, colliderBox.y - yes->GetRectangle().h, colliderBox.w, colliderBox.h + yes->GetRectangle().h });
+			m_pCollidermpt->SetRectangle({ colliderBox.x, colliderBox.y - pCollider->GetRectangle().h, colliderBox.w, colliderBox.h + pCollider->GetRectangle().h });
 			++m_IngredientsCount;
+
+			//Logger::GetInstance().LogInfo("Plate!");
 
 			if (m_IngredientsCount >= m_MaxIngredientsCount)
 			{
@@ -50,7 +52,7 @@ void dae::PlateComponent::Notify(GameObject* pObject, int event)
 void dae::PlateComponent::Reset()
 {
 	m_IngredientsCount = 0;
-	auto& colliderBox = m_pCollidermpt->GetRectangle();
+	//auto& colliderBox = m_pCollidermpt->GetRectangle();
 	//reset the collider box to its orriginal size 
-	m_pCollidermpt->SetRectangle({ colliderBox.x, colliderBox.y, colliderBox.w, m_IntialColliderHeight });
+	m_pCollidermpt->SetRectangle(m_IntialCollider);
 }

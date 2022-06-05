@@ -123,9 +123,6 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	m_ColliderDown = &colliderDOWNObj.AddComponent<RectColliderComponent>();
 	m_ColliderDown->Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
 
-		
-		
-
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(
 		new std::array<HitBoxObserver, 4>{
 		HitBoxObserver(false, m_CanGoLeft),

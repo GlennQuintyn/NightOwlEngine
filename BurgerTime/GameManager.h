@@ -26,6 +26,7 @@ namespace dae
 
 		void Notify(GameObject* pObject, int event) override;
 		void SetMaxFullPlateCount(int count) { m_MaxPlateFullCount = count; };
+		void SetLastSceneIndex(int index) { m_LastSceneIndex = index; };
 
 		void RestartCurrentLevel(bool withDelay = false);
 		void ReturnToMainMenu(bool withDelay = false);
@@ -51,6 +52,7 @@ namespace dae
 		NextAction m_NextAction{};
 		int m_PlateFullCount;
 		int m_MaxPlateFullCount;
+		int m_LastSceneIndex;
 		float m_Delay;
 		float m_TimeLeft{};
 		bool m_TimerStarted{};

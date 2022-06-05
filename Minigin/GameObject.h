@@ -40,11 +40,11 @@ namespace dae
 		const glm::vec2& GetLoacalScale() const { return m_LocalTransform.scale; };
 		const float GetLoacalZDept() const { return m_LocalTransform.zDept; };
 
-		const Transform& GetWorldTransform() const { return m_WorldTransform; };
-		const glm::vec2& GetWorldPosition() const { return m_WorldTransform.position; };
-		const float GetWorldRotation() const { return m_WorldTransform.rotation; };
-		const glm::vec2& GetWorldScale() const { return m_WorldTransform.scale; };
-		const float GetWorldZDept() const { return m_WorldTransform.zDept; };
+		const Transform& GetWorldTransform();
+		const glm::vec2& GetWorldPosition();
+		const float GetWorldRotation();
+		const glm::vec2& GetWorldScale();
+		const float GetWorldZDept();
 
 		Scene* GetScene();
 
@@ -64,15 +64,12 @@ namespace dae
 		const std::string& GetName() const { return m_Name; };
 		//void SetName(const std::string_view name) { m_Name = name; };//TODO: implement properly in future, so that duplicate child naming is not possible
 
-
-
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
-
 		void AdoptChild(std::unique_ptr<GameObject> pObject);
 
 		void UpdateTransform();
@@ -80,6 +77,12 @@ namespace dae
 		void UpdateRotation();
 		void UpdateScale();
 		void UpdateZDept();
+
+		void SetTransformsDirty();
+		void SetPositionsDirty();
+		void SetRotationsDirty();
+		void SetScalesDirty();
+		void SetZDeptsDirty();
 
 		Transform m_LocalTransform;
 		Transform m_WorldTransform;

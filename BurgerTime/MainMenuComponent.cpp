@@ -185,6 +185,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& gameManagerObj = sceneLevel1.CreateObject("gameManagerObj");
 	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
 	gameManagercmpt.SetMaxFullPlateCount(4);
+	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -697,7 +698,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	pepperCountObject.SetLocalPosition(windowW - (uiFontSize * 2.f), uiFontSize * 1.5f);
 #pragma endregion
 
-
 #pragma region InputCommandsPlayer
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
@@ -720,7 +720,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
 #pragma endregion
-
 
 	auto& gameManagersubje = gameManagercmpt.GetSubject();
 	gameManagersubje.AddObserver(petercmpt);
@@ -768,6 +767,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& gameManagerObj = sceneLevel2.CreateObject("gameManagerObj");
 	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
 	gameManagercmpt.SetMaxFullPlateCount(4);
+	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -1336,6 +1336,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& gameManagerObj = sceneLevel3.CreateObject("gameManagerObj");
 	auto& gameManagercmpt = gameManagerObj.AddComponent<GameManager>();
 	gameManagercmpt.SetMaxFullPlateCount(3);
+	gameManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
 
 #pragma region Pepper_PeterAndSally
 	//pepper object to throw on enemies
@@ -1809,8 +1810,6 @@ void dae::MainMenuComponent::LoadLevel3()
 #pragma endregion
 #pragma endregion
 
-
-
 #pragma region PlateSetup
 	auto& plateObj1 = sceneLevel3.CreateObject("plateObj1");
 	auto& plateCmpt1 = plateObj1.AddComponent<PlateComponent>();
@@ -1878,9 +1877,6 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateColliderSubje6 = plateCollider6.GetSubject();
 	plateColliderSubje6.AddObserver(plateCmpt6);
 #pragma endregion
-
-
-
 
 #pragma region UI/SCORE
 	const int uiFontSize{ 20 };

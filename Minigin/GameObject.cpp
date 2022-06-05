@@ -8,12 +8,37 @@ using namespace dae;
 
 unsigned int GameObject::m_ObjIdCounter = 0;
 
+/*
+Transform m_LocalTransform;
+Transform m_WorldTransform;
+
+std::string m_Name;
+
+std::vector<std::pair<std::unique_ptr<BaseComponent>, const std::type_info*>> m_pComponents;
+std::vector<std::unique_ptr<GameObject>> m_pChildren;
+
+GameObject* m_pParent;
+Scene* m_pScene;
+
+static unsigned int m_ObjIdCounter;
+
+bool m_TransformIsDirty;
+bool m_PositionIsDirty;
+bool m_RotationIsDirty;
+bool m_ScaleIsDirty;
+bool m_ZDeptIsDirty;*/
+
 GameObject::GameObject(const std::string_view objectName, Scene* pScene, GameObject* pParent)
 	: m_LocalTransform{}
 	, m_WorldTransform{}
 	, m_Name{}
 	, m_pParent{ pParent }
 	, m_pScene{ pScene }
+	, m_TransformIsDirty{ false }
+	, m_PositionIsDirty{ false }
+	, m_RotationIsDirty{ false }
+	, m_ScaleIsDirty{ false }
+	, m_ZDeptIsDirty{ false }
 {
 	m_ObjIdCounter++;
 
@@ -51,7 +76,7 @@ GameObject::GameObject(const std::string_view objectName, Scene* pScene, GameObj
 			m_Name = objectName;
 	}
 
-	m_TransformIsDirty = true;
+	//m_TransformIsDirty = true;
 }
 
 GameObject::~GameObject() = default;
@@ -73,7 +98,7 @@ void GameObject::LateInit()
 void GameObject::Update()
 {
 	//checks if anything needs updating and then updates it
-	UpdateTransform();
+	//UpdateTransform();
 
 	for (auto& component : m_pComponents)
 	{
@@ -289,50 +314,169 @@ GameObject& GameObject::CreateAddChild(const std::string_view childName)
 #pragma endregion
 
 #pragma region transform code
+#pragma region GetWorldTransforms
+const Transform& dae::GameObject::GetWorldTransform()
+{
+	if (m_TransformIsDirty)
+	{
+		//checks if anything needs updating and then updates it
+		UpdateTransform();
+	}
+
+	return m_WorldTransform;
+}
+
+const glm::vec2& dae::GameObject::GetWorldPosition()
+{
+	if (m_PositionIsDirty)
+	{
+		UpdatePosition();
+	}
+
+	return m_WorldTransform.position;
+}
+
+const float dae::GameObject::GetWorldRotation()
+{
+	if (m_RotationIsDirty)
+	{
+		UpdateRotation();
+	}
+
+	return m_WorldTransform.rotation;
+}
+
+const glm::vec2& dae::GameObject::GetWorldScale()
+{
+	if (m_ScaleIsDirty)
+	{
+		UpdateScale();
+	}
+
+	return m_WorldTransform.scale;
+}
+
+const float dae::GameObject::GetWorldZDept()
+{
+	if (m_ZDeptIsDirty)
+	{
+		UpdateZDept();
+	}
+
+	return m_WorldTransform.zDept;
+}
+#pragma endregion
+
+
+#pragma region SettingLocalTransform
 void dae::GameObject::SetLocalTransform(const Transform & transform)
 {
 	m_LocalTransform = transform;
-	m_TransformIsDirty = true;
+	SetTransformsDirty();
 }
 
 void dae::GameObject::SetLocalPosition(float x, float y)
 {
 	m_LocalTransform.position.x = x;
 	m_LocalTransform.position.y = y;
-	m_PositionIsDirty = true;
+	SetPositionsDirty();
 }
 
 void dae::GameObject::SetLocalPosition(const glm::vec2 & position)
 {
 	m_LocalTransform.position = position;
-	m_PositionIsDirty = true;
+	SetPositionsDirty();
 }
 
 void dae::GameObject::SetLocalRotation(float radians)
 {
 	m_LocalTransform.rotation = radians;
-	m_RotationIsDirty = true;
+	SetRotationsDirty();
 }
 
 void dae::GameObject::SetLocalScale(float x, float y)
 {
 	m_LocalTransform.scale.x = x;
 	m_LocalTransform.scale.y = y;
-	m_ScaleIsDirty = true;
+	SetScalesDirty();
 }
 
 void dae::GameObject::SetLocalScale(const glm::vec2 & scale)
 {
 	m_LocalTransform.scale = scale;
-	m_ScaleIsDirty = true;
+	SetScalesDirty();
 }
 
 void dae::GameObject::SetLocalZDept(float z)
 {
 	m_LocalTransform.zDept = z;
-	m_ZDeptIsDirty = true;
+	SetZDeptsDirty();
+}
+#pragma endregion
+
+#pragma region SettingDirty
+void dae::GameObject::SetTransformsDirty()
+{
+	//if object was already dirty then no need to set itself and its children dirty as they are already dirty
+	if (m_TransformIsDirty)
+		return;
+
+	m_TransformIsDirty = true;
+
+	for (auto& pChild : m_pChildren)
+		pChild->SetTransformsDirty();
 }
 
+void dae::GameObject::SetPositionsDirty()
+{
+	//if object was already dirty then no need to set itself and its children dirty as they are already dirty
+	if (m_PositionIsDirty)
+		return;
+
+	m_PositionIsDirty = true;
+
+	for (auto& pChild : m_pChildren)
+		pChild->SetPositionsDirty();
+}
+
+void dae::GameObject::SetRotationsDirty()
+{
+	//if object was already dirty then no need to set itself and its children dirty as they are already dirty
+	if (m_RotationIsDirty)
+		return;
+
+	m_RotationIsDirty = true;
+
+	for (auto& pChild : m_pChildren)
+		pChild->SetRotationsDirty();
+}
+
+void dae::GameObject::SetScalesDirty()
+{
+	//if object was already dirty then no need to set itself and its children dirty as they are already dirty
+	if (m_ScaleIsDirty)
+		return;
+
+	m_ScaleIsDirty = true;
+
+	for (auto& pChild : m_pChildren)
+		pChild->SetScalesDirty();
+}
+
+void dae::GameObject::SetZDeptsDirty()
+{
+	//if object was already dirty then no need to set itself and its children dirty as they are already dirty
+	if (m_ZDeptIsDirty)
+		return;
+
+	m_ZDeptIsDirty = true;
+
+	for (auto& pChild : m_pChildren)
+		pChild->SetZDeptsDirty();
+}
+#pragma endregion
+
+#pragma region UpdateTransform
 void GameObject::UpdateTransform()
 {
 	if (m_PositionIsDirty || m_TransformIsDirty)
@@ -352,7 +496,7 @@ void GameObject::UpdateTransform()
 		UpdateZDept();
 	}
 
-	//m_TransformIsDirty = false;
+	m_TransformIsDirty = false;
 }
 
 void GameObject::UpdatePosition()
@@ -395,20 +539,4 @@ void GameObject::UpdateZDept()
 	m_ZDeptIsDirty = false;
 }
 #pragma endregion
-
-//
-//std::vector<std::unique_ptr<dae::GameObject>>::iterator dae::GameObject::CheckNameDuplicateInChildren(const std::string & childName)
-//{
-//
-//	auto it = std::find_if(m_pChildren.begin(), m_pChildren.end(), [&childName](const std::unique_ptr<GameObject>& child)
-//		{
-//			return child->GetName() == childName;
-//		});
-//
-//
-//	sizeof(std::vector<std::unique_ptr<GameObject>>::iterator)
-//
-//	//if the name was foudn in the list of children then the Iterator is not equal to the end
-//	//return it != m_pChildren.end();
-//	return it;
-//}
+#pragma endregion
