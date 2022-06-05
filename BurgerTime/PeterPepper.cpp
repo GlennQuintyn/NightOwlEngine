@@ -9,6 +9,7 @@
 #include "WalkingPlatformComponent.h"
 #include "SpriteManagerComponent.h"
 #include "MovementComponent.h"
+#include <ServiceLocator.h>
 
 #include "MrHotDog.h"
 #include "MrEgg.h"
@@ -20,9 +21,6 @@ PeterPepper::PeterPepper(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_Subject{}
 	, m_IsAlive{ true }
-	//, m_DeahtButton{ PCController::ControllerButton::Button_Triangle }
-	//, m_ObjFellButton{ PCController::ControllerButton::Button_R_SHOULDER }
-	//, m_EnemyPepperedButton{ PCController::ControllerButton::Button_R_THUMB }
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;
@@ -110,6 +108,8 @@ void dae::PeterPepper::EnemyTouchedMe()
 			pMovement->SetEnabled(false);
 		}
 	}
+
+	ServiceLocator::GetSS().PlaySFX(static_cast<int>(SoundIndices::PlayerDied), 40);
 }
 
 void dae::PeterPepper::Reset()

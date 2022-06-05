@@ -5,6 +5,7 @@
 #include "IngredientComponent.h"
 #include "PepperComponent.h"
 #include "MovementComponent.h"
+#include <ServiceLocator.h>
 
 dae::MrHotDog::MrHotDog(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
@@ -46,7 +47,9 @@ void dae::MrHotDog::LateInit()
 		if (!m_pMovementCmpt)
 		{
 			Logger::GetInstance().LogError("MrHotDog: No MovementComponent was found!");
+			return;
 		}
+		m_pMovementCmpt->SetEnabled(true);
 	}
 
 	Reset();
@@ -61,7 +64,7 @@ void dae::MrHotDog::Update()
 	}
 
 	//if he walks on a falling ingredient he should die as it falls from out under him
-	if (m_pIngredientWalkingOn && m_pIngredientWalkingOn->IsFalling())
+	if (m_State != EnemyState::Dead && m_pIngredientWalkingOn && m_pIngredientWalkingOn->IsFalling())
 	{
 		m_State = EnemyState::Dead;
 		m_DurationLeft = m_DeathDurationLength;
@@ -76,6 +79,8 @@ void dae::MrHotDog::Update()
 		{
 			pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
 		}
+
+		ServiceLocator::GetSS().PlaySFX(static_cast<int>(SoundIndices::EnemyCrushed), 40);
 	}
 
 	switch (m_State)
@@ -161,6 +166,8 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 				{
 					pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Death), SpriteManagerComponent::SpritePlayType::PlayOnce);
 				}
+
+				ServiceLocator::GetSS().PlaySFX(static_cast<int>(SoundIndices::EnemyCrushed), 40);
 			}
 		}
 
@@ -185,6 +192,8 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 			{
 				pSpriteManager->PlaySprite(static_cast<uint32_t>(SpriteIndices::Peppered), SpriteManagerComponent::SpritePlayType::Looping);
 			}
+
+			ServiceLocator::GetSS().PlaySFX(static_cast<int>(SoundIndices::PepperThrown), 40);
 		}
 	}
 	else if (event == 1)
@@ -205,8 +214,6 @@ void dae::MrHotDog::Notify(GameObject* pObject, int event)
 	}
 	else if (event == static_cast<int>(Events::Reset_Pos))
 	{
-		//m_ResetInNextUpdate = true;
-		//Reset();
 		PlaceOffScreen();
 		m_State = EnemyState::WaitingToMove;
 		m_DurationLeft = m_RespawnDelay;

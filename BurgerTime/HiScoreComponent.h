@@ -21,7 +21,7 @@ namespace dae
 		void Update() override;
 		void LateUpdate() override {};
 		void Render() const override {};
-		void Reset() override {};
+		void Reset() override;
 
 		void SetTextComponent(TextComponent& textComponent);
 		void SetScoreComponent(ScoreComponent& scoreComponent);
@@ -32,7 +32,11 @@ namespace dae
 		HiScoreComponent& operator=(HiScoreComponent&& other) = delete;
 
 	private:
+		int ReadScoreFromFile();
+		void WriteScoreToFile(int score);
+
 		GameObject* m_pParentObject;
+		const std::string m_HiscorePath;
 		TextComponent* m_pTextComponent;
 		ScoreComponent* m_pScoreComponent;
 		static int m_Score;

@@ -59,4 +59,13 @@ namespace dae
 		MainMenu = 3
 	};
 
+	enum class SoundIndices
+	{
+		EnemyCrushed,
+		IngredienDropped,
+		LevelWon,
+		PepperThrown,
+		PlayerDied,
+		PlayerHit
+	};
 }

@@ -3,6 +3,8 @@
 #include <SceneManager.h>
 #include "Enums.h"
 #include "EnemyControllerComponent.h"
+#include <ServiceLocator.h>
+#include "ScoreComponent.h"
 
 dae::LevelManager::LevelManager(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
@@ -11,6 +13,7 @@ dae::LevelManager::LevelManager(GameObject* pParentObject)
 	, m_pCoopPlayer{}
 	, m_pNormalPlayer{}
 	, m_pPepperObject{}
+	, m_pScoreCmpt{}
 	, m_NextAction{ NextAction::Nothing }
 	, m_GameMode{ GameMode::MainMenu }
 	, m_PlateFullCount{}
@@ -56,7 +59,7 @@ void dae::LevelManager::Update()
 void dae::LevelManager::Reset()
 {
 	m_NextAction = NextAction::Nothing;
-	m_MaxPlateFullCount = 0;
+	m_PlateFullCount = 0;
 
 	m_pNormalPlayer->SetEnabledState(true);
 
@@ -158,6 +161,8 @@ void dae::LevelManager::Notify(GameObject*, int event)
 		{
 			m_Subject.Notify(m_pParentObject, static_cast<int>(Events::Game_Won));
 			AdvanceToNextLevel(true);
+
+			ServiceLocator::GetSS().PlaySFX(static_cast<int>(SoundIndices::LevelWon), 40);
 		}
 		break;
 	}
@@ -186,6 +191,8 @@ void dae::LevelManager::ReturnToMainMenu(bool withDelay)
 	}
 	else
 	{
+		m_pScoreCmpt->ResetScore();
+
 		//scene 0 should be the main menu scene
 		auto& scene = SceneManager::GetInstance();
 		DisabledAll();

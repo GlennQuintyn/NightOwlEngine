@@ -19,6 +19,8 @@ namespace dae
 		~ScoreComponent() = default;
 
 		void SetTextComponent(TextComponent& pTextComponent);
+
+		void ResetScore() { m_CurrentScore = 0; };
 		const int GetCurrentScore() const { return m_CurrentScore; };
 
 		void Notify(GameObject* pObject, int event) override;

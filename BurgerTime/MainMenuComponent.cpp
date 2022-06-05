@@ -294,7 +294,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
 	playerHotDogCollider.Init({ 0,1,45,44 }, 1, true);
 	playerHotDogObj.AddComponent<MovementComponent>();
-	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
 	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
 #pragma endregion
@@ -317,7 +317,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
 
-	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
 #pragma endregion
@@ -333,7 +333,6 @@ void dae::MainMenuComponent::LoadLevel1()
 
 	case dae::GameMode::SinglePlayer:
 		playerHotDogObj.SetEnabledState(false);
-		mrHotDogController1.SetPlayer1(&peterPepperObj);
 		//mrHotDogController2.SetPlayer1(&peterPepperObj);
 		//mrHotDogController2.SetPlayer1(&peterPepperObj);
 		//mrEggController1.SetPlayer1(&peterPepperObj);
@@ -348,6 +347,8 @@ void dae::MainMenuComponent::LoadLevel1()
 		//mrEggObj1.SetEnabledState(false);
 		break;
 	}
+
+	mrHotDogController1.SetPlayer1(&peterPepperObj);
 
 	//register enemy player to the levelmanager
 	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
@@ -776,6 +777,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	scoreObject.SetLocalPosition(uiFontSize * 7.f, uiFontSize * 1.5f);
 	auto& scoresubje = scoreCmpt.GetSubject();
 	scoresubje.AddObserver(livescmpt);
+	levelManagercmpt.SetScoreComponent(&scoreCmpt);
 
 #pragma region ScoreObservingIngredients
 	bunBottomSubje1.AddObserver(scoreCmpt);
@@ -855,6 +857,16 @@ void dae::MainMenuComponent::LoadLevel1()
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
+
+	//player Hotdog input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();
@@ -993,7 +1005,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
 	playerHotDogCollider.Init({ 0,1,45,44 }, 2, true);
 	playerHotDogObj.AddComponent<MovementComponent>();
-	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
 	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
 #pragma endregion
@@ -1014,7 +1026,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	mrHotDogCollider1.Init({ 0,1,45,44 }, 2, true);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
-	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
 #pragma endregion
@@ -1452,6 +1464,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	scoreObject.SetLocalPosition(uiFontSize * 7.f, uiFontSize * 1.5f);
 	auto& scoresubje = scoreCmpt.GetSubject();
 	scoresubje.AddObserver(livescmpt);
+	levelManagercmpt.SetScoreComponent(&scoreCmpt);
 
 #pragma region ScoreObservingIngredients
 	bunBottomSubje1.AddObserver(scoreCmpt);
@@ -1530,9 +1543,17 @@ void dae::MainMenuComponent::LoadLevel2()
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
+
+	//player Hotdog input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
-
-
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();
 	levelManagersubje.AddObserver(petercmpt);
@@ -1574,7 +1595,7 @@ void dae::MainMenuComponent::LoadLevel3()
 
 	auto& levelManagerObj = sceneLevel3.CreateObject("levelManagerObj");
 	auto& levelManagercmpt = levelManagerObj.AddComponent<LevelManager>();
-	levelManagercmpt.SetMaxFullPlateCount(3);
+	levelManagercmpt.SetMaxFullPlateCount(6);
 	levelManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
 
 	//register the level manager so that it gets updated when the gamemodechanges
@@ -1669,7 +1690,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
 	playerHotDogCollider.Init({ 0,1,45,44 }, 3, true);
 	playerHotDogObj.AddComponent<MovementComponent>();
-	playerHotDogCmpt.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
 	playerHotDogcollidersubje.AddObserver(playerHotDogCmpt);
 #pragma endregion
@@ -1690,7 +1711,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	mrHotDogCollider1.Init({ 0,1,45,44 }, 3, true);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
-	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(-18, 162, EnemyControllerComponent::MovementState::Right);
+	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
 	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
 #pragma endregion
@@ -2143,7 +2164,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomcollider6 = bunBottomObj6.AddComponent<RectColliderComponent>();
 	bunBottomcollider6.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
 	bunBottomObj6.SetLocalPosition(477.f, 590.f);
-	bunBottomCmpt6.SetSpawnLocation(477.f, 545.f);
+	bunBottomCmpt6.SetSpawnLocation(477.f, 590.f);
 	auto& bunBottomColliderSubje6 = bunBottomcollider6.GetSubject();
 	bunBottomColliderSubje6.AddObserver(bunBottomCmpt6);
 #pragma endregion
@@ -2259,6 +2280,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	scoreObject.SetLocalPosition(uiFontSize * 7.f, uiFontSize * 1.5f);
 	auto& scoresubje = scoreCmpt.GetSubject();
 	scoresubje.AddObserver(livescmpt);
+	levelManagercmpt.SetScoreComponent(&scoreCmpt);
 
 #pragma region ScoreObservingIngredients
 	bunBottomSubje1.AddObserver(scoreCmpt);
@@ -2280,8 +2302,6 @@ void dae::MainMenuComponent::LoadLevel3()
 	bunTopSubje5.AddObserver(scoreCmpt);
 	bunTopSubje6.AddObserver(scoreCmpt);
 #pragma endregion
-
-
 
 	//TODO: hi score component should read hi-score from file and observe the score object,
 	//if the score components value is bigger than the current high score update it
@@ -2342,6 +2362,16 @@ void dae::MainMenuComponent::LoadLevel3()
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
+
+	//player Hotdog input
+	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();

@@ -7,6 +7,7 @@
 namespace dae
 {
 	class GameObject;
+	class ScoreComponent;
 
 	class LevelManager final : public BaseComponent, public Observer
 	{
@@ -30,6 +31,7 @@ namespace dae
 		void SetNormalPlayer(GameObject* pNormalPlayer) { m_pNormalPlayer = pNormalPlayer; };
 		void SetCoopPlayer(GameObject* pCoopPlayer) { m_pCoopPlayer = pCoopPlayer; };
 		void SetPepperObject(GameObject* pPepperObject) { m_pPepperObject = pPepperObject; };
+		void SetScoreComponent(ScoreComponent* pScoreCmpt) { m_pScoreCmpt = pScoreCmpt; };
 		void AddEnemy(GameObject* pEnemy);
 
 		void Notify(GameObject* pObject, int event) override;
@@ -65,8 +67,9 @@ namespace dae
 		GameObject* m_pNormalPlayer;
 		GameObject* m_pCoopPlayer;
 		GameObject* m_pPepperObject;
-
 		GameObject* m_pParentObject;
+		ScoreComponent* m_pScoreCmpt;
+
 		NextAction m_NextAction{};
 		GameMode m_GameMode;
 		int m_PlateFullCount;

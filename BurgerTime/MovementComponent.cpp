@@ -100,26 +100,18 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("Lcollider");
-	//auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
-	//colliderLcmpt.Init({ -3,42,3,3 }, -1, true, { 255, 0, 0, 128 });
 	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
 	m_ColliderLeft->Init({ -3,42,3,3 }, -1, true, { 255, 0, 0, 128 });
 
 	auto& colliderRObj = colliderLogicObj.CreateAddChild("Rcollider");
-	//auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
-	//colliderRcmpt.Init({ 47,42,3,3 }, -1, true, { 0, 255, 0, 128 });	
 	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
 	m_ColliderRight->Init({ 47,42,3,3 }, -1, true, { 0, 255, 0, 128 });
 
 	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
-	//auto& colliderUPcmpt = colliderUPObj.AddComponent<RectColliderComponent>();
-	//colliderUPcmpt.Init({ 20,/*-3*/27,5,3 }, -1, true, { 0, 0, 255, 128 });
 	m_ColliderUp = &colliderUPObj.AddComponent<RectColliderComponent>();
 	m_ColliderUp->Init({ 20,/*-3*/27,5,3 }, -1, true, { 0, 0, 255, 128 });
 
 	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
-	//auto& colliderDowncmpt = colliderDOWNObj.AddComponent<RectColliderComponent>();
-	//colliderDowncmpt.Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
 	m_ColliderDown = &colliderDOWNObj.AddComponent<RectColliderComponent>();
 	m_ColliderDown->Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
 

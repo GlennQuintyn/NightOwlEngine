@@ -149,7 +149,7 @@ void dae::EnemyControllerComponent::Update()
 	glm::vec2 goal;
 	if (m_pPlayer2)
 	{
-		auto& posPlayer2 = m_pPlayer1->GetWorldPosition();
+		auto& posPlayer2 = m_pPlayer2->GetWorldPosition();
 		if (glm::distance(pos, posPlayer1) <= glm::distance(pos, posPlayer2))
 			goal = posPlayer1;
 		else
