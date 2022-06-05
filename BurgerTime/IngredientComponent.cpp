@@ -61,24 +61,15 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	//hardcoded hitboxes structure of the charachter that needs them
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("colliderLObj");
-	//auto& colliderLcmpt = colliderLObj.AddComponent<RectColliderComponent>();
-	//colliderLcmpt.Init({ 15,0,2,10 }, 0, true, { 255, 0, 0, 255 });
 	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
 	m_ColliderLeft->Init({ 15,0,2,10 }, 0, true, { 255, 0, 0, 255 });
-
 	auto& colliderCenterObj = colliderLogicObj.CreateAddChild("colliderCenterObj");
-	//auto& colliderCentercmpt = colliderCenterObj.AddComponent<RectColliderComponent>();
-	//colliderCentercmpt.Init({ 43,0,2,10 }, 1, true, { 0, 255, 0, 255 });
 	m_ColliderCenter = &colliderCenterObj.AddComponent<RectColliderComponent>();
 	m_ColliderCenter->Init({ 43,0,2,10 }, 1, true, { 0, 255, 0, 255 });
-
-
 	auto& colliderRObj = colliderLogicObj.CreateAddChild("colliderRObj");
-	//auto& colliderRcmpt = colliderRObj.AddComponent<RectColliderComponent>();
-	//colliderRcmpt.Init({ 72,0,2,10 }, 2, true, { 0, 0, 255, 255 });
 	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
 	m_ColliderRight->Init({ 72,0,2,10 }, 2, true, { 0, 0, 255, 255 });
-	
+
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 3>>(
 		new std::array<HitBoxObserver, 3>{
 		HitBoxObserver(m_ColliderLeftHit),
@@ -90,10 +81,8 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	//auto& subjectL = colliderLcmpt.GetSubject();
 	auto& subjectL = m_ColliderLeft->GetSubject();
 	subjectL.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderLeft)));
-	//auto& subjectCenter = colliderCentercmpt.GetSubject();
 	auto& subjectCenter = m_ColliderCenter->GetSubject();
 	subjectCenter.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderCenter)));
-	//auto& subjectR = colliderRcmpt.GetSubject();
 	auto& subjectR = m_ColliderRight->GetSubject();
 	subjectR.AddObserver(m_pImpl->at(static_cast<size_t>(ColliderIndices::ColliderRight)));
 }
@@ -204,6 +193,10 @@ void dae::IngredientComponent::Reset()
 	m_EnemyOnIngredientCount = 0;
 	m_State = IngridientState::Falling;
 	m_pParentObject->SetLocalPosition(m_SpawnPos);
+
+	m_ColliderLeftHit = false;
+	m_ColliderCenterHit = false;
+	m_ColliderRightHit = false;
 }
 
 void dae::IngredientComponent::Notify(GameObject* pObject, int event)
@@ -252,13 +245,7 @@ void dae::IngredientComponent::Notify(GameObject* pObject, int event)
 		}
 		else if (m_State == IngridientState::Wait && pObject->GetComponent<IngredientComponent>())
 		{
-			//if (m_State != IngridientState::OnPlate)
-			//{
-				//if (!m_FallExtraLevel)
-				//{
 			m_State = IngridientState::Falling;
-			//}
-		//}
 		}
 	}
 }

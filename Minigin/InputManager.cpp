@@ -91,7 +91,6 @@ bool InputManager::ProcessInput()
 		}
 	}
 
-
 	//keyboard command code
 	for (auto& keyboardCommand : m_MapOfKeyboardCommands)
 	{
