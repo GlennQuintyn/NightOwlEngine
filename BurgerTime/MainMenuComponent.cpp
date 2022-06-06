@@ -49,6 +49,8 @@
 #include "ServiceLocator.h"
 #include "SDLSoundSystem.h"
 
+#include "EntityLoader.h"
+
 dae::MainMenuComponent::MainMenuComponent(GameObject* pParentObject)
 	: m_pParentObject{ pParentObject }
 	, m_pEngine{ nullptr }
@@ -125,16 +127,6 @@ void dae::MainMenuComponent::PressSelectedButton()
 		pLevelManager->SetGameMode(m_GameMode);
 	}
 
-	//m_pLevelManagers;
-
-	/*
-	//SetGameMode
-	//SetEnemyPlayer
-	//SetCoopPlayer
-	AddEnemy
-	SetPepperObject
-	*/
-
 	//once all scenes have been loaded in start scene of level 1
 	auto& scene = SceneManager::GetInstance();
 	scene.GotoNextScene();
@@ -173,6 +165,7 @@ void dae::MainMenuComponent::Update()
 
 void dae::MainMenuComponent::LoadLevel1()
 {
+	EntityLoader loader{ "../Data/Level/EntityData.json" };
 
 #pragma region LoadGame
 	auto& sceneLevel1 = SceneManager::GetInstance().CreateScene("Level1");
@@ -194,7 +187,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	fpstextComponent.SetFont(fpsFont);
 	fpstextComponent.SetTextColor({ 0, 255, 255 });
 
-	auto& levelManagerObj = sceneLevel1.CreateObject("Obj");
+	auto& levelManagerObj = sceneLevel1.CreateObject("levelManagerObj");
 	auto& levelManagercmpt = levelManagerObj.AddComponent<LevelManager>();
 	levelManagercmpt.SetMaxFullPlateCount(4);
 	levelManagercmpt.SetLastSceneIndex(3);//there are only 3 levels in the game
@@ -212,7 +205,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Up.png", 4, 1, 4, 45, 45);
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
 	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
-	pepperCollider.Init({ 0,0,45,45 }, 1, true);
+	pepperCollider.Init(loader.GetCollider("pepper"), 1, false);
 	pepperObj.SetLocalPosition(-100.f, -100.f);
 	pepperCmpt.SetResetPos(-100.f, -100.f);
 	pepperCmpt.SetSpriteDuration(1.f);
@@ -233,7 +226,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	peterSpriteManager.AddSprite("Charachters/peter/Peter_Won.png", 2, 1, 2, 45, 45);
 
 	auto& peterCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	peterCollider.Init({ 0,1,45,44 }, 1, true);
+	peterCollider.Init(loader.GetCollider("player"), 1, false);
 	peterPepperObj.AddComponent<MovementComponent>();
 	petercmpt.SetSpawnLocation(298.f, 563.f);
 	peterPepperObj.SetLocalPosition(298.f, 563.f);
@@ -256,7 +249,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
 
 	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
-	sallyCollider.Init({ 0,1,45,44 }, 1, true);
+	sallyCollider.Init(loader.GetCollider("player"), 1, false);
 	sallySaltObj.AddComponent<MovementComponent>();
 	sallycmpt.SetSpawnLocation(298.f, 384.f);
 	sallySaltObj.SetLocalPosition(298.f, 384.f);
@@ -280,7 +273,7 @@ void dae::MainMenuComponent::LoadLevel1()
 #pragma region EnemyPlayer
 	auto& playerHotDogObj = sceneLevel1.CreateObject("playerHotDogObj");
 	auto& playerHotDogCmpt = playerHotDogObj.AddComponent<MrHotDog>();
-	playerHotDogCmpt.SetControlledByHuman(true);
+	playerHotDogCmpt.SetControlledByHuman(false);
 	auto& playerHotDogSpriteManager = playerHotDogObj.AddComponent<SpriteManagerComponent>();
 	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
 	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
@@ -292,7 +285,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
-	playerHotDogCollider.Init({ 0,1,45,44 }, 1, true);
+	playerHotDogCollider.Init(loader.GetCollider("player"), 1, false);
 	playerHotDogObj.AddComponent<MovementComponent>();
 	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
@@ -313,13 +306,82 @@ void dae::MainMenuComponent::LoadLevel1()
 	mrHotDogcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& mrHotDogCollider1 = mrHotDogObj1.AddComponent<RectColliderComponent>();
-	mrHotDogCollider1.Init({ 0,1,45,44 }, 1, true);
+	mrHotDogCollider1.Init(loader.GetCollider("enemy"), 1, false);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
 
 	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
-	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
-	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+	auto& mrHotDogcollidersubje1 = mrHotDogCollider1.GetSubject();
+	mrHotDogcollidersubje1.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+#pragma region Enemy2
+	auto& mrHotDogObj2 = sceneLevel1.CreateObject("mrHotDogObj2");
+	auto& mrHotDogcmpt2 = mrHotDogObj2.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager2 = mrHotDogObj2.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt2.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrHotDogCollider2 = mrHotDogObj2.AddComponent<RectColliderComponent>();
+	mrHotDogCollider2.Init(loader.GetCollider("enemy"), 1, false);
+	mrHotDogObj2.AddComponent<MovementComponent>();
+	auto& mrHotDogController2 = mrHotDogObj2.AddComponent<EnemyControllerComponent>();
+
+	mrHotDogcmpt2.SetRespawnPosAndWalkDirection(565.f, 162.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrHotDogcollidersubje2 = mrHotDogCollider2.GetSubject();
+	mrHotDogcollidersubje2.AddObserver(mrHotDogcmpt2);
+#pragma endregion
+
+#pragma region Enemy3
+	auto& mrHotDogObj3 = sceneLevel1.CreateObject("mrHotDogObj3");
+	auto& mrHotDogcmpt3 = mrHotDogObj3.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager3 = mrHotDogObj3.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt3.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrHotDogCollider3 = mrHotDogObj3.AddComponent<RectColliderComponent>();
+	mrHotDogCollider3.Init(loader.GetCollider("enemy"), 1, false);
+	mrHotDogObj3.AddComponent<MovementComponent>();
+	auto& mrHotDogController3 = mrHotDogObj3.AddComponent<EnemyControllerComponent>();
+
+	mrHotDogcmpt3.SetRespawnPosAndWalkDirection(30.f, 563.f, EnemyControllerComponent::MovementState::Right);
+	auto& mrHotDogcollidersubje3 = mrHotDogCollider3.GetSubject();
+	mrHotDogcollidersubje3.AddObserver(mrHotDogcmpt3);
+#pragma endregion
+
+#pragma region Enemy4
+	auto& mrEggObj1 = sceneLevel1.CreateObject("mrEggObj1");
+	auto& mrEggcmpt1 = mrEggObj1.AddComponent<MrEgg>();
+	auto& mrEggSpriteManager1 = mrEggObj1.AddComponent<SpriteManagerComponent>();
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Idle.png", 1, 1, 0, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Death.png", 4, 1, 10, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Peppered.png", 2, 1, 8, 45, 45);
+	mrEggcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrEggCollider1 = mrEggObj1.AddComponent<RectColliderComponent>();
+	mrEggCollider1.Init(loader.GetCollider("enemy"), 1, false);
+	mrEggObj1.AddComponent<MovementComponent>();
+	auto& mrEggController1 = mrEggObj1.AddComponent<EnemyControllerComponent>();
+
+	mrEggcmpt1.SetRespawnPosAndWalkDirection(565.f, 563.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrEggcollidersubje = mrEggCollider1.GetSubject();
+	mrEggcollidersubje.AddObserver(mrEggcmpt1);
 #pragma endregion
 
 	switch (m_GameMode)
@@ -327,53 +389,52 @@ void dae::MainMenuComponent::LoadLevel1()
 	case dae::GameMode::Coop://set enemy player and player 2, then let it fall through to add player 1
 
 		mrHotDogController1.SetPlayer2(&sallySaltObj);
-		//mrHotDogController2.SetPlayer2(&sallySaltObj);
-		//mrHotDogController3.SetPlayer2(&sallySaltObj);
-		//mrEggController1.SetPlayer2(&sallySaltObj);
+		mrHotDogController2.SetPlayer2(&sallySaltObj);
+		mrHotDogController3.SetPlayer2(&sallySaltObj);
+		mrEggController1.SetPlayer2(&sallySaltObj);
 
 	case dae::GameMode::SinglePlayer:
 		playerHotDogObj.SetEnabledState(false);
-		//mrHotDogController2.SetPlayer1(&peterPepperObj);
-		//mrHotDogController2.SetPlayer1(&peterPepperObj);
-		//mrEggController1.SetPlayer1(&peterPepperObj);
-
 		break;
 	case dae::GameMode::Versus: //if in versus mode to begin with then disable the normal enemie objects
 		playerHotDogObj.SetEnabledState(true);
 
 		mrHotDogObj1.SetEnabledState(false);
-		//mrHotDogObj2.SetEnabledState(false);
-		//mrHotDogObj3.SetEnabledState(false);
-		//mrEggObj1.SetEnabledState(false);
+		mrHotDogObj2.SetEnabledState(false);
+		mrHotDogObj3.SetEnabledState(false);
+		mrEggObj1.SetEnabledState(false);
 		break;
 	}
 
 	mrHotDogController1.SetPlayer1(&peterPepperObj);
+	mrHotDogController2.SetPlayer1(&peterPepperObj);
+	mrHotDogController3.SetPlayer1(&peterPepperObj);
+	mrEggController1.SetPlayer1(&peterPepperObj);
 
 	//register enemy player to the levelmanager
 	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
 
 	//register enemies to the levelmanager
 	levelManagercmpt.AddEnemy(&mrHotDogObj1);
-	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
-	//levelManagercmpt.AddEnemy(&mrHotDogObj3);
-	//levelManagercmpt.AddEnemy(&mrEggObj1);
+	levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	levelManagercmpt.AddEnemy(&mrHotDogObj3);
+	levelManagercmpt.AddEnemy(&mrEggObj1);
 
 
 	//let the enemies observe the player(s)
 	petterPeppersubje.AddObserver(playerHotDogCmpt);
 
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
-	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
-	//petterPeppersubje.AddObserver(mrHotDogcmpt3);
-	//petterPeppersubje.AddObserver(mrEggcmpt1);
+	petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	petterPeppersubje.AddObserver(mrHotDogcmpt3);
+	petterPeppersubje.AddObserver(mrEggcmpt1);
 
 	sallySaltSubje.AddObserver(playerHotDogCmpt);
 
 	sallySaltSubje.AddObserver(mrHotDogcmpt1);
-	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
-	//sallySaltSubje.AddObserver(mrHotDogcmpt3);
-	//sallySaltSubje.AddObserver(mrEggcmpt1);
+	sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	sallySaltSubje.AddObserver(mrHotDogcmpt3);
+	sallySaltSubje.AddObserver(mrEggcmpt1);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -381,67 +442,67 @@ void dae::MainMenuComponent::LoadLevel1()
 	ladderObj1.SetLocalPosition(51.f, 372.f);
 	ladderObj1.AddComponent<LadderComponent>();
 	auto& ladder1colliderCmpt = ladderObj1.AddComponent<RectColliderComponent>();
-	ladder1colliderCmpt.Init({ 0, 0, 3, 238 }, 1, true, { 255, 255, 0, 128 });
+	ladder1colliderCmpt.Init({ 0, 0, 3, 238 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj2 = sceneLevel1.CreateObject("ladderObj2");
 	ladderObj2.SetLocalPosition(51.f, 189.f);
 	ladderObj2.AddComponent<LadderComponent>();
 	auto& ladder2colliderCmpt = ladderObj2.AddComponent<RectColliderComponent>();
-	ladder2colliderCmpt.Init({ 0, 0, 3, 107 }, 1, true, { 255, 255, 0, 128 });
+	ladder2colliderCmpt.Init({ 0, 0, 3, 107 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj3 = sceneLevel1.CreateObject("ladderObj3");
 	ladderObj3.SetLocalPosition(117.f, 281.f);
 	ladderObj3.AddComponent<LadderComponent>();
 	auto& ladder3colliderCmpt = ladderObj3.AddComponent<RectColliderComponent>();
-	ladder3colliderCmpt.Init({ 0, 0, 4, 238 }, 1, true, { 255, 255, 0, 128 });
+	ladder3colliderCmpt.Init({ 0, 0, 4, 238 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj4 = sceneLevel1.CreateObject("ladderObj4");
 	ladderObj4.SetLocalPosition(184.f, 189.f);
 	ladderObj4.AddComponent<LadderComponent>();
 	auto& ladder4colliderCmpt = ladderObj4.AddComponent<RectColliderComponent>();
-	ladder4colliderCmpt.Init({ 0, 0, 4, 420 }, 1, true, { 255, 255, 0, 128 });
+	ladder4colliderCmpt.Init({ 0, 0, 4, 420 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj5 = sceneLevel1.CreateObject("ladderObj5");
 	ladderObj5.SetLocalPosition(251.f, 189.f);
 	ladderObj5.AddComponent<LadderComponent>();
 	auto& ladder5colliderCmpt = ladderObj5.AddComponent<RectColliderComponent>();
-	ladder5colliderCmpt.Init({ 0, 0, 4, 152 }, 1, true, { 255, 255, 0, 128 });
+	ladder5colliderCmpt.Init({ 0, 0, 4, 152 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj6 = sceneLevel1.CreateObject("ladderObj6");
 	ladderObj6.SetLocalPosition(318.f, 189.f);
 	ladderObj6.AddComponent<LadderComponent>();
 	auto& ladder6colliderCmpt = ladderObj6.AddComponent<RectColliderComponent>();
-	ladder6colliderCmpt.Init({ 0, 0, 4, 420 }, 1, true, { 255, 255, 0, 128 });
+	ladder6colliderCmpt.Init({ 0, 0, 4, 420 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj7 = sceneLevel1.CreateObject("ladderObj7");
 	ladderObj7.SetLocalPosition(385.f, 282.f);
 	ladderObj7.AddComponent<LadderComponent>();
 	auto& ladder7colliderCmpt = ladderObj7.AddComponent<RectColliderComponent>();
-	ladder7colliderCmpt.Init({ 0, 0, 4, 148 }, 1, true, { 255, 255, 0, 128 });
+	ladder7colliderCmpt.Init({ 0, 0, 4, 148 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj8 = sceneLevel1.CreateObject("ladderObj8");
 	ladderObj8.SetLocalPosition(452.f, 189.f);
 	ladderObj8.AddComponent<LadderComponent>();
 	auto& ladder8colliderCmpt = ladderObj8.AddComponent<RectColliderComponent>();
-	ladder8colliderCmpt.Init({ 0, 0, 4, 420 }, 1, true, { 255, 255, 0, 128 });
+	ladder8colliderCmpt.Init({ 0, 0, 4, 420 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj9 = sceneLevel1.CreateObject("ladderObj9");
 	ladderObj9.SetLocalPosition(519.f, 370.f);
 	ladderObj9.AddComponent<LadderComponent>();
 	auto& ladder9colliderCmpt = ladderObj9.AddComponent<RectColliderComponent>();
-	ladder9colliderCmpt.Init({ 0, 0, 3, 237 }, 1, true, { 255, 255, 0, 128 });
+	ladder9colliderCmpt.Init({ 0, 0, 3, 237 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj10 = sceneLevel1.CreateObject("ladderObj10");
 	ladderObj10.SetLocalPosition(586.f, 189.f);
 	ladderObj10.AddComponent<LadderComponent>();
 	auto& ladder10colliderCmpt = ladderObj10.AddComponent<RectColliderComponent>();
-	ladder10colliderCmpt.Init({ 0, 0, 4, 197 }, 1, true, { 255, 255, 0, 128 });
+	ladder10colliderCmpt.Init({ 0, 0, 4, 197 }, 1, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj11 = sceneLevel1.CreateObject("ladderObj11");
 	ladderObj11.SetLocalPosition(586.f, 459.f);
 	ladderObj11.AddComponent<LadderComponent>();
 	auto& ladder11colliderCmpt = ladderObj11.AddComponent<RectColliderComponent>();
-	ladder11colliderCmpt.Init({ 0, 0, 4, 150 }, 1, true, { 255, 255, 0, 128 });
+	ladder11colliderCmpt.Init({ 0, 0, 4, 150 }, 1, false, { 255, 255, 0, 128 });
 #pragma endregion
 
 #pragma region WalkingPlatformSetup
@@ -449,61 +510,61 @@ void dae::MainMenuComponent::LoadLevel1()
 	walkPlatformObj1.SetLocalPosition(30.f, 202.f);
 	walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
-	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj2 = sceneLevel1.CreateObject("walkPlatformObj2");
 	walkPlatformObj2.SetLocalPosition(30.f, 292.f);
 	walkPlatformObj2.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform2colliderCmpt = walkPlatformObj2.AddComponent<RectColliderComponent>();
-	walkPlatform2colliderCmpt.Init({ 0, 0, 175, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform2colliderCmpt.Init({ 0, 0, 175, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj3 = sceneLevel1.CreateObject("walkPlatformObj3");
 	walkPlatformObj3.SetLocalPosition(300.f, 292.f);
 	walkPlatformObj3.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform3colliderCmpt = walkPlatformObj3.AddComponent<RectColliderComponent>();
-	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj4 = sceneLevel1.CreateObject("walkPlatformObj4");
 	walkPlatformObj4.SetLocalPosition(165.f, 337.f);
 	walkPlatformObj4.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform4colliderCmpt = walkPlatformObj4.AddComponent<RectColliderComponent>();
-	walkPlatform4colliderCmpt.Init({ 0, 0, 176, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform4colliderCmpt.Init({ 0, 0, 176, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj5 = sceneLevel1.CreateObject("walkPlatformObj5");
 	walkPlatformObj5.SetLocalPosition(30.f, 382.f);
 	walkPlatformObj5.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform5colliderCmpt = walkPlatformObj5.AddComponent<RectColliderComponent>();
-	walkPlatform5colliderCmpt.Init({ 0, 0, 178, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform5colliderCmpt.Init({ 0, 0, 178, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj6 = sceneLevel1.CreateObject("walkPlatformObj6");
 	walkPlatformObj6.SetLocalPosition(432.f, 382.f);
 	walkPlatformObj6.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform6colliderCmpt = walkPlatformObj6.AddComponent<RectColliderComponent>();
-	walkPlatform6colliderCmpt.Init({ 0, 0, 178, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform6colliderCmpt.Init({ 0, 0, 178, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj7 = sceneLevel1.CreateObject("walkPlatformObj7");
 	walkPlatformObj7.SetLocalPosition(165.f, 425.f);
 	walkPlatformObj7.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform7colliderCmpt = walkPlatformObj7.AddComponent<RectColliderComponent>();
-	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj8 = sceneLevel1.CreateObject("walkPlatformObj8");
 	walkPlatformObj8.SetLocalPosition(433.f, 470.f);
 	walkPlatformObj8.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform8colliderCmpt = walkPlatformObj8.AddComponent<RectColliderComponent>();
-	walkPlatform8colliderCmpt.Init({ 0, 0, 178, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform8colliderCmpt.Init({ 0, 0, 178, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj9 = sceneLevel1.CreateObject("walkPlatformObj9");
 	walkPlatformObj9.SetLocalPosition(30.f, 515.f);
 	walkPlatformObj9.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform9colliderCmpt = walkPlatformObj9.AddComponent<RectColliderComponent>();
-	walkPlatform9colliderCmpt.Init({ 0, 0, 445, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform9colliderCmpt.Init({ 0, 0, 445, 4 }, 1, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj10 = sceneLevel1.CreateObject("walkPlatformObj10");
 	walkPlatformObj10.SetLocalPosition(30.f, 604.f);
 	walkPlatformObj10.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform10colliderCmpt = walkPlatformObj10.AddComponent<RectColliderComponent>();
-	walkPlatform10colliderCmpt.Init({ 0, 0, 580, 4 }, 1, true, { 0, 255, 0, 128 });
+	walkPlatform10colliderCmpt.Init({ 0, 0, 580, 4 }, 1, false, { 0, 255, 0, 128 });
 #pragma endregion
 
 #pragma region IngredientsSetup
@@ -513,7 +574,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunTopSubje1 = bunTopCmpt1.GetSubject();
 	bunTopObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider1 = bunTopObj1.AddComponent<RectColliderComponent>();
-	bunTopcollider1.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunTopcollider1.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunTopObj1.SetLocalPosition(75.f, 280.f);
 	bunTopCmpt1.SetSpawnLocation(75.f, 280.f);
 	auto& bunTopColliderSubje1 = bunTopcollider1.GetSubject();
@@ -524,7 +585,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& lettuceSubje1 = lettuceCmpt1.GetSubject();
 	lettuceObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider1 = lettuceObj1.AddComponent<RectColliderComponent>();
-	lettucecollider1.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	lettucecollider1.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	lettuceObj1.SetLocalPosition(75.f, 370.f);
 	lettuceCmpt1.SetSpawnLocation(75.f, 370.f);
 	auto& lettuceColliderSubje1 = lettucecollider1.GetSubject();
@@ -535,7 +596,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& burgerMeatSubje1 = burgerMeatCmpt1.GetSubject();
 	burgerMeatObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider1 = burgerMeatObj1.AddComponent<RectColliderComponent>();
-	burgerMeatcollider1.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	burgerMeatcollider1.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	burgerMeatObj1.SetLocalPosition(75.f, 500.f);
 	burgerMeatCmpt1.SetSpawnLocation(75.f, 500.f);
 	auto& burgerMeatColliderSubje1 = burgerMeatcollider1.GetSubject();
@@ -546,7 +607,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunBottomSubje1 = bunBottomCmpt1.GetSubject();
 	bunBottomObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider1 = bunBottomObj1.AddComponent<RectColliderComponent>();
-	bunBottomcollider1.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunBottomcollider1.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunBottomObj1.SetLocalPosition(75.f, 590.f);
 	bunBottomCmpt1.SetSpawnLocation(75.f, 590.f);
 	auto& bunBottomColliderSubje1 = bunBottomcollider1.GetSubject();
@@ -558,7 +619,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunTopSubje2 = bunTopCmpt2.GetSubject();
 	bunTopObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider2 = bunTopObj2.AddComponent<RectColliderComponent>();
-	bunTopcollider2.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunTopcollider2.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunTopObj2.SetLocalPosition(209.f, 190.f);
 	bunTopCmpt2.SetSpawnLocation(209.f, 190.f);
 	auto& bunTopColliderSubje2 = bunTopcollider2.GetSubject();
@@ -569,7 +630,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& lettuceSubje2 = lettuceCmpt2.GetSubject();
 	lettuceObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider2 = lettuceObj2.AddComponent<RectColliderComponent>();
-	lettucecollider2.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	lettucecollider2.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	lettuceObj2.SetLocalPosition(209.f, 410.f);
 	lettuceCmpt2.SetSpawnLocation(209.f, 410.f);
 	auto& lettuceColliderSubje2 = lettucecollider2.GetSubject();
@@ -580,7 +641,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& burgerMeatSubje2 = burgerMeatCmpt2.GetSubject();
 	burgerMeatObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider2 = burgerMeatObj2.AddComponent<RectColliderComponent>();
-	burgerMeatcollider2.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	burgerMeatcollider2.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	burgerMeatObj2.SetLocalPosition(209.f, 500.f);
 	burgerMeatCmpt2.SetSpawnLocation(209.f, 500.f);
 	auto& burgerMeatColliderSubje2 = burgerMeatcollider2.GetSubject();
@@ -591,7 +652,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunBottomSubje2 = bunBottomCmpt2.GetSubject();
 	bunBottomObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider2 = bunBottomObj2.AddComponent<RectColliderComponent>();
-	bunBottomcollider2.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunBottomcollider2.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunBottomObj2.SetLocalPosition(209.f, 590.f);
 	bunBottomCmpt2.SetSpawnLocation(209.f, 590.f);
 	auto& bunBottomColliderSubje2 = bunBottomcollider2.GetSubject();
@@ -603,7 +664,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunTopSubje3 = bunTopCmpt3.GetSubject();
 	bunTopObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider3 = bunTopObj3.AddComponent<RectColliderComponent>();
-	bunTopcollider3.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunTopcollider3.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunTopObj3.SetLocalPosition(343.f, 190.f);
 	bunTopCmpt3.SetSpawnLocation(343.f, 190.f);
 	auto& bunTopColliderSubje3 = bunTopcollider3.GetSubject();
@@ -614,7 +675,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& lettuceSubje3 = lettuceCmpt3.GetSubject();
 	lettuceObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider3 = lettuceObj3.AddComponent<RectColliderComponent>();
-	lettucecollider3.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	lettucecollider3.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	lettuceObj3.SetLocalPosition(343.f, 280.f);
 	lettuceCmpt3.SetSpawnLocation(343.f, 280.f);
 	auto& lettuceColliderSubje3 = lettucecollider3.GetSubject();
@@ -625,7 +686,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& burgerMeatSubje3 = burgerMeatCmpt3.GetSubject();
 	burgerMeatObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider3 = burgerMeatObj3.AddComponent<RectColliderComponent>();
-	burgerMeatcollider3.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	burgerMeatcollider3.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	burgerMeatObj3.SetLocalPosition(343.f, 410.f);
 	burgerMeatCmpt3.SetSpawnLocation(343.f, 410.f);
 	auto& burgerMeatColliderSubje3 = burgerMeatcollider3.GetSubject();
@@ -636,7 +697,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunBottomSubje3 = bunBottomCmpt3.GetSubject();
 	bunBottomObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider3 = bunBottomObj3.AddComponent<RectColliderComponent>();
-	bunBottomcollider3.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunBottomcollider3.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunBottomObj3.SetLocalPosition(343.f, 590.f);
 	bunBottomCmpt3.SetSpawnLocation(343.f, 590.f);
 	auto& bunBottomColliderSubje3 = bunBottomcollider3.GetSubject();
@@ -648,7 +709,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunTopSubje4 = bunTopCmpt4.GetSubject();
 	bunTopObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider4 = bunTopObj4.AddComponent<RectColliderComponent>();
-	bunTopcollider4.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunTopcollider4.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunTopObj4.SetLocalPosition(477.f, 190.f);
 	bunTopCmpt4.SetSpawnLocation(477.f, 190.f);
 	auto& bunTopColliderSubje4 = bunTopcollider4.GetSubject();
@@ -659,7 +720,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& lettuceSubje4 = lettuceCmpt4.GetSubject();
 	lettuceObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider4 = lettuceObj4.AddComponent<RectColliderComponent>();
-	lettucecollider4.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	lettucecollider4.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	lettuceObj4.SetLocalPosition(477.f, 280.f);
 	lettuceCmpt4.SetSpawnLocation(477.f, 280.f);
 	auto& lettuceColliderSubje4 = lettucecollider4.GetSubject();
@@ -670,7 +731,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& burgerMeatSubje4 = burgerMeatCmpt4.GetSubject();
 	burgerMeatObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider4 = burgerMeatObj4.AddComponent<RectColliderComponent>();
-	burgerMeatcollider4.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	burgerMeatcollider4.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	burgerMeatObj4.SetLocalPosition(477.f, 370.f);
 	burgerMeatCmpt4.SetSpawnLocation(477.f, 370.f);
 	auto& burgerMeatColliderSubje4 = burgerMeatcollider4.GetSubject();
@@ -681,7 +742,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& bunBottomSubje4 = bunBottomCmpt4.GetSubject();
 	bunBottomObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider4 = bunBottomObj4.AddComponent<RectColliderComponent>();
-	bunBottomcollider4.Init({ 2, 0, 84, 20 }, 1, true, { 133, 0, 133, 255 });
+	bunBottomcollider4.Init(loader.GetCollider("ingredient"), 1, false, { 133, 0, 133, 255 });
 	bunBottomObj4.SetLocalPosition(477.f, 455.f);
 	bunBottomCmpt4.SetSpawnLocation(477.f, 455.f);
 	auto& bunBottomColliderSubje4 = bunBottomcollider4.GetSubject();
@@ -696,7 +757,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& plateSubje1 = plateCmpt1.GetSubject();
 	plateObj1.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider1 = plateObj1.AddComponent<RectColliderComponent>();
-	plateCollider1.Init({ 0, 8, 104, 4 }, 1, true, { 0, 133, 133, 255 });
+	plateCollider1.Init(loader.GetCollider("plate"), 1, false, { 0, 133, 133, 255 });
 	plateObj1.SetLocalPosition(68.f, 800.f);
 	auto& plateColliderSubje1 = plateCollider1.GetSubject();
 	plateColliderSubje1.AddObserver(plateCmpt1);
@@ -707,7 +768,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& plateSubje2 = plateCmpt2.GetSubject();
 	plateObj2.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider2 = plateObj2.AddComponent<RectColliderComponent>();
-	plateCollider2.Init({ 0, 8, 104, 4 }, 1, true, { 0, 133, 133, 255 });
+	plateCollider2.Init(loader.GetCollider("plate"), 1, false, { 0, 133, 133, 255 });
 	plateObj2.SetLocalPosition(202.f, 800.f);
 	auto& plateColliderSubje2 = plateCollider2.GetSubject();
 	plateColliderSubje2.AddObserver(plateCmpt2);
@@ -718,7 +779,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& plateSubje3 = plateCmpt3.GetSubject();
 	plateObj3.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider3 = plateObj3.AddComponent<RectColliderComponent>();
-	plateCollider3.Init({ 0, 8, 104, 4 }, 1, true, { 0, 133, 133, 255 });
+	plateCollider3.Init(loader.GetCollider("plate"), 1, false, { 0, 133, 133, 255 });
 	plateObj3.SetLocalPosition(336.f, 800.f);
 	auto& plateColliderSubje3 = plateCollider3.GetSubject();
 	plateColliderSubje3.AddObserver(plateCmpt3);
@@ -729,7 +790,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	auto& plateSubje4 = plateCmpt4.GetSubject();
 	plateObj4.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider4 = plateObj4.AddComponent<RectColliderComponent>();
-	plateCollider4.Init({ 0, 8, 104, 4 }, 1, true, { 0, 133, 133, 255 });
+	plateCollider4.Init(loader.GetCollider("plate"), 1, false, { 0, 133, 133, 255 });
 	plateObj4.SetLocalPosition(470.f, 800.f);
 	auto& plateColliderSubje4 = plateCollider4.GetSubject();
 	plateColliderSubje4.AddObserver(plateCmpt4);
@@ -797,9 +858,6 @@ void dae::MainMenuComponent::LoadLevel1()
 	bunTopSubje3.AddObserver(scoreCmpt);
 	bunTopSubje4.AddObserver(scoreCmpt);
 #pragma endregion
-
-	//TODO: hi score component should read hi-score from file and observe the score object,
-	//if the score components value is bigger than the current high score update it
 
 	auto& hiScoreObject = sceneLevel1.CreateObject("scoreObject");
 	auto& hiScoretextcomp = hiScoreObject.AddComponent<TextComponent>();
@@ -874,9 +932,9 @@ void dae::MainMenuComponent::LoadLevel1()
 	levelManagersubje.AddObserver(sallycmpt);
 
 	levelManagersubje.AddObserver(mrHotDogcmpt1);
-	//levelManagersubje.AddObserver(mrHotDogcmpt2);
-	//levelManagersubje.AddObserver(mrHotDogcmpt3);
-	//levelManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrHotDogcmpt2);
+	levelManagersubje.AddObserver(mrHotDogcmpt3);
+	levelManagersubje.AddObserver(mrEggcmpt1);
 
 	plateSubje1.AddObserver(levelManagercmpt);
 	plateSubje2.AddObserver(levelManagercmpt);
@@ -890,6 +948,8 @@ void dae::MainMenuComponent::LoadLevel1()
 
 void dae::MainMenuComponent::LoadLevel2()
 {
+	EntityLoader loader{ "../Data/Level/EntityData.json" };
+
 	auto& sceneLevel2 = SceneManager::GetInstance().CreateScene("Level2");
 	auto& inputmanager = InputManager::GetInstance();
 
@@ -927,7 +987,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Up.png", 4, 1, 4, 45, 45);
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
 	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
-	pepperCollider.Init({ 0,0,45,45 }, 2, true);
+	pepperCollider.Init(loader.GetCollider("pepper"), 2, false);
 	pepperObj.SetLocalPosition(-100.f, -100.f);
 	pepperCmpt.SetResetPos(-100.f, -100.f);
 	pepperCmpt.SetSpriteDuration(1.f);
@@ -946,7 +1006,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	peterSpriteManager.AddSprite("Charachters/peter/Peter_Won.png", 2, 1, 2, 45, 45);
 
 	auto& peterCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	peterCollider.Init({ 0,1,45,44 }, 2, true);
+	peterCollider.Init(loader.GetCollider("player"), 2, false);
 	peterPepperObj.AddComponent<MovementComponent>();
 	petercmpt.SetSpawnLocation(298.f, 609.f);
 	peterPepperObj.SetLocalPosition(298.f, 609.f);
@@ -967,7 +1027,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
 
 	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
-	sallyCollider.Init({ 0,1,45,44 }, 2, true);
+	sallyCollider.Init(loader.GetCollider("player"), 2, false);
 	sallySaltObj.AddComponent<MovementComponent>();
 	sallycmpt.SetSpawnLocation(298.f, 162.f);
 	sallySaltObj.SetLocalPosition(298.f, 162.f);
@@ -1003,7 +1063,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
-	playerHotDogCollider.Init({ 0,1,45,44 }, 2, true);
+	playerHotDogCollider.Init(loader.GetCollider("player"), 2, false);
 	playerHotDogObj.AddComponent<MovementComponent>();
 	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
@@ -1023,26 +1083,96 @@ void dae::MainMenuComponent::LoadLevel2()
 	mrHotDogcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& mrHotDogCollider1 = mrHotDogObj1.AddComponent<RectColliderComponent>();
-	mrHotDogCollider1.Init({ 0,1,45,44 }, 2, true);
+	mrHotDogCollider1.Init(loader.GetCollider("enemy"), 2, false);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
 	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
-	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
-	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+	auto& mrHotDogcollidersubje1 = mrHotDogCollider1.GetSubject();
+	mrHotDogcollidersubje1.AddObserver(mrHotDogcmpt1);
 #pragma endregion
 
+#pragma region Enemy2
+	auto& mrHotDogObj2 = sceneLevel2.CreateObject("mrHotDogObj2");
+	auto& mrHotDogcmpt2 = mrHotDogObj2.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager2 = mrHotDogObj2.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt2.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
+	auto& mrHotDogCollider2 = mrHotDogObj2.AddComponent<RectColliderComponent>();
+	mrHotDogCollider2.Init(loader.GetCollider("enemy"), 2, false);
+	mrHotDogObj2.AddComponent<MovementComponent>();
+	auto& mrHotDogController2 = mrHotDogObj2.AddComponent<EnemyControllerComponent>();
+
+	mrHotDogcmpt2.SetRespawnPosAndWalkDirection(565.f, 162.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrHotDogcollidersubje2 = mrHotDogCollider2.GetSubject();
+	mrHotDogcollidersubje2.AddObserver(mrHotDogcmpt2);
+#pragma endregion
+
+#pragma region Enemy3
+	auto& mrHotDogObj3 = sceneLevel2.CreateObject("mrHotDogObj3");
+	auto& mrHotDogcmpt3 = mrHotDogObj3.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager3 = mrHotDogObj3.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager3.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt3.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrHotDogCollider3 = mrHotDogObj3.AddComponent<RectColliderComponent>();
+	mrHotDogCollider3.Init(loader.GetCollider("enemy"), 2, false);
+	mrHotDogObj3.AddComponent<MovementComponent>();
+	auto& mrHotDogController3 = mrHotDogObj3.AddComponent<EnemyControllerComponent>();
+
+	mrHotDogcmpt3.SetRespawnPosAndWalkDirection(30.f, 341.f, EnemyControllerComponent::MovementState::Right);
+	auto& mrHotDogcollidersubje3 = mrHotDogCollider3.GetSubject();
+	mrHotDogcollidersubje3.AddObserver(mrHotDogcmpt3);
+#pragma endregion
+
+#pragma region Enemy4
+	auto& mrEggObj1 = sceneLevel2.CreateObject("mrEggObj1");
+	auto& mrEggcmpt1 = mrEggObj1.AddComponent<MrEgg>();
+	auto& mrEggSpriteManager1 = mrEggObj1.AddComponent<SpriteManagerComponent>();
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Idle.png", 1, 1, 0, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Death.png", 4, 1, 10, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Peppered.png", 2, 1, 8, 45, 45);
+	mrEggcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrEggCollider1 = mrEggObj1.AddComponent<RectColliderComponent>();
+	mrEggCollider1.Init(loader.GetCollider("enemy"), 2, false);
+	mrEggObj1.AddComponent<MovementComponent>();
+	auto& mrEggController1 = mrEggObj1.AddComponent<EnemyControllerComponent>();
+
+	mrEggcmpt1.SetRespawnPosAndWalkDirection(565.f, 341.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrEggcollidersubje = mrEggCollider1.GetSubject();
+	mrEggcollidersubje.AddObserver(mrEggcmpt1);
+#pragma endregion
 
 	//always set the first player, the 2nd player will be set or unset in the level manager once the leve becomes active
 	mrHotDogController1.SetPlayer1(&peterPepperObj);
+	mrHotDogController2.SetPlayer1(&peterPepperObj);
+	mrHotDogController3.SetPlayer1(&peterPepperObj);
+	mrEggController1.SetPlayer1(&peterPepperObj);
 
 	//register enemies to the levelmanager
 	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
 
 	levelManagercmpt.AddEnemy(&mrHotDogObj1);
-	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
-	//levelManagercmpt.AddEnemy(&mrHotDogObj3);
-	//levelManagercmpt.AddEnemy(&mrPickleObj1);
+	levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	levelManagercmpt.AddEnemy(&mrHotDogObj3);
+	levelManagercmpt.AddEnemy(&mrEggObj1);
 
 
 	//the 2nd level manager will enable or disable the enemies depending on the mode that was selected,
@@ -1050,24 +1180,24 @@ void dae::MainMenuComponent::LoadLevel2()
 	playerHotDogObj.SetEnabledState(false);
 
 	mrHotDogObj1.SetEnabledState(false);
-	//mrHotDogObj2.SetEnabledState(false);
-	//mrHotDogObj3.SetEnabledState(false);
-	//mrEggObj1.SetEnabledState(false);
+	mrHotDogObj2.SetEnabledState(false);
+	mrHotDogObj3.SetEnabledState(false);
+	mrEggObj1.SetEnabledState(false);
 
 	//let the enemies observe the player(s)
 	petterPeppersubje.AddObserver(playerHotDogCmpt);
 
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
-	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
-	//petterPeppersubje.AddObserver(mrHotDogcmpt3);
-	//petterPeppersubje.AddObserver(mrEggcmpt1);
+	petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	petterPeppersubje.AddObserver(mrHotDogcmpt3);
+	petterPeppersubje.AddObserver(mrEggcmpt1);
 
 	sallySaltSubje.AddObserver(playerHotDogCmpt);
 
 	sallySaltSubje.AddObserver(mrHotDogcmpt1);
-	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
-	//sallySaltSubje.AddObserver(mrHotDogcmpt3);
-	//sallySaltSubje.AddObserver(mrEggcmpt1);
+	sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	sallySaltSubje.AddObserver(mrHotDogcmpt3);
+	sallySaltSubje.AddObserver(mrEggcmpt1);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -1075,55 +1205,55 @@ void dae::MainMenuComponent::LoadLevel2()
 	ladderObj1.SetLocalPosition(51.f, 189.f);
 	ladderObj1.AddComponent<LadderComponent>();
 	auto& ladder1colliderCmpt = ladderObj1.AddComponent<RectColliderComponent>();
-	ladder1colliderCmpt.Init({ 0, 0, 3, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder1colliderCmpt.Init({ 0, 0, 3, 197 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj2 = sceneLevel2.CreateObject("ladderObj2");
 	ladderObj2.SetLocalPosition(117.f, 189.f);
 	ladderObj2.AddComponent<LadderComponent>();
 	auto& ladder2colliderCmpt = ladderObj2.AddComponent<RectColliderComponent>();
-	ladder2colliderCmpt.Init({ 0, 0, 3, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder2colliderCmpt.Init({ 0, 0, 3, 197 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj3 = sceneLevel2.CreateObject("ladderObj3");
 	ladderObj3.SetLocalPosition(184.f, 189.f);
 	ladderObj3.AddComponent<LadderComponent>();
 	auto& ladder3colliderCmpt = ladderObj3.AddComponent<RectColliderComponent>();
-	ladder3colliderCmpt.Init({ 0, 0, 4, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder3colliderCmpt.Init({ 0, 0, 4, 197 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj4 = sceneLevel2.CreateObject("ladderObj4");
 	ladderObj4.SetLocalPosition(251.f, 189.f);
 	ladderObj4.AddComponent<LadderComponent>();
 	auto& ladder4colliderCmpt = ladderObj4.AddComponent<RectColliderComponent>();
-	ladder4colliderCmpt.Init({ 0, 0, 4, 376 }, 2, true, { 255, 255, 0, 128 });
+	ladder4colliderCmpt.Init({ 0, 0, 4, 376 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj5 = sceneLevel2.CreateObject("ladderObj5");
 	ladderObj5.SetLocalPosition(318.f, 189.f);
 	ladderObj5.AddComponent<LadderComponent>();
 	auto& ladder5colliderCmpt = ladderObj5.AddComponent<RectColliderComponent>();
-	ladder5colliderCmpt.Init({ 0, 0, 4, 465 }, 2, true, { 255, 255, 0, 128 });
+	ladder5colliderCmpt.Init({ 0, 0, 4, 465 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj6 = sceneLevel2.CreateObject("ladderObj6");
 	ladderObj6.SetLocalPosition(385.f, 189.f);
 	ladderObj6.AddComponent<LadderComponent>();
 	auto& ladder6colliderCmpt = ladderObj6.AddComponent<RectColliderComponent>();
-	ladder6colliderCmpt.Init({ 0, 0, 4, 376 }, 2, true, { 255, 255, 0, 128 });
+	ladder6colliderCmpt.Init({ 0, 0, 4, 376 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj7 = sceneLevel2.CreateObject("ladderObj7");
 	ladderObj7.SetLocalPosition(452.f, 189.f);
 	ladderObj7.AddComponent<LadderComponent>();
 	auto& ladder7colliderCmpt = ladderObj7.AddComponent<RectColliderComponent>();
-	ladder7colliderCmpt.Init({ 0, 0, 4, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder7colliderCmpt.Init({ 0, 0, 4, 197 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj8 = sceneLevel2.CreateObject("ladderObj8");
 	ladderObj8.SetLocalPosition(519.f, 189.f);
 	ladderObj8.AddComponent<LadderComponent>();
 	auto& ladder8colliderCmpt = ladderObj8.AddComponent<RectColliderComponent>();
-	ladder8colliderCmpt.Init({ 0, 0, 4, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder8colliderCmpt.Init({ 0, 0, 4, 197 }, 2, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj9 = sceneLevel2.CreateObject("ladderObj9");
 	ladderObj9.SetLocalPosition(586.f, 189.f);
 	ladderObj9.AddComponent<LadderComponent>();
 	auto& ladder9colliderCmpt = ladderObj9.AddComponent<RectColliderComponent>();
-	ladder9colliderCmpt.Init({ 0, 0, 3, 197 }, 2, true, { 255, 255, 0, 128 });
+	ladder9colliderCmpt.Init({ 0, 0, 3, 197 }, 2, false, { 255, 255, 0, 128 });
 #pragma endregion
 
 #pragma region WalkingPlatformSetup
@@ -1131,67 +1261,67 @@ void dae::MainMenuComponent::LoadLevel2()
 	walkPlatformObj1.SetLocalPosition(30.f, 202.f);
 	walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
-	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj2 = sceneLevel2.CreateObject("walkPlatformObj2");
 	walkPlatformObj2.SetLocalPosition(30.f, 247);
 	walkPlatformObj2.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform2colliderCmpt = walkPlatformObj2.AddComponent<RectColliderComponent>();
-	walkPlatform2colliderCmpt.Init({ 0, 0, 310, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform2colliderCmpt.Init({ 0, 0, 310, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj3 = sceneLevel2.CreateObject("walkPlatformObj3");
 	walkPlatformObj3.SetLocalPosition(30.f, 292.f);
 	walkPlatformObj3.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform3colliderCmpt = walkPlatformObj3.AddComponent<RectColliderComponent>();
-	walkPlatform3colliderCmpt.Init({ 0, 0, 175, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform3colliderCmpt.Init({ 0, 0, 175, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj4 = sceneLevel2.CreateObject("walkPlatformObj4");
 	walkPlatformObj4.SetLocalPosition(298.f, 292.f);
 	walkPlatformObj4.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform4colliderCmpt = walkPlatformObj4.AddComponent<RectColliderComponent>();
-	walkPlatform4colliderCmpt.Init({ 0, 0, 310, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform4colliderCmpt.Init({ 0, 0, 310, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj5 = sceneLevel2.CreateObject("walkPlatformObj5");
 	walkPlatformObj5.SetLocalPosition(165.f, 337.f);
 	walkPlatformObj5.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform5colliderCmpt = walkPlatformObj5.AddComponent<RectColliderComponent>();
-	walkPlatform5colliderCmpt.Init({ 0, 0, 176, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform5colliderCmpt.Init({ 0, 0, 176, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj6 = sceneLevel2.CreateObject("walkPlatformObj6");
 	walkPlatformObj6.SetLocalPosition(432.f, 337.f);
 	walkPlatformObj6.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform6colliderCmpt = walkPlatformObj6.AddComponent<RectColliderComponent>();
-	walkPlatform6colliderCmpt.Init({ 0, 0, 176, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform6colliderCmpt.Init({ 0, 0, 176, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj7 = sceneLevel2.CreateObject("walkPlatformObj7");
 	walkPlatformObj7.SetLocalPosition(30.f, 382.f);
 	walkPlatformObj7.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform7colliderCmpt = walkPlatformObj7.AddComponent<RectColliderComponent>();
-	walkPlatform7colliderCmpt.Init({ 0, 0, 580, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform7colliderCmpt.Init({ 0, 0, 580, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj8 = sceneLevel2.CreateObject("walkPlatformObj8");
 	walkPlatformObj8.SetLocalPosition(298.f, 425.f);
 	walkPlatformObj8.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform8colliderCmpt = walkPlatformObj8.AddComponent<RectColliderComponent>();
-	walkPlatform8colliderCmpt.Init({ 0, 0, 175, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform8colliderCmpt.Init({ 0, 0, 175, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj9 = sceneLevel2.CreateObject("walkPlatformObj9");
 	walkPlatformObj9.SetLocalPosition(165.f, 470.f);
 	walkPlatformObj9.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform9colliderCmpt = walkPlatformObj9.AddComponent<RectColliderComponent>();
-	walkPlatform9colliderCmpt.Init({ 0, 0, 175, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform9colliderCmpt.Init({ 0, 0, 175, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj10 = sceneLevel2.CreateObject("walkPlatformObj10");
 	walkPlatformObj10.SetLocalPosition(298.f, 515);
 	walkPlatformObj10.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform10colliderCmpt = walkPlatformObj10.AddComponent<RectColliderComponent>();
-	walkPlatform10colliderCmpt.Init({ 0, 0, 175, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform10colliderCmpt.Init({ 0, 0, 175, 4 }, 2, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj11 = sceneLevel2.CreateObject("walkPlatformObj11");
 	walkPlatformObj11.SetLocalPosition(165.f, 560.f);
 	walkPlatformObj11.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform11colliderCmpt = walkPlatformObj11.AddComponent<RectColliderComponent>();
-	walkPlatform11colliderCmpt.Init({ 0, 0, 310, 4 }, 2, true, { 0, 255, 0, 128 });
+	walkPlatform11colliderCmpt.Init({ 0, 0, 310, 4 }, 2, false, { 0, 255, 0, 128 });
 #pragma endregion
 
 #pragma region IngredientsSetup
@@ -1201,7 +1331,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunTopSubje1 = bunTopCmpt1.GetSubject();
 	bunTopObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider1 = bunTopObj1.AddComponent<RectColliderComponent>();
-	bunTopcollider1.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunTopcollider1.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunTopObj1.SetLocalPosition(75.f, 190.f);
 	bunTopCmpt1.SetSpawnLocation(75.f, 190.f);
 	auto& bunTopColliderSubje1 = bunTopcollider1.GetSubject();
@@ -1212,7 +1342,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& lettuceSubje1 = lettuceCmpt1.GetSubject();
 	lettuceObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider1 = lettuceObj1.AddComponent<RectColliderComponent>();
-	lettucecollider1.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	lettucecollider1.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	lettuceObj1.SetLocalPosition(75.f, 235.f);
 	lettuceCmpt1.SetSpawnLocation(75.f, 235.f);
 	auto& lettuceColliderSubje1 = lettucecollider1.GetSubject();
@@ -1223,7 +1353,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& cheeseSubje1 = cheeseCmpt1.GetSubject();
 	cheeseObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Cheese.png", 88.f, 22.f);
 	auto& cheesecollider1 = cheeseObj1.AddComponent<RectColliderComponent>();
-	cheesecollider1.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	cheesecollider1.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	cheeseObj1.SetLocalPosition(75.f, 280.f);
 	cheeseCmpt1.SetSpawnLocation(75.f, 280.f);
 	auto& cheeseColliderSubje1 = cheesecollider1.GetSubject();
@@ -1234,7 +1364,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunBottomSubje1 = bunBottomCmpt1.GetSubject();
 	bunBottomObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider1 = bunBottomObj1.AddComponent<RectColliderComponent>();
-	bunBottomcollider1.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunBottomcollider1.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunBottomObj1.SetLocalPosition(75.f, 370.f);
 	bunBottomCmpt1.SetSpawnLocation(75.f, 370.f);
 	auto& bunBottomColliderSubje1 = bunBottomcollider1.GetSubject();
@@ -1246,7 +1376,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunTopSubje2 = bunTopCmpt2.GetSubject();
 	bunTopObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider2 = bunTopObj2.AddComponent<RectColliderComponent>();
-	bunTopcollider2.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunTopcollider2.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunTopObj2.SetLocalPosition(209.f, 190.f);
 	bunTopCmpt2.SetSpawnLocation(209.f, 190.f);
 	auto& bunTopColliderSubje2 = bunTopcollider2.GetSubject();
@@ -1257,7 +1387,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& cheeseSubje2 = cheeseCmpt2.GetSubject();
 	cheeseObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Cheese.png", 88.f, 22.f);
 	auto& cheesecollider2 = cheeseObj2.AddComponent<RectColliderComponent>();
-	cheesecollider2.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	cheesecollider2.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	cheeseObj2.SetLocalPosition(209.f, 235.f);
 	cheeseCmpt2.SetSpawnLocation(209.f, 235.f);
 	auto& cheeseColliderSubje2 = cheesecollider2.GetSubject();
@@ -1268,7 +1398,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& lettuceSubje2 = lettuceCmpt2.GetSubject();
 	lettuceObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider2 = lettuceObj2.AddComponent<RectColliderComponent>();
-	lettucecollider2.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	lettucecollider2.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	lettuceObj2.SetLocalPosition(209.f, 325.f);
 	lettuceCmpt2.SetSpawnLocation(209.f, 325.f);
 	auto& lettuceColliderSubje2 = lettucecollider2.GetSubject();
@@ -1279,7 +1409,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunBottomSubje2 = bunBottomCmpt2.GetSubject();
 	bunBottomObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider2 = bunBottomObj2.AddComponent<RectColliderComponent>();
-	bunBottomcollider2.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunBottomcollider2.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunBottomObj2.SetLocalPosition(209.f, 550.f);
 	bunBottomCmpt2.SetSpawnLocation(209.f, 550.f);
 	auto& bunBottomColliderSubje2 = bunBottomcollider2.GetSubject();
@@ -1291,7 +1421,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunTopSubje3 = bunTopCmpt3.GetSubject();
 	bunTopObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider3 = bunTopObj3.AddComponent<RectColliderComponent>();
-	bunTopcollider3.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunTopcollider3.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunTopObj3.SetLocalPosition(343.f, 190.f);
 	bunTopCmpt3.SetSpawnLocation(343.f, 190.f);
 	auto& bunTopColliderSubje3 = bunTopcollider3.GetSubject();
@@ -1302,7 +1432,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& cheeseSubje3 = cheeseCmpt3.GetSubject();
 	cheeseObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Cheese.png", 88.f, 22.f);
 	auto& cheesecollider3 = cheeseObj3.AddComponent<RectColliderComponent>();
-	cheesecollider3.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	cheesecollider3.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	cheeseObj3.SetLocalPosition(343.f, 410.f);
 	cheeseCmpt3.SetSpawnLocation(343.f, 410.f);
 	auto& cheeseColliderSubje3 = cheesecollider3.GetSubject();
@@ -1313,7 +1443,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& lettuceSubje3 = lettuceCmpt3.GetSubject();
 	lettuceObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider3 = lettuceObj3.AddComponent<RectColliderComponent>();
-	lettucecollider3.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	lettucecollider3.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	lettuceObj3.SetLocalPosition(343.f, 505.f);
 	lettuceCmpt3.SetSpawnLocation(343.f, 505.f);
 	auto& lettuceColliderSubje3 = lettucecollider3.GetSubject();
@@ -1324,7 +1454,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunBottomSubje3 = bunBottomCmpt3.GetSubject();
 	bunBottomObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider3 = bunBottomObj3.AddComponent<RectColliderComponent>();
-	bunBottomcollider3.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunBottomcollider3.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunBottomObj3.SetLocalPosition(343.f, 550.f);
 	bunBottomCmpt3.SetSpawnLocation(343.f, 550.f);
 	auto& bunBottomColliderSubje3 = bunBottomcollider3.GetSubject();
@@ -1336,7 +1466,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunTopSubje4 = bunTopCmpt4.GetSubject();
 	bunTopObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider4 = bunTopObj4.AddComponent<RectColliderComponent>();
-	bunTopcollider4.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunTopcollider4.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunTopObj4.SetLocalPosition(477.f, 190.f);
 	bunTopCmpt4.SetSpawnLocation(477.f, 190.f);
 	auto& bunTopColliderSubje4 = bunTopcollider4.GetSubject();
@@ -1347,7 +1477,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& lettuceSubje4 = lettuceCmpt4.GetSubject();
 	lettuceObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Lettuce.png", 88.f, 22.f);
 	auto& lettucecollider4 = lettuceObj4.AddComponent<RectColliderComponent>();
-	lettucecollider4.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	lettucecollider4.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	lettuceObj4.SetLocalPosition(477.f, 280.f);
 	lettuceCmpt4.SetSpawnLocation(477.f, 280.f);
 	auto& lettuceColliderSubje4 = lettucecollider4.GetSubject();
@@ -1358,7 +1488,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& cheeseSubje4 = cheeseCmpt4.GetSubject();
 	cheeseObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Cheese.png", 88.f, 22.f);
 	auto& cheesecollider4 = cheeseObj4.AddComponent<RectColliderComponent>();
-	cheesecollider4.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	cheesecollider4.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	cheeseObj4.SetLocalPosition(477.f, 325.f);
 	cheeseCmpt4.SetSpawnLocation(477.f, 325.f);
 	auto& cheeseColliderSubje4 = cheesecollider4.GetSubject();
@@ -1369,7 +1499,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& bunBottomSubje4 = bunBottomCmpt4.GetSubject();
 	bunBottomObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider4 = bunBottomObj4.AddComponent<RectColliderComponent>();
-	bunBottomcollider4.Init({ 2, 0, 84, 20 }, 2, true, { 133, 0, 133, 255 });
+	bunBottomcollider4.Init(loader.GetCollider("ingredient"), 2, false, { 133, 0, 133, 255 });
 	bunBottomObj4.SetLocalPosition(477.f, 370.f);
 	bunBottomCmpt4.SetSpawnLocation(477.f, 370.f);
 	auto& bunBottomColliderSubje4 = bunBottomcollider4.GetSubject();
@@ -1384,7 +1514,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& plateSubje1 = plateCmpt1.GetSubject();
 	plateObj1.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider1 = plateObj1.AddComponent<RectColliderComponent>();
-	plateCollider1.Init({ 0, 8, 104, 4 }, 2, true, { 0, 133, 133, 255 });
+	plateCollider1.Init(loader.GetCollider("plate"), 2, false, { 0, 133, 133, 255 });
 	plateObj1.SetLocalPosition(68.f, 600.f);
 	auto& plateColliderSubje1 = plateCollider1.GetSubject();
 	plateColliderSubje1.AddObserver(plateCmpt1);
@@ -1395,7 +1525,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& plateSubje2 = plateCmpt2.GetSubject();
 	plateObj2.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider2 = plateObj2.AddComponent<RectColliderComponent>();
-	plateCollider2.Init({ 0, 8, 104, 4 }, 2, true, { 0, 133, 133, 255 });
+	plateCollider2.Init(loader.GetCollider("plate"), 2, false, { 0, 133, 133, 255 });
 	plateObj2.SetLocalPosition(202.f, 800.f);
 	auto& plateColliderSubje2 = plateCollider2.GetSubject();
 	plateColliderSubje2.AddObserver(plateCmpt2);
@@ -1406,7 +1536,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& plateSubje3 = plateCmpt3.GetSubject();
 	plateObj3.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider3 = plateObj3.AddComponent<RectColliderComponent>();
-	plateCollider3.Init({ 0, 8, 104, 4 }, 2, true, { 0, 133, 133, 255 });
+	plateCollider3.Init(loader.GetCollider("plate"), 2, false, { 0, 133, 133, 255 });
 	plateObj3.SetLocalPosition(336.f, 800.f);
 	auto& plateColliderSubje3 = plateCollider3.GetSubject();
 	plateColliderSubje3.AddObserver(plateCmpt3);
@@ -1417,7 +1547,7 @@ void dae::MainMenuComponent::LoadLevel2()
 	auto& plateSubje4 = plateCmpt4.GetSubject();
 	plateObj4.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider4 = plateObj4.AddComponent<RectColliderComponent>();
-	plateCollider4.Init({ 0, 8, 104, 4 }, 2, true, { 0, 133, 133, 255 });
+	plateCollider4.Init(loader.GetCollider("plate"), 2, false, { 0, 133, 133, 255 });
 	plateObj4.SetLocalPosition(470.f, 600.f);
 	auto& plateColliderSubje4 = plateCollider4.GetSubject();
 	plateColliderSubje4.AddObserver(plateCmpt4);
@@ -1484,9 +1614,6 @@ void dae::MainMenuComponent::LoadLevel2()
 	bunTopSubje3.AddObserver(scoreCmpt);
 	bunTopSubje4.AddObserver(scoreCmpt);
 #pragma endregion
-
-	//TODO: hi score component should read hi-score from file and observe the score object,
-	//if the score components value is bigger than the current high score update it
 
 	auto& hiScoreObject = sceneLevel2.CreateObject("scoreObject");
 	auto& hiScoretextcomp = hiScoreObject.AddComponent<TextComponent>();
@@ -1560,9 +1687,9 @@ void dae::MainMenuComponent::LoadLevel2()
 	levelManagersubje.AddObserver(sallycmpt);
 
 	levelManagersubje.AddObserver(mrHotDogcmpt1);
-	//levelManagersubje.AddObserver(mrHotDogcmpt2);
-	//levelManagersubje.AddObserver(mrHotDogcmpt3);
-	//levelManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrHotDogcmpt2);
+	levelManagersubje.AddObserver(mrHotDogcmpt3);
+	levelManagersubje.AddObserver(mrEggcmpt1);
 
 	plateSubje1.AddObserver(levelManagercmpt);
 	plateSubje2.AddObserver(levelManagercmpt);
@@ -1574,6 +1701,8 @@ void dae::MainMenuComponent::LoadLevel2()
 
 void dae::MainMenuComponent::LoadLevel3()
 {
+	EntityLoader loader{ "../Data/Level/EntityData.json" };
+
 	auto& sceneLevel3 = SceneManager::GetInstance().CreateScene("Level3");
 	auto& inputmanager = InputManager::GetInstance();
 
@@ -1611,7 +1740,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Up.png", 4, 1, 4, 45, 45);
 	pepperSpriteManager.AddSprite("Misc/Pepper/Pepper_Down.png", 4, 1, 4, 45, 45);
 	auto& pepperCollider = pepperObj.AddComponent<RectColliderComponent>();
-	pepperCollider.Init({ 0,0,45,45 }, 3, true);
+	pepperCollider.Init(loader.GetCollider("pepper"), 3, false);
 	pepperObj.SetLocalPosition(-100.f, -100.f);
 	pepperCmpt.SetResetPos(-100.f, -100.f);
 	pepperCmpt.SetSpriteDuration(1.f);
@@ -1631,7 +1760,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	peterSpriteManager.AddSprite("Charachters/peter/Peter_Won.png", 2, 1, 2, 45, 45);
 
 	auto& peterCollider = peterPepperObj.AddComponent<RectColliderComponent>();
-	peterCollider.Init({ 0,1,45,44 }, 3, true);
+	peterCollider.Init(loader.GetCollider("player"), 3, false);
 	peterPepperObj.AddComponent<MovementComponent>();
 	peterPepperObj.SetLocalPosition(298.f, 609.f);
 	petercmpt.SetSpawnLocation(298.f, 609.f);
@@ -1652,7 +1781,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	sallySpriteManager.AddSprite("Charachters/Sally/Sally_Won.png", 2, 1, 2, 45, 45);
 
 	auto& sallyCollider = sallySaltObj.AddComponent<RectColliderComponent>();
-	sallyCollider.Init({ 0,1,45,44 }, 3, true);
+	sallyCollider.Init(loader.GetCollider("player"), 3, false);
 	sallySaltObj.AddComponent<MovementComponent>();
 	sallycmpt.SetSpawnLocation(298.f, 387.f);
 	sallySaltObj.SetLocalPosition(298.f, 387.f);
@@ -1688,7 +1817,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	playerHotDogCmpt.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& playerHotDogCollider = playerHotDogObj.AddComponent<RectColliderComponent>();
-	playerHotDogCollider.Init({ 0,1,45,44 }, 3, true);
+	playerHotDogCollider.Init(loader.GetCollider("player"), 3, false);
 	playerHotDogObj.AddComponent<MovementComponent>();
 	playerHotDogCmpt.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
 	auto& playerHotDogcollidersubje = playerHotDogCollider.GetSubject();
@@ -1708,57 +1837,177 @@ void dae::MainMenuComponent::LoadLevel3()
 	mrHotDogcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
 
 	auto& mrHotDogCollider1 = mrHotDogObj1.AddComponent<RectColliderComponent>();
-	mrHotDogCollider1.Init({ 0,1,45,44 }, 3, true);
+	mrHotDogCollider1.Init(loader.GetCollider("enemy"), 3, false);
 	mrHotDogObj1.AddComponent<MovementComponent>();
 	auto& mrHotDogController1 = mrHotDogObj1.AddComponent<EnemyControllerComponent>();
 	mrHotDogcmpt1.SetRespawnPosAndWalkDirection(30, 162, EnemyControllerComponent::MovementState::Right);
-	auto& mrHotDogcollidersubje = mrHotDogCollider1.GetSubject();
-	mrHotDogcollidersubje.AddObserver(mrHotDogcmpt1);
+	auto& mrHotDogcollidersubje1 = mrHotDogCollider1.GetSubject();
+	mrHotDogcollidersubje1.AddObserver(mrHotDogcmpt1);
+#pragma endregion
+
+#pragma region Enemy2
+	auto& mrHotDogObj2 = sceneLevel3.CreateObject("mrHotDogObj2");
+	auto& mrHotDogcmpt2 = mrHotDogObj2.AddComponent<MrHotDog>();
+	auto& mrHotDogSpriteManager2 = mrHotDogObj2.AddComponent<SpriteManagerComponent>();
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Death.png", 4, 1, 10, 45, 45);
+	mrHotDogSpriteManager2.AddSprite("Charachters/MrHotDog/MrHotDog_Peppered.png", 2, 1, 8, 45, 45);
+	mrHotDogcmpt2.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrHotDogCollider2 = mrHotDogObj2.AddComponent<RectColliderComponent>();
+	mrHotDogCollider2.Init(loader.GetCollider("enemy"), 3, false);
+	mrHotDogObj2.AddComponent<MovementComponent>();
+	auto& mrHotDogController2 = mrHotDogObj2.AddComponent<EnemyControllerComponent>();
+
+	mrHotDogcmpt2.SetRespawnPosAndWalkDirection(565.f, 162.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrHotDogcollidersubje2 = mrHotDogCollider2.GetSubject();
+	mrHotDogcollidersubje2.AddObserver(mrHotDogcmpt2);
+#pragma endregion
+
+#pragma region Enemy3
+	auto& mrEggObj1 = sceneLevel3.CreateObject("mrEggObj1");
+	auto& mrEggcmpt1 = mrEggObj1.AddComponent<MrEgg>();
+	auto& mrEggSpriteManager1 = mrEggObj1.AddComponent<SpriteManagerComponent>();
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Idle.png", 1, 1, 0, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Death.png", 4, 1, 10, 45, 45);
+	mrEggSpriteManager1.AddSprite("Charachters/MrEgg/MrEgg_Peppered.png", 2, 1, 8, 45, 45);
+	mrEggcmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrEggCollider1 = mrEggObj1.AddComponent<RectColliderComponent>();
+	mrEggCollider1.Init(loader.GetCollider("enemy"), 3, false);
+	mrEggObj1.AddComponent<MovementComponent>();
+	auto& mrEggController1 = mrEggObj1.AddComponent<EnemyControllerComponent>();
+
+	mrEggcmpt1.SetRespawnPosAndWalkDirection(30.f, 295.f, EnemyControllerComponent::MovementState::Right);
+	auto& mrEggcollidersubje = mrEggCollider1.GetSubject();
+	mrEggcollidersubje.AddObserver(mrEggcmpt1);
+#pragma endregion
+
+#pragma region Enemy4
+	auto& mrPickleObj1 = sceneLevel3.CreateObject("mrPickleObj1");
+	auto& mrPicklecmpt1 = mrPickleObj1.AddComponent<MrPickle>();
+	auto& mrPickleSpriteManager1 = mrPickleObj1.AddComponent<SpriteManagerComponent>();
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Idle.png", 1, 1, 0, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Death.png", 4, 1, 10, 45, 45);
+	mrPickleSpriteManager1.AddSprite("Charachters/MrPickle/MrPickle_Peppered.png", 2, 1, 8, 45, 45);
+	mrPicklecmpt1.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrPickleCollider1 = mrPickleObj1.AddComponent<RectColliderComponent>();
+	mrPickleCollider1.Init(loader.GetCollider("enemy"), 3, false);
+	mrPickleObj1.AddComponent<MovementComponent>();
+	auto& mrPickleController1 = mrPickleObj1.AddComponent<EnemyControllerComponent>();
+
+	mrPicklecmpt1.SetRespawnPosAndWalkDirection(565.f, 295.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrPicklecollidersubje1 = mrPickleCollider1.GetSubject();
+	mrPicklecollidersubje1.AddObserver(mrPicklecmpt1);
+#pragma endregion
+
+#pragma region Enemy5
+	auto& mrPickleObj2 = sceneLevel3.CreateObject("mrPickleObj2");
+	auto& mrPicklecmpt2 = mrPickleObj2.AddComponent<MrPickle>();
+	auto& mrPickleSpriteManager2 = mrPickleObj2.AddComponent<SpriteManagerComponent>();
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Idle.png", 1, 1, 0, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Death.png", 4, 1, 10, 45, 45);
+	mrPickleSpriteManager2.AddSprite("Charachters/MrPickle/MrPickle_Peppered.png", 2, 1, 8, 45, 45);
+	mrPicklecmpt2.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrPickleCollider2 = mrPickleObj2.AddComponent<RectColliderComponent>();
+	mrPickleCollider2.Init(loader.GetCollider("enemy"), 3, false);
+	mrPickleObj2.AddComponent<MovementComponent>();
+	auto& mrPickleController2 = mrPickleObj2.AddComponent<EnemyControllerComponent>();
+
+	mrPicklecmpt2.SetRespawnPosAndWalkDirection(30.f, 474.f, EnemyControllerComponent::MovementState::Right);
+	auto& mrPicklecollidersubje2 = mrPickleCollider2.GetSubject();
+	mrPicklecollidersubje2.AddObserver(mrPicklecmpt2);
+#pragma endregion
+
+#pragma region Enemy6
+	auto& mrPickleObj3 = sceneLevel3.CreateObject("mrPickleObj3");
+	auto& mrPicklecmpt3 = mrPickleObj3.AddComponent<MrPickle>();
+	auto& mrPickleSpriteManager3 = mrPickleObj3.AddComponent<SpriteManagerComponent>();
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Idle.png", 1, 1, 0, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Walking_Left.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Walking_Right.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Walking_Up.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Walking_Down.png", 2, 1, 8, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Death.png", 4, 1, 10, 45, 45);
+	mrPickleSpriteManager3.AddSprite("Charachters/MrPickle/MrPickle_Peppered.png", 2, 1, 8, 45, 45);
+	mrPicklecmpt3.SetDeathDuration(4 / 10.f);//4frames / 10fps
+
+	auto& mrPickleCollider3 = mrPickleObj3.AddComponent<RectColliderComponent>();
+	mrPickleCollider3.Init(loader.GetCollider("enemy"), 3, false);
+	mrPickleObj3.AddComponent<MovementComponent>();
+	auto& mrPickleController3 = mrPickleObj3.AddComponent<EnemyControllerComponent>();
+
+	mrPicklecmpt3.SetRespawnPosAndWalkDirection(565.f, 474.f, EnemyControllerComponent::MovementState::Left);
+	auto& mrPicklecollidersubje3 = mrPickleCollider3.GetSubject();
+	mrPicklecollidersubje3.AddObserver(mrPicklecmpt3);
 #pragma endregion
 
 	//always set the first player, the 2nd player will be set or unset in the level manager once the leve becomes active
 	mrHotDogController1.SetPlayer1(&peterPepperObj);
+	mrHotDogController2.SetPlayer1(&peterPepperObj);
+	mrEggController1.SetPlayer1(&peterPepperObj);
+	mrPickleController1.SetPlayer1(&peterPepperObj);
+	mrPickleController2.SetPlayer1(&peterPepperObj);
+	mrPickleController3.SetPlayer1(&peterPepperObj);
 
 	//the 3nd level manager will enable or disable the enemies depending on the mode that was selected,
 	//so by default its disabled
 	playerHotDogObj.SetEnabledState(false);
 
 	mrHotDogObj1.SetEnabledState(false);
-	//mrHotDogObj2.SetEnabledState(false);
-	//mrEggObj1.SetEnabledState(false);
-	//mrPickleObj1.SetEnabledState(false);
-	//mrPickleObj2.SetEnabledState(false);
-	//mrPickleObj3.SetEnabledState(false);
+	mrHotDogObj2.SetEnabledState(false);
+	mrEggObj1.SetEnabledState(false);
+	mrPickleObj1.SetEnabledState(false);
+	mrPickleObj2.SetEnabledState(false);
+	mrPickleObj3.SetEnabledState(false);
 
 	//register enemies to the levelmanager
 	levelManagercmpt.SetEnemyPlayer(&playerHotDogObj);
 
 	levelManagercmpt.AddEnemy(&mrHotDogObj1);
-	//levelManagercmpt.AddEnemy(&mrHotDogObj2);
-	//levelManagercmpt.AddEnemy(&mrEggObj1);
-	//levelManagercmpt.AddEnemy(&mrPickleObj1);
-	//levelManagercmpt.AddEnemy(&mrPickleObj2);
-	//levelManagercmpt.AddEnemy(&mrPickleObj3);
+	levelManagercmpt.AddEnemy(&mrHotDogObj2);
+	levelManagercmpt.AddEnemy(&mrEggObj1);
+	levelManagercmpt.AddEnemy(&mrPickleObj1);
+	levelManagercmpt.AddEnemy(&mrPickleObj2);
+	levelManagercmpt.AddEnemy(&mrPickleObj3);
 
 
 	//let the enemies observe the player(s)
 	petterPeppersubje.AddObserver(playerHotDogCmpt);
 
 	petterPeppersubje.AddObserver(mrHotDogcmpt1);
-	//petterPeppersubje.AddObserver(mrHotDogcmpt2);
-	//petterPeppersubje.AddObserver(mrEggcmpt1);
-	//petterPeppersubje.AddObserver(mrPicklecmpt1);
-	//petterPeppersubje.AddObserver(mrPicklecmpt2);
-	//petterPeppersubje.AddObserver(mrPicklecmpt3);
+	petterPeppersubje.AddObserver(mrHotDogcmpt2);
+	petterPeppersubje.AddObserver(mrEggcmpt1);
+	petterPeppersubje.AddObserver(mrPicklecmpt1);
+	petterPeppersubje.AddObserver(mrPicklecmpt2);
+	petterPeppersubje.AddObserver(mrPicklecmpt3);
 
 	sallySaltSubje.AddObserver(playerHotDogCmpt);
 
 	sallySaltSubje.AddObserver(mrHotDogcmpt1);
-	//sallySaltSubje.AddObserver(mrHotDogcmpt2);
-	//sallySaltSubje.AddObserver(mrEggcmpt1);
-	//sallySaltSubje.AddObserver(mrPicklecmpt1);
-	//sallySaltSubje.AddObserver(mrPicklecmpt2);
-	//sallySaltSubje.AddObserver(mrPicklecmpt3);
+	sallySaltSubje.AddObserver(mrHotDogcmpt2);
+	sallySaltSubje.AddObserver(mrEggcmpt1);
+	sallySaltSubje.AddObserver(mrPicklecmpt1);
+	sallySaltSubje.AddObserver(mrPicklecmpt2);
+	sallySaltSubje.AddObserver(mrPicklecmpt3);
 #pragma endregion
 
 #pragma region LadderSetup
@@ -1766,109 +2015,109 @@ void dae::MainMenuComponent::LoadLevel3()
 	ladderObj1.SetLocalPosition(51.f, 189.f);
 	ladderObj1.AddComponent<LadderComponent>();
 	auto& ladder1colliderCmpt = ladderObj1.AddComponent<RectColliderComponent>();
-	ladder1colliderCmpt.Init({ 0, 0, 3, 152 }, 3, true, { 255, 255, 0, 128 });
+	ladder1colliderCmpt.Init({ 0, 0, 3, 152 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj2 = sceneLevel3.CreateObject("ladderObj2");
 	ladderObj2.SetLocalPosition(51.f, 502.f);
 	ladderObj2.AddComponent<LadderComponent>();
 	auto& ladder2colliderCmpt = ladderObj2.AddComponent<RectColliderComponent>();
-	ladder2colliderCmpt.Init({ 0, 0, 3, 107 }, 3, true, { 255, 255, 0, 128 });
+	ladder2colliderCmpt.Init({ 0, 0, 3, 107 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj3 = sceneLevel3.CreateObject("ladderObj3");
 	ladderObj3.SetLocalPosition(117.f, 502.f);
 	ladderObj3.AddComponent<LadderComponent>();
 	auto& ladder3colliderCmpt = ladderObj3.AddComponent<RectColliderComponent>();
-	ladder3colliderCmpt.Init({ 0, 0, 4, 107 }, 3, true, { 255, 255, 0, 128 });
+	ladder3colliderCmpt.Init({ 0, 0, 4, 107 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj4 = sceneLevel3.CreateObject("ladderObj4");
 	ladderObj4.SetLocalPosition(184.f, 189.f);
 	ladderObj4.AddComponent<LadderComponent>();
 	auto& ladder4colliderCmpt = ladderObj4.AddComponent<RectColliderComponent>();
-	ladder4colliderCmpt.Init({ 0, 0, 4, 107 }, 3, true, { 255, 255, 0, 128 });
+	ladder4colliderCmpt.Init({ 0, 0, 4, 107 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj5 = sceneLevel3.CreateObject("ladderObj5");
 	ladderObj5.SetLocalPosition(184.f, 326.f);
 	ladderObj5.AddComponent<LadderComponent>();
 	auto& ladder5colliderCmpt = ladderObj5.AddComponent<RectColliderComponent>();
-	ladder5colliderCmpt.Init({ 0, 0, 4, 372 }, 3, true, { 255, 255, 0, 128 });
+	ladder5colliderCmpt.Init({ 0, 0, 4, 372 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj6 = sceneLevel3.CreateObject("ladderObj6");
 	ladderObj6.SetLocalPosition(251.f, 189.f);
 	ladderObj6.AddComponent<LadderComponent>();
 	auto& ladder6colliderCmpt = ladderObj6.AddComponent<RectColliderComponent>();
-	ladder6colliderCmpt.Init({ 0, 0, 4, 62 }, 3, true, { 255, 255, 0, 128 });
+	ladder6colliderCmpt.Init({ 0, 0, 4, 62 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj7 = sceneLevel3.CreateObject("ladderObj7");
 	ladderObj7.SetLocalPosition(251.f, 281.f);
 	ladderObj7.AddComponent<LadderComponent>();
 	auto& ladder7colliderCmpt = ladderObj7.AddComponent<RectColliderComponent>();
-	ladder7colliderCmpt.Init({ 0, 0, 4, 149 }, 3, true, { 255, 255, 0, 128 });
+	ladder7colliderCmpt.Init({ 0, 0, 4, 149 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj8 = sceneLevel3.CreateObject("ladderObj8");
 	ladderObj8.SetLocalPosition(251.f, 639.f);
 	ladderObj8.AddComponent<LadderComponent>();
 	auto& ladder8colliderCmpt = ladderObj8.AddComponent<RectColliderComponent>();
-	ladder8colliderCmpt.Init({ 0, 0, 4, 59 }, 3, true, { 255, 255, 0, 128 });
+	ladder8colliderCmpt.Init({ 0, 0, 4, 59 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj9 = sceneLevel3.CreateObject("ladderObj9");
 	ladderObj9.SetLocalPosition(318.f, 236.f);
 	ladderObj9.AddComponent<LadderComponent>();
 	auto& ladder9colliderCmpt = ladderObj9.AddComponent<RectColliderComponent>();
-	ladder9colliderCmpt.Init({ 0, 0, 3, 195 }, 3, true, { 255, 255, 0, 128 });
+	ladder9colliderCmpt.Init({ 0, 0, 3, 195 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj10 = sceneLevel3.CreateObject("ladderObj10");
 	ladderObj10.SetLocalPosition(318.f, 639.f);
 	ladderObj10.AddComponent<LadderComponent>();
 	auto& ladder10colliderCmpt = ladderObj10.AddComponent<RectColliderComponent>();
-	ladder10colliderCmpt.Init({ 0, 0, 4, 59 }, 3, true, { 255, 255, 0, 128 });
+	ladder10colliderCmpt.Init({ 0, 0, 4, 59 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj11 = sceneLevel3.CreateObject("ladderObj11");
 	ladderObj11.SetLocalPosition(385.f, 189.f);
 	ladderObj11.AddComponent<LadderComponent>();
 	auto& ladder11colliderCmpt = ladderObj11.AddComponent<RectColliderComponent>();
-	ladder11colliderCmpt.Init({ 0, 0, 4, 62 }, 3, true, { 255, 255, 0, 128 });
+	ladder11colliderCmpt.Init({ 0, 0, 4, 62 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj12 = sceneLevel3.CreateObject("ladderObj12");
 	ladderObj12.SetLocalPosition(385.f, 326.f);
 	ladderObj12.AddComponent<LadderComponent>();
 	auto& ladder12colliderCmpt = ladderObj12.AddComponent<RectColliderComponent>();
-	ladder12colliderCmpt.Init({ 0, 0, 4, 59 }, 3, true, { 255, 255, 0, 128 });
+	ladder12colliderCmpt.Init({ 0, 0, 4, 59 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj13 = sceneLevel3.CreateObject("ladderObj13");
 	ladderObj13.SetLocalPosition(385.f, 639.f);
 	ladderObj13.AddComponent<LadderComponent>();
 	auto& ladder13colliderCmpt = ladderObj13.AddComponent<RectColliderComponent>();
-	ladder13colliderCmpt.Init({ 0, 0, 4, 59 }, 3, true, { 255, 255, 0, 128 });
+	ladder13colliderCmpt.Init({ 0, 0, 4, 59 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj14 = sceneLevel3.CreateObject("ladderObj14");
 	ladderObj14.SetLocalPosition(452.f, 236.f);
 	ladderObj14.AddComponent<LadderComponent>();
 	auto& ladder14colliderCmpt = ladderObj14.AddComponent<RectColliderComponent>();
-	ladder14colliderCmpt.Init({ 0, 0, 4, 105 }, 3, true, { 255, 255, 0, 128 });
+	ladder14colliderCmpt.Init({ 0, 0, 4, 105 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj15 = sceneLevel3.CreateObject("ladderObj15");
 	ladderObj15.SetLocalPosition(452.f, 371.f);
 	ladderObj15.AddComponent<LadderComponent>();
 	auto& ladder15colliderCmpt = ladderObj15.AddComponent<RectColliderComponent>();
-	ladder15colliderCmpt.Init({ 0, 0, 4, 327 }, 3, true, { 255, 255, 0, 128 });
+	ladder15colliderCmpt.Init({ 0, 0, 4, 327 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj16 = sceneLevel3.CreateObject("ladderObj16");
 	ladderObj16.SetLocalPosition(519.f, 549.f);
 	ladderObj16.AddComponent<LadderComponent>();
 	auto& ladder16colliderCmpt = ladderObj16.AddComponent<RectColliderComponent>();
-	ladder16colliderCmpt.Init({ 0, 0, 3, 59 }, 3, true, { 255, 255, 0, 128 });
+	ladder16colliderCmpt.Init({ 0, 0, 3, 59 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj17 = sceneLevel3.CreateObject("ladderObj17");
 	ladderObj17.SetLocalPosition(586.f, 189.f);
 	ladderObj17.AddComponent<LadderComponent>();
 	auto& ladder17colliderCmpt = ladderObj17.AddComponent<RectColliderComponent>();
-	ladder17colliderCmpt.Init({ 0, 0, 3, 152 }, 3, true, { 255, 255, 0, 128 });
+	ladder17colliderCmpt.Init({ 0, 0, 3, 152 }, 3, false, { 255, 255, 0, 128 });
 
 	auto& ladderObj18 = sceneLevel3.CreateObject("ladderObj18");
 	ladderObj18.SetLocalPosition(586.f, 502.f);
 	ladderObj18.AddComponent<LadderComponent>();
 	auto& ladder18colliderCmpt = ladderObj18.AddComponent<RectColliderComponent>();
-	ladder18colliderCmpt.Init({ 0, 0, 3, 107 }, 3, true, { 255, 255, 0, 128 });
+	ladder18colliderCmpt.Init({ 0, 0, 3, 107 }, 3, false, { 255, 255, 0, 128 });
 #pragma endregion
 
 #pragma region WalkingPlatformSetup
@@ -1876,91 +2125,91 @@ void dae::MainMenuComponent::LoadLevel3()
 	walkPlatformObj1.SetLocalPosition(30.f, 202.f);
 	walkPlatformObj1.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform1colliderCmpt = walkPlatformObj1.AddComponent<RectColliderComponent>();
-	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform1colliderCmpt.Init({ 0, 0, 580, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj2 = sceneLevel3.CreateObject("walkPlatformObj2");
 	walkPlatformObj2.SetLocalPosition(30.f, 247);
 	walkPlatformObj2.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform2colliderCmpt = walkPlatformObj2.AddComponent<RectColliderComponent>();
-	walkPlatform2colliderCmpt.Init({ 0, 0, 580, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform2colliderCmpt.Init({ 0, 0, 580, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj3 = sceneLevel3.CreateObject("walkPlatformObj3");
 	walkPlatformObj3.SetLocalPosition(30.f, 292.f);
 	walkPlatformObj3.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform3colliderCmpt = walkPlatformObj3.AddComponent<RectColliderComponent>();
-	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform3colliderCmpt.Init({ 0, 0, 310, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj4 = sceneLevel3.CreateObject("walkPlatformObj4");
 	walkPlatformObj4.SetLocalPosition(432.f, 292.f);
 	walkPlatformObj4.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform4colliderCmpt = walkPlatformObj4.AddComponent<RectColliderComponent>();
-	walkPlatform4colliderCmpt.Init({ 0, 0, 176, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform4colliderCmpt.Init({ 0, 0, 176, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj5 = sceneLevel3.CreateObject("walkPlatformObj5");
 	walkPlatformObj5.SetLocalPosition(30.f, 337.f);
 	walkPlatformObj5.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform5colliderCmpt = walkPlatformObj5.AddComponent<RectColliderComponent>();
-	walkPlatform5colliderCmpt.Init({ 0, 0, 580, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform5colliderCmpt.Init({ 0, 0, 580, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj6 = sceneLevel3.CreateObject("walkPlatformObj6");
 	walkPlatformObj6.SetLocalPosition(298.f, 382.f);
 	walkPlatformObj6.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform6colliderCmpt = walkPlatformObj6.AddComponent<RectColliderComponent>();
-	walkPlatform6colliderCmpt.Init({ 0, 0, 176, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform6colliderCmpt.Init({ 0, 0, 176, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj7 = sceneLevel3.CreateObject("walkPlatformObj7");
 	walkPlatformObj7.SetLocalPosition(165, 426.f);
 	walkPlatformObj7.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform7colliderCmpt = walkPlatformObj7.AddComponent<RectColliderComponent>();
-	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform7colliderCmpt.Init({ 0, 0, 310, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj8 = sceneLevel3.CreateObject("walkPlatformObj8");
 	walkPlatformObj8.SetLocalPosition(30.f, 515.f);
 	walkPlatformObj8.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform8colliderCmpt = walkPlatformObj8.AddComponent<RectColliderComponent>();
-	walkPlatform8colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform8colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj9 = sceneLevel3.CreateObject("walkPlatformObj9");
 	walkPlatformObj9.SetLocalPosition(432.f, 515.f);
 	walkPlatformObj9.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform9colliderCmpt = walkPlatformObj9.AddComponent<RectColliderComponent>();
-	walkPlatform9colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform9colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj10 = sceneLevel3.CreateObject("walkPlatformObj10");
 	walkPlatformObj10.SetLocalPosition(30.f, 560.f);
 	walkPlatformObj10.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform10colliderCmpt = walkPlatformObj10.AddComponent<RectColliderComponent>();
-	walkPlatform10colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform10colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj11 = sceneLevel3.CreateObject("walkPlatformObj11");
 	walkPlatformObj11.SetLocalPosition(432.f, 560.f);
 	walkPlatformObj11.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform11colliderCmpt = walkPlatformObj11.AddComponent<RectColliderComponent>();
-	walkPlatform11colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform11colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj12 = sceneLevel3.CreateObject("walkPlatformObj12");
 	walkPlatformObj12.SetLocalPosition(30.f, 605.f);
 	walkPlatformObj12.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform12colliderCmpt = walkPlatformObj12.AddComponent<RectColliderComponent>();
-	walkPlatform12colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform12colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj13 = sceneLevel3.CreateObject("walkPlatformObj13");
 	walkPlatformObj13.SetLocalPosition(432.f, 605.f);
 	walkPlatformObj13.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform13colliderCmpt = walkPlatformObj13.AddComponent<RectColliderComponent>();
-	walkPlatform13colliderCmpt.Init({ 0, 0, 175, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform13colliderCmpt.Init({ 0, 0, 175, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj14 = sceneLevel3.CreateObject("walkPlatformObj14");
 	walkPlatformObj14.SetLocalPosition(165, 650.f);
 	walkPlatformObj14.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform14colliderCmpt = walkPlatformObj14.AddComponent<RectColliderComponent>();
-	walkPlatform14colliderCmpt.Init({ 0, 0, 310, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform14colliderCmpt.Init({ 0, 0, 310, 4 }, 3, false, { 0, 255, 0, 128 });
 
 	auto& walkPlatformObj15 = sceneLevel3.CreateObject("walkPlatformObj15");
 	walkPlatformObj15.SetLocalPosition(165, 695.f);
 	walkPlatformObj15.AddComponent<WalkingPlatformComponent>();
 	auto& walkPlatform15colliderCmpt = walkPlatformObj15.AddComponent<RectColliderComponent>();
-	walkPlatform15colliderCmpt.Init({ 0, 0, 310, 4 }, 3, true, { 0, 255, 0, 128 });
+	walkPlatform15colliderCmpt.Init({ 0, 0, 310, 4 }, 3, false, { 0, 255, 0, 128 });
 #pragma endregion
 
 #pragma region IngredientsSetup
@@ -1970,7 +2219,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje1 = bunTopCmpt1.GetSubject();
 	bunTopObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider1 = bunTopObj1.AddComponent<RectColliderComponent>();
-	bunTopcollider1.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider1.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj1.SetLocalPosition(75.f, 190.f);
 	bunTopCmpt1.SetSpawnLocation(75.f, 190.f);
 	auto& bunTopColliderSubje1 = bunTopcollider1.GetSubject();
@@ -1981,7 +2230,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& burgerMeatSubje1 = burgerMeatCmpt1.GetSubject();
 	burgerMeatObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider1 = burgerMeatObj1.AddComponent<RectColliderComponent>();
-	burgerMeatcollider1.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	burgerMeatcollider1.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	burgerMeatObj1.SetLocalPosition(75.f, 280.f);
 	burgerMeatCmpt1.SetSpawnLocation(75.f, 280.f);
 	auto& burgerMeatColliderSubje1 = burgerMeatcollider1.GetSubject();
@@ -1992,7 +2241,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje1 = bunBottomCmpt1.GetSubject();
 	bunBottomObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider1 = bunBottomObj1.AddComponent<RectColliderComponent>();
-	bunBottomcollider1.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider1.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj1.SetLocalPosition(75.f, 325.f);
 	bunBottomCmpt1.SetSpawnLocation(75.f, 325.f);
 	auto& bunBottomColliderSubje1 = bunBottomcollider1.GetSubject();
@@ -2004,7 +2253,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje2 = bunTopCmpt2.GetSubject();
 	bunTopObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider2 = bunTopObj2.AddComponent<RectColliderComponent>();
-	bunTopcollider2.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider2.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj2.SetLocalPosition(209.f, 190.f);
 	bunTopCmpt2.SetSpawnLocation(209.f, 190.f);
 	auto& bunTopColliderSubje2 = bunTopcollider2.GetSubject();
@@ -2015,7 +2264,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& tomatoSubje1 = tomatoCmpt1.GetSubject();
 	tomatoObj1.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Tomato.png", 88.f, 22.f);
 	auto& tomatocollider1 = tomatoObj1.AddComponent<RectColliderComponent>();
-	tomatocollider1.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	tomatocollider1.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	tomatoObj1.SetLocalPosition(209.f, 235.f);
 	tomatoCmpt1.SetSpawnLocation(209.f, 235.f);
 	auto& tomatoColliderSubje1 = tomatocollider1.GetSubject();
@@ -2026,7 +2275,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje2 = bunBottomCmpt2.GetSubject();
 	bunBottomObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider2 = bunBottomObj2.AddComponent<RectColliderComponent>();
-	bunBottomcollider2.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider2.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj2.SetLocalPosition(209.f, 325.f);
 	bunBottomCmpt2.SetSpawnLocation(209.f, 325.f);
 	auto& bunBottomColliderSubje2 = bunBottomcollider2.GetSubject();
@@ -2038,7 +2287,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje3 = bunTopCmpt3.GetSubject();
 	bunTopObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider3 = bunTopObj3.AddComponent<RectColliderComponent>();
-	bunTopcollider3.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider3.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj3.SetLocalPosition(343.f, 190.f);
 	bunTopCmpt3.SetSpawnLocation(343.f, 190.f);
 	auto& bunTopColliderSubje3 = bunTopcollider3.GetSubject();
@@ -2049,7 +2298,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& burgerMeatSubje2 = burgerMeatCmpt2.GetSubject();
 	burgerMeatObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider2 = burgerMeatObj2.AddComponent<RectColliderComponent>();
-	burgerMeatcollider2.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	burgerMeatcollider2.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	burgerMeatObj2.SetLocalPosition(343.f, 235.f);
 	burgerMeatCmpt2.SetSpawnLocation(343.f, 235.f);
 	auto& burgerMeatColliderSubje2 = burgerMeatcollider2.GetSubject();
@@ -2060,7 +2309,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje3 = bunBottomCmpt3.GetSubject();
 	bunBottomObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider3 = bunBottomObj3.AddComponent<RectColliderComponent>();
-	bunBottomcollider3.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider3.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj3.SetLocalPosition(343.f, 325.f);
 	bunBottomCmpt3.SetSpawnLocation(343.f, 325.f);
 	auto& bunBottomColliderSubje3 = bunBottomcollider3.GetSubject();
@@ -2072,7 +2321,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje4 = bunTopCmpt4.GetSubject();
 	bunTopObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider4 = bunTopObj4.AddComponent<RectColliderComponent>();
-	bunTopcollider4.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider4.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj4.SetLocalPosition(477.f, 190.f);
 	bunTopCmpt4.SetSpawnLocation(477.f, 190.f);
 	auto& bunTopColliderSubje4 = bunTopcollider4.GetSubject();
@@ -2083,7 +2332,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& tomatoSubje2 = tomatoCmpt2.GetSubject();
 	tomatoObj2.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Tomato.png", 88.f, 22.f);
 	auto& tomatocollider2 = tomatoObj2.AddComponent<RectColliderComponent>();
-	tomatocollider2.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	tomatocollider2.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	tomatoObj2.SetLocalPosition(477.f, 280.f);
 	tomatoCmpt2.SetSpawnLocation(477.f, 280.f);
 	auto& tomatoColliderSubje2 = tomatocollider2.GetSubject();
@@ -2094,7 +2343,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje4 = bunBottomCmpt4.GetSubject();
 	bunBottomObj4.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider4 = bunBottomObj4.AddComponent<RectColliderComponent>();
-	bunBottomcollider4.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider4.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj4.SetLocalPosition(477.f, 325.f);
 	bunBottomCmpt4.SetSpawnLocation(477.f, 325.f);
 	auto& bunBottomColliderSubje4 = bunBottomcollider4.GetSubject();
@@ -2106,7 +2355,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje5 = bunTopCmpt5.GetSubject();
 	bunTopObj5.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider5 = bunTopObj5.AddComponent<RectColliderComponent>();
-	bunTopcollider5.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider5.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj5.SetLocalPosition(75.f, 500.f);
 	bunTopCmpt5.SetSpawnLocation(75.f, 500.f);
 	auto& bunTopColliderSubje5 = bunTopcollider5.GetSubject();
@@ -2117,7 +2366,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& tomatoSubje3 = tomatoCmpt3.GetSubject();
 	tomatoObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Tomato.png", 88.f, 22.f);
 	auto& tomatocollider3 = tomatoObj3.AddComponent<RectColliderComponent>();
-	tomatocollider3.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	tomatocollider3.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	tomatoObj3.SetLocalPosition(75.f, 545.f);
 	tomatoCmpt3.SetSpawnLocation(75.f, 545.f);
 	auto& tomatoColliderSubje3 = tomatocollider3.GetSubject();
@@ -2128,7 +2377,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje5 = bunBottomCmpt5.GetSubject();
 	bunBottomObj5.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider5 = bunBottomObj5.AddComponent<RectColliderComponent>();
-	bunBottomcollider5.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider5.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj5.SetLocalPosition(75.f, 590.f);
 	bunBottomCmpt5.SetSpawnLocation(75.f, 590.f);
 	auto& bunBottomColliderSubje5 = bunBottomcollider5.GetSubject();
@@ -2140,7 +2389,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunTopSubje6 = bunTopCmpt6.GetSubject();
 	bunTopObj6.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Top.png", 88.f, 22.f);
 	auto& bunTopcollider6 = bunTopObj6.AddComponent<RectColliderComponent>();
-	bunTopcollider6.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunTopcollider6.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunTopObj6.SetLocalPosition(477.f, 500.f);
 	bunTopCmpt6.SetSpawnLocation(477.f, 500.f);
 	auto& bunTopColliderSubje6 = bunTopcollider6.GetSubject();
@@ -2151,7 +2400,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& burgerMeatSubje3 = burgerMeatCmpt3.GetSubject();
 	burgerMeatObj3.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Meat.png", 88.f, 22.f);
 	auto& burgerMeatcollider3 = burgerMeatObj3.AddComponent<RectColliderComponent>();
-	burgerMeatcollider3.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	burgerMeatcollider3.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	burgerMeatObj3.SetLocalPosition(477.f, 545.f);
 	burgerMeatCmpt3.SetSpawnLocation(477.f, 545.f);
 	auto& burgerMeatColliderSubje3 = burgerMeatcollider3.GetSubject();
@@ -2162,7 +2411,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& bunBottomSubje6 = bunBottomCmpt6.GetSubject();
 	bunBottomObj6.AddComponent<Texture2DComponent>().SetTexture("Burger/Burger_Bun_Bottom.png", 88.f, 22.f);
 	auto& bunBottomcollider6 = bunBottomObj6.AddComponent<RectColliderComponent>();
-	bunBottomcollider6.Init({ 2, 0, 84, 20 }, 3, true, { 133, 0, 133, 255 });
+	bunBottomcollider6.Init(loader.GetCollider("ingredient"), 3, false, { 133, 0, 133, 255 });
 	bunBottomObj6.SetLocalPosition(477.f, 590.f);
 	bunBottomCmpt6.SetSpawnLocation(477.f, 590.f);
 	auto& bunBottomColliderSubje6 = bunBottomcollider6.GetSubject();
@@ -2177,7 +2426,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje1 = plateCmpt1.GetSubject();
 	plateObj1.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider1 = plateObj1.AddComponent<RectColliderComponent>();
-	plateCollider1.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider1.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj1.SetLocalPosition(68.f, 450.f);
 	auto& plateColliderSubje1 = plateCollider1.GetSubject();
 	plateColliderSubje1.AddObserver(plateCmpt1);
@@ -2188,7 +2437,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje2 = plateCmpt2.GetSubject();
 	plateObj2.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider2 = plateObj2.AddComponent<RectColliderComponent>();
-	plateCollider2.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider2.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj2.SetLocalPosition(68.f, 750.f);
 	auto& plateColliderSubje2 = plateCollider2.GetSubject();
 	plateColliderSubje2.AddObserver(plateCmpt2);
@@ -2199,7 +2448,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje3 = plateCmpt3.GetSubject();
 	plateObj3.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider3 = plateObj3.AddComponent<RectColliderComponent>();
-	plateCollider3.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider3.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj3.SetLocalPosition(202.f, 525.f);
 	auto& plateColliderSubje3 = plateCollider3.GetSubject();
 	plateColliderSubje3.AddObserver(plateCmpt3);
@@ -2210,7 +2459,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje4 = plateCmpt4.GetSubject();
 	plateObj4.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider4 = plateObj4.AddComponent<RectColliderComponent>();
-	plateCollider4.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider4.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj4.SetLocalPosition(336.f, 525.f);
 	auto& plateColliderSubje4 = plateCollider4.GetSubject();
 	plateColliderSubje4.AddObserver(plateCmpt4);
@@ -2221,7 +2470,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje5 = plateCmpt5.GetSubject();
 	plateObj5.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider5 = plateObj5.AddComponent<RectColliderComponent>();
-	plateCollider5.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider5.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj5.SetLocalPosition(470.f, 450.f);
 	auto& plateColliderSubje5 = plateCollider5.GetSubject();
 	plateColliderSubje5.AddObserver(plateCmpt5);
@@ -2232,7 +2481,7 @@ void dae::MainMenuComponent::LoadLevel3()
 	auto& plateSubje6 = plateCmpt6.GetSubject();
 	plateObj6.AddComponent<Texture2DComponent>().SetTexture("Level/Burger_Holder.png", 104.f, 14.f);
 	auto& plateCollider6 = plateObj6.AddComponent<RectColliderComponent>();
-	plateCollider6.Init({ 0, 8, 104, 4 }, 3, true, { 0, 133, 133, 255 });
+	plateCollider6.Init(loader.GetCollider("plate"), 3, false, { 0, 133, 133, 255 });
 	plateObj6.SetLocalPosition(470.f, 750.f);
 	auto& plateColliderSubje6 = plateCollider6.GetSubject();
 	plateColliderSubje6.AddObserver(plateCmpt6);
@@ -2289,11 +2538,11 @@ void dae::MainMenuComponent::LoadLevel3()
 	bunBottomSubje4.AddObserver(scoreCmpt);
 	bunBottomSubje5.AddObserver(scoreCmpt);
 	bunBottomSubje6.AddObserver(scoreCmpt);
-	burgerMeatSubje1.AddObserver(scoreCmpt);
 	tomatoSubje1.AddObserver(scoreCmpt);
-	burgerMeatSubje2.AddObserver(scoreCmpt);
 	tomatoSubje2.AddObserver(scoreCmpt);
 	tomatoSubje3.AddObserver(scoreCmpt);
+	burgerMeatSubje1.AddObserver(scoreCmpt);
+	burgerMeatSubje2.AddObserver(scoreCmpt);
 	burgerMeatSubje3.AddObserver(scoreCmpt);
 	bunTopSubje1.AddObserver(scoreCmpt);
 	bunTopSubje2.AddObserver(scoreCmpt);
@@ -2302,9 +2551,6 @@ void dae::MainMenuComponent::LoadLevel3()
 	bunTopSubje5.AddObserver(scoreCmpt);
 	bunTopSubje6.AddObserver(scoreCmpt);
 #pragma endregion
-
-	//TODO: hi score component should read hi-score from file and observe the score object,
-	//if the score components value is bigger than the current high score update it
 
 	auto& hiScoreObject = sceneLevel3.CreateObject("scoreObject");
 	auto& hiScoretextcomp = hiScoreObject.AddComponent<TextComponent>();
@@ -2379,9 +2625,11 @@ void dae::MainMenuComponent::LoadLevel3()
 	levelManagersubje.AddObserver(sallycmpt);
 
 	levelManagersubje.AddObserver(mrHotDogcmpt1);
-	//levelManagersubje.AddObserver(mrHotDogcmpt2);
-	//levelManagersubje.AddObserver(mrHotDogcmpt3);
-	//levelManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrHotDogcmpt2);
+	levelManagersubje.AddObserver(mrEggcmpt1);
+	levelManagersubje.AddObserver(mrPicklecmpt1);
+	levelManagersubje.AddObserver(mrPicklecmpt2);
+	levelManagersubje.AddObserver(mrPicklecmpt3);
 
 	plateSubje1.AddObserver(levelManagercmpt);
 	plateSubje2.AddObserver(levelManagercmpt);
@@ -2389,8 +2637,6 @@ void dae::MainMenuComponent::LoadLevel3()
 	plateSubje4.AddObserver(levelManagercmpt);
 	plateSubje5.AddObserver(levelManagercmpt);
 	plateSubje6.AddObserver(levelManagercmpt);
-
-
 
 	sceneLevel3.LateInit();//intialize the new scene
 }

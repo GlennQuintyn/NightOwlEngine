@@ -104,8 +104,6 @@ namespace dae
 		{
 			SoundInfo firstInQueue{};
 			{
-				//bool yesu = m_Mutex.try_lock();
-				//yesu;
 				std::scoped_lock mylk(m_Mutex);
 				firstInQueue = m_RingBuffer[m_Head];
 

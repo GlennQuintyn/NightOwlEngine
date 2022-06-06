@@ -96,7 +96,7 @@
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;$(SolutionDir)3rdParty\Json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BurgerTimePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -124,7 +124,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;$(SolutionDir)3rdParty\Json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BurgerTimePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -152,7 +152,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;$(SolutionDir)3rdParty\Json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BurgerTimePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -180,7 +180,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(SolutionDir)3rdParty\imgui-1.87;$(SolutionDir)3rdParty\Steamworks\public\steam;$(SolutionDir)3rdParty\Json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>BurgerTimePCH.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -209,6 +209,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     </ClCompile>
     <ClCompile Include="ButtonComponent.cpp" />
     <ClCompile Include="EnemyControllerComponent.cpp" />
+    <ClCompile Include="EntityLoader.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="HiScoreComponent.cpp" />
     <ClCompile Include="MainMenuComponent.cpp" />
@@ -232,6 +233,7 @@ xcopy $(SolutionDir)3rdParty\Steamworks\steam_appid.txt $(OutputPath) /Y</Comman
     <ClInclude Include="BurgerTimePCH.h" />
     <ClInclude Include="ButtonComponent.h" />
     <ClInclude Include="EnemyControllerComponent.h" />
+    <ClInclude Include="EntityLoader.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="HiScoreComponent.h" />

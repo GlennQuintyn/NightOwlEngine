@@ -82,6 +82,9 @@
     <ClCompile Include="MainMenuComponent.cpp">
       <Filter>Components\Level</Filter>
     </ClCompile>
+    <ClCompile Include="EntityLoader.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BurgerTimePCH.h">
@@ -146,6 +149,9 @@
     </ClInclude>
     <ClInclude Include="MainMenuComponent.h">
       <Filter>Components\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityLoader.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

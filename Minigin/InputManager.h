@@ -213,9 +213,6 @@ namespace dae
 			ButtonPressState pressState;
 		};
 
-		//std::multimap<ControllerButtonType, std::unique_ptr<Command>> m_MapOfControllerCommands;
-		//std::multimap<KeyboardKeyType, std::unique_ptr<Command>> m_MapOfKeyboardCommands;
-		//std::multimap<MouseButtonType, std::unique_ptr<Command>> m_MapOfMouseCommands;
 		std::vector<std::pair<ControllerButtonType, std::unique_ptr<Command>>> m_MapOfControllerCommands;
 		std::vector<std::pair<KeyboardKeyType, std::unique_ptr<Command>>> m_MapOfKeyboardCommands;
 		std::vector<std::pair<MouseButtonType, std::unique_ptr<Command>>> m_MapOfMouseCommands;

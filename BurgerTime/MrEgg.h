@@ -7,6 +7,7 @@
 namespace dae
 {
 	class GameObject;
+	class IngredientComponent;
 
 	class MrEgg final : public BaseComponent, public Observer
 	{
@@ -44,6 +45,7 @@ namespace dae
 		void PlaceOffScreen();
 
 		GameObject* m_pParentObject;
+		IngredientComponent* m_pIngredientWalkingOn;
 		EnemyControllerComponent* m_pEnemyController;
 		glm::vec2 m_RespawnPos;
 		EnemyState m_State;
