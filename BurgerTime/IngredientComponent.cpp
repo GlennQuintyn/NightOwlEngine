@@ -62,13 +62,13 @@ dae::IngredientComponent::IngredientComponent(GameObject* pParentObject)
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("colliderLObj");
 	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
-	m_ColliderLeft->Init({ 15,0,2,10 }, 0, true, { 255, 0, 0, 255 });
+	m_ColliderLeft->Init({ 15,0,2,10 }, 0, false, { 255, 0, 0, 255 });
 	auto& colliderCenterObj = colliderLogicObj.CreateAddChild("colliderCenterObj");
 	m_ColliderCenter = &colliderCenterObj.AddComponent<RectColliderComponent>();
-	m_ColliderCenter->Init({ 43,0,2,10 }, 1, true, { 0, 255, 0, 255 });
+	m_ColliderCenter->Init({ 43,0,2,10 }, 1, false, { 0, 255, 0, 255 });
 	auto& colliderRObj = colliderLogicObj.CreateAddChild("colliderRObj");
 	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
-	m_ColliderRight->Init({ 72,0,2,10 }, 2, true, { 0, 0, 255, 255 });
+	m_ColliderRight->Init({ 72,0,2,10 }, 2, false, { 0, 0, 255, 255 });
 
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 3>>(
 		new std::array<HitBoxObserver, 3>{

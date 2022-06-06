@@ -101,19 +101,19 @@ dae::MovementComponent::MovementComponent(GameObject* pParentObject)
 	auto& colliderLogicObj = m_pParentObject->CreateAddChild("ColliderLogic");
 	auto& colliderLObj = colliderLogicObj.CreateAddChild("Lcollider");
 	m_ColliderLeft = &colliderLObj.AddComponent<RectColliderComponent>();
-	m_ColliderLeft->Init({ -3,42,3,3 }, -1, true, { 255, 0, 0, 128 });
+	m_ColliderLeft->Init({ -3,42,3,3 }, -1, false, { 255, 0, 0, 128 });
 
 	auto& colliderRObj = colliderLogicObj.CreateAddChild("Rcollider");
 	m_ColliderRight = &colliderRObj.AddComponent<RectColliderComponent>();
-	m_ColliderRight->Init({ 47,42,3,3 }, -1, true, { 0, 255, 0, 128 });
+	m_ColliderRight->Init({ 47,42,3,3 }, -1, false, { 0, 255, 0, 128 });
 
 	auto& colliderUPObj = colliderLogicObj.CreateAddChild("UPcollider");
 	m_ColliderUp = &colliderUPObj.AddComponent<RectColliderComponent>();
-	m_ColliderUp->Init({ 20,/*-3*/27,5,3 }, -1, true, { 0, 0, 255, 128 });
+	m_ColliderUp->Init({ 20,/*-3*/27,5,3 }, -1, false, { 0, 0, 255, 128 });
 
 	auto& colliderDOWNObj = colliderLogicObj.CreateAddChild("DOWNcollider");
 	m_ColliderDown = &colliderDOWNObj.AddComponent<RectColliderComponent>();
-	m_ColliderDown->Init({ 20,48,5,3 }, -1, true, { 0, 255, 255, 128 });
+	m_ColliderDown->Init({ 20,48,5,3 }, -1, false, { 0, 255, 255, 128 });
 
 	m_pImpl = std::unique_ptr<std::array<HitBoxObserver, 4>>(
 		new std::array<HitBoxObserver, 4>{
