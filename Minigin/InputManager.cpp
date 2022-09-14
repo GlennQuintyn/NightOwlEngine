@@ -10,30 +10,15 @@
 using namespace dae;
 
 InputManager::InputManager()
-	: m_pCurrenStates{ SDL_GetKeyboardState(nullptr) }
-	, m_pPrevStates{ new Uint8[SDL_NUM_SCANCODES] }
-	, m_KeysPressedThisFrame{ new Uint8[SDL_NUM_SCANCODES] }
-	, m_KeysReleasedThisFrame{ new Uint8[SDL_NUM_SCANCODES] }
-
-	, m_CurrentMouseButtons{}
-	, m_PrevMouseButtons{}
-	, m_ButtonsPressedThisFrame{}
-	, m_ButtonsReleasedThisFrame{}
+	: m_pKeyboard{ std::make_unique<NoeKeyboard>() }
+	, m_pMouse{ std::make_unique<NoeMouse>() }
 {
+	//TODO: remove this
 	AddController();
-
-	ZeroMemory(m_pPrevStates, sizeof(Uint8)* SDL_NUM_SCANCODES);
-	ZeroMemory(m_KeysPressedThisFrame, sizeof(Uint8)* SDL_NUM_SCANCODES);
-	ZeroMemory(m_KeysReleasedThisFrame, sizeof(Uint8)* SDL_NUM_SCANCODES);
 }
 
-dae::InputManager::~InputManager()
-{
-	delete[] m_pPrevStates;
-	delete[] m_KeysPressedThisFrame;
-	delete[] m_KeysReleasedThisFrame;
-}
-
+//this shouldn't be needed and it should just automatically add/remove controllers
+//TODO: Change to auto add and remove controllers, Check eliteeninge from matheu
 void InputManager::AddController()
 {
 	if (m_pPCControllers.size() > 4)
@@ -46,27 +31,17 @@ void InputManager::AddController()
 	m_pPCControllers.push_back(std::make_unique<PCController>(m_pPCControllers.size()));
 }
 
+void dae::InputManager::CheckConnectedControllers()
+{
+}
+
 bool InputManager::ProcessInput()
 {
-	//byte copy all items from the SDL_GetKeyboardState(m_pKeyBoardStates) to current or smt
-	//DO that xor thingy and just make it like the controller
+	m_pKeyboard->Update();
+	m_pMouse->Update();
 
-	for (size_t index = 0; index < SDL_NUM_SCANCODES; index++)
-	{
-		char keysChanged = m_pCurrenStates[index] ^ m_pPrevStates[index];
-		m_KeysPressedThisFrame[index] = keysChanged & m_pCurrenStates[index];
-		m_KeysReleasedThisFrame[index] = keysChanged & (~m_pCurrenStates[index]);
-
-		m_pPrevStates[index] = m_pCurrenStates[index];
-	}
-
-	m_CurrentMouseButtons = SDL_GetMouseState(&m_MousePos.x, &m_MousePos.y);
-
-	int buttonsChanged = m_CurrentMouseButtons ^ m_PrevMouseButtons;
-	m_ButtonsPressedThisFrame = buttonsChanged & m_CurrentMouseButtons;
-	m_ButtonsReleasedThisFrame = buttonsChanged & (~m_CurrentMouseButtons);
-
-	m_PrevMouseButtons = m_CurrentMouseButtons;
+	//first check how many controllers are newly connected or disconnected
+	CheckConnectedControllers();
 
 	for (auto& controller : m_pPCControllers)
 		controller->Update();
@@ -188,33 +163,39 @@ bool InputManager::IsReleasedThisFrame(PCController::ControllerButton controller
 #pragma endregion
 
 #pragma region Keyboard Keys
-bool dae::InputManager::IsPressed(KeyboardKey keyboardButton) const
+bool dae::InputManager::IsPressed(NoeKeyboard::KeyboardKey keyboardButton) const
 {
-	return m_pCurrenStates[int(keyboardButton)];
+	return m_pKeyboard->IsPressed(keyboardButton);
+	//return m_pCurrenStates[int(keyboardButton)];
 }
 
-bool dae::InputManager::IsPressedThisFrame(KeyboardKey keyboardButton) const
+bool dae::InputManager::IsPressedThisFrame(NoeKeyboard::KeyboardKey keyboardButton) const
 {
-	return m_KeysPressedThisFrame[int(keyboardButton)];
+	return m_pKeyboard->IsPressedThisFrame(keyboardButton);
+	//return m_KeysPressedThisFrame[int(keyboardButton)];
 }
 
-bool dae::InputManager::IsReleasedThisFrame(KeyboardKey keyboardButton) const
+bool dae::InputManager::IsReleasedThisFrame(NoeKeyboard::KeyboardKey keyboardButton) const
 {
-	return m_KeysReleasedThisFrame[int(keyboardButton)];
+	return m_pKeyboard->IsReleasedThisFrame(keyboardButton);
+	//return m_KeysReleasedThisFrame[int(keyboardButton)];
 }
 #pragma endregion
 
 #pragma region Mouse Buttons
 bool dae::InputManager::IsPressed(int mouseButton) const
 {
-	return m_CurrentMouseButtons & mouseButton;
+	return m_pMouse->IsPressed(mouseButton);
+	//return m_CurrentMouseButtons & mouseButton;
 }
 bool dae::InputManager::IsPressedThisFrame(int mouseButton) const
 {
-	return m_ButtonsPressedThisFrame & mouseButton;
+	return m_pMouse->IsPressedThisFrame(mouseButton);
+	//return m_ButtonsPressedThisFrame & mouseButton;
 }
 bool dae::InputManager::IsReleasedThisFrame(int mouseButton) const
 {
-	return m_ButtonsReleasedThisFrame & mouseButton;
+	return m_pMouse->IsReleasedThisFrame(mouseButton);
+	//return m_ButtonsReleasedThisFrame & mouseButton;
 }
 #pragma endregion

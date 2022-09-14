@@ -170,7 +170,6 @@ void dae::LevelManager::Notify(GameObject*, int event)
 
 void dae::LevelManager::RestartCurrentLevel(bool withDelay)
 {
-	withDelay;
 	if (withDelay)
 	{
 		m_NextAction = NextAction::RestartCurrentLevel;
@@ -192,6 +191,9 @@ void dae::LevelManager::ReturnToMainMenu(bool withDelay)
 	else
 	{
 		m_pScoreCmpt->ResetScore();
+
+		//TEMP TEST
+		RestartCurrentLevel();
 
 		//scene 0 should be the main menu scene
 		auto& scene = SceneManager::GetInstance();

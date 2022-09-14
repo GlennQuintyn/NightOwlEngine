@@ -139,14 +139,14 @@ void LoadMainMenu(dae::NightOwlEngine* pEngine)
 #pragma region MenuCommands
 	auto& inputmanager = InputManager::GetInstance();
 	inputmanager.AddCommand<NextButtonCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
-	inputmanager.AddCommand<NextButtonCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
+	inputmanager.AddCommand<NextButtonCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
 	inputmanager.AddCommand<PreviousButtonCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
-	inputmanager.AddCommand<PreviousButtonCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
+	inputmanager.AddCommand<PreviousButtonCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
 
-	inputmanager.AddCommand<MouseButtonCommand>(static_cast<int>(InputManager::MouseButtons::Button_LEFT), InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
+	inputmanager.AddCommand<MouseButtonCommand>(static_cast<int>(NoeMouse::MouseButtons::Button_LEFT), InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
 
 	inputmanager.AddCommand<PressSelectedButtonCommand>(PCController::ControllerButton::Button_Cross, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
-	inputmanager.AddCommand<PressSelectedButtonCommand>(InputManager::KeyboardKey::Key_ENTER, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
+	inputmanager.AddCommand<PressSelectedButtonCommand>(NoeKeyboard::KeyboardKey::Key_ENTER, InputManager::ButtonPressState::OnPressed).SetMainMenuCmpt(&mainMenuCmpt);
 #pragma endregion
 
 	const int nameFontSize{ 8 };

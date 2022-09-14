@@ -152,6 +152,8 @@
     <ClInclude Include="SpriteManagerComponent.h">
       <Filter>Components\Spites</Filter>
     </ClInclude>
+    <ClInclude Include="NoeKeyboard.h" />
+    <ClInclude Include="NoeMouse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp">
@@ -263,5 +265,7 @@
     <ClCompile Include="SpriteManagerComponent.cpp">
       <Filter>Components\Spites</Filter>
     </ClCompile>
+    <ClCompile Include="NoeKeyboard.cpp" />
+    <ClCompile Include="NoeMouse.cpp" />
   </ItemGroup>
 </Project>

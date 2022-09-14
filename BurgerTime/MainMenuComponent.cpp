@@ -103,6 +103,8 @@ void dae::MainMenuComponent::CheckIfMouseInsideButton()
 	}
 }
 
+//TODO: fix level not reseting when dying dying aka lost all lives
+
 void dae::MainMenuComponent::PressSelectedButton()
 {
 	//can just SinglePlayer = 0, Coop = 1, Versus = 2
@@ -112,8 +114,7 @@ void dae::MainMenuComponent::PressSelectedButton()
 	if (!m_ScenesLoadedBefore)
 	{
 		if (m_GameMode == GameMode::Coop || m_GameMode == GameMode::Versus)
-		{
-			//this shouldn't be needed and it should just automatically add/remove controllers
+		{			
 			InputManager::GetInstance().AddController();
 		}
 
@@ -273,7 +274,7 @@ void dae::MainMenuComponent::LoadLevel1()
 #pragma region EnemyPlayer
 	auto& playerHotDogObj = sceneLevel1.CreateObject("playerHotDogObj");
 	auto& playerHotDogCmpt = playerHotDogObj.AddComponent<MrHotDog>();
-	playerHotDogCmpt.SetControlledByHuman(false);
+	playerHotDogCmpt.SetControlledByHuman(true);
 	auto& playerHotDogSpriteManager = playerHotDogObj.AddComponent<SpriteManagerComponent>();
 	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Idle.png", 1, 1, 0, 45, 45);
 	playerHotDogSpriteManager.AddSprite("Charachters/MrHotDog/MrHotDog_Walking_Left.png", 2, 1, 8, 45, 45);
@@ -878,19 +879,19 @@ void dae::MainMenuComponent::LoadLevel1()
 #pragma region InputCommandsPlayer
 	//peter pepper input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
 	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdController1.SetPlayer(&peterPepperObj);
 	throwPepperCmdController1.SetPepper(&pepperObj);
 	throwPepperCmdController1.SetPepperCountComponent(&pepperCountCmpt);
-	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
@@ -898,33 +899,33 @@ void dae::MainMenuComponent::LoadLevel1()
 
 	//sally salt input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 
 	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
 	throwPepperCmdController2.SetPlayer(&sallySaltObj);
 	throwPepperCmdController2.SetPepper(&pepperObj);
 	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
 
-	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 
 	//player Hotdog input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();
@@ -1634,52 +1635,52 @@ void dae::MainMenuComponent::LoadLevel2()
 #pragma region InputCommandsPlayer
 	//peter pepper input
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
 	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdController1.SetPlayer(&peterPepperObj);
 	throwPepperCmdController1.SetPepper(&pepperObj);
 	throwPepperCmdController1.SetPepperCountComponent(&pepperCountCmpt);
-	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
 
 	//sally salt input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 
 	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
 	throwPepperCmdController2.SetPlayer(&sallySaltObj);
 	throwPepperCmdController2.SetPepper(&pepperObj);
 	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
 
-	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 
 	//player Hotdog input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();
@@ -2571,19 +2572,19 @@ void dae::MainMenuComponent::LoadLevel3()
 #pragma region InputCommandsPlayer
 	//peter pepper input
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_D, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_A, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_W, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_S, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&peterPepperObj);
 
 	auto& throwPepperCmdController1 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdController1.SetPlayer(&peterPepperObj);
 	throwPepperCmdController1.SetPepper(&pepperObj);
 	throwPepperCmdController1.SetPepperCountComponent(&pepperCountCmpt);
-	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard1 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_L, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard1.SetPlayer(&peterPepperObj);
 	throwPepperCmdKeyBoard1.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard1.SetPepperCountComponent(&pepperCountCmpt);
@@ -2591,33 +2592,33 @@ void dae::MainMenuComponent::LoadLevel3()
 
 	//sally salt input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&sallySaltObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&sallySaltObj);
 
 	auto& throwPepperCmdController2 = inputmanager.AddCommand<ThrowPepperCommand>(PCController::ControllerButton::Button_Square, InputManager::ButtonPressState::OnPressed, 1);
 	throwPepperCmdController2.SetPlayer(&sallySaltObj);
 	throwPepperCmdController2.SetPepper(&pepperObj);
 	throwPepperCmdController2.SetPepperCountComponent(&pepperCountCmpt);
 
-	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(InputManager::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
+	auto& throwPepperCmdKeyBoard2 = inputmanager.AddCommand<ThrowPepperCommand>(NoeKeyboard::KeyboardKey::Key_CTRL_R, InputManager::ButtonPressState::OnPressed);
 	throwPepperCmdKeyBoard2.SetPlayer(&sallySaltObj);
 	throwPepperCmdKeyBoard2.SetPepper(&pepperObj);
 	throwPepperCmdKeyBoard2.SetPepperCountComponent(&pepperCountCmpt);
 
 	//player Hotdog input
 	inputmanager.AddCommand<WalkLeftCommand>(PCController::ControllerButton::Button_DPAD_LEFT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkLeftCommand>(InputManager::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkLeftCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_LEFT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkRightCommand>(PCController::ControllerButton::Button_DPAD_RIGHT, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkRightCommand>(InputManager::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkRightCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_RIGHT, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkUpCommand>(PCController::ControllerButton::Button_DPAD_UP, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkUpCommand>(InputManager::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkUpCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_UP, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 	inputmanager.AddCommand<WalkDownCommand>(PCController::ControllerButton::Button_DPAD_DOWN, InputManager::ButtonPressState::PressedContinuous, 1).SetPlayer(&playerHotDogObj);
-	inputmanager.AddCommand<WalkDownCommand>(InputManager::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
+	inputmanager.AddCommand<WalkDownCommand>(NoeKeyboard::KeyboardKey::Key_ARROW_DOWN, InputManager::ButtonPressState::PressedContinuous).SetPlayer(&playerHotDogObj);
 #pragma endregion
 
 	auto& levelManagersubje = levelManagercmpt.GetSubject();

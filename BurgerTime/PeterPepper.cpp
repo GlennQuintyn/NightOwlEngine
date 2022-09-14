@@ -43,6 +43,13 @@ void PeterPepper::LateInit()
 	}
 }
 
+void dae::PeterPepper::Update()
+{
+	//TODO: remove me TESTING 
+	if (InputManager::GetInstance().IsReleasedThisFrame(NoeKeyboard::KeyboardKey::Key_BACKSPACE))
+		EnemyTouchedMe();
+}
+
 void dae::PeterPepper::Notify(GameObject* pObject, int event)
 {
 	if (!m_IsAlive)
