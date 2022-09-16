@@ -18,6 +18,8 @@ namespace dae
 
 		~LivesComponent() = default;
 
+		void SetMaxLives(int maxLives) { m_MaxLives = maxLives; };
+
 		//negative value for either x or y means that the orriginal image size will be used, if not then the given custom size will be used instead
 		void SetTexture(const std::string& filename, float sizeX = -1.f, float sizeY = -1.f);
 		void SetSize(const glm::vec2& size) { m_IconSize = size; };
@@ -33,7 +35,7 @@ namespace dae
 		void Update() override {};
 		void LateUpdate() override {};
 		void Render() const override;
-		void Reset() override {};
+		void Reset() override;
 
 		LivesComponent(const LivesComponent& other) = delete;
 		LivesComponent(LivesComponent&& other) = delete;
@@ -44,6 +46,7 @@ namespace dae
 		std::shared_ptr<Texture2D> m_pTexture;
 		glm::vec2 m_IconSize;
 		GameObject* m_pParentObject;
+		int m_MaxLives;
 		static int m_CurrentLives;
 	};
 }

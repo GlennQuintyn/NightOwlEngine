@@ -192,13 +192,13 @@ void dae::LevelManager::ReturnToMainMenu(bool withDelay)
 	{
 		m_pScoreCmpt->ResetScore();
 
-		//TEMP TEST
-		RestartCurrentLevel();
-
-		//scene 0 should be the main menu scene
+		//scene 0 is be the main menu scene
 		auto& scene = SceneManager::GetInstance();
 		DisabledAll();
+		scene.ResetActiveScene();
 		scene.SetActiveScene(0);
+
+
 		//re init the mainmenu scene to reset its state
 		scene.LateInit();
 	}
@@ -229,7 +229,6 @@ void dae::LevelManager::AdvanceToNextLevel(bool withDelay)
 			scene.GotoNextScene();
 		}
 
-		//scene.LateInit();
 		scene.ResetActiveScene();
 	}
 }

@@ -23,17 +23,26 @@
 
 using namespace dae;
 
-int LivesComponent::m_CurrentLives = 3;
+int LivesComponent::m_CurrentLives;
 
 LivesComponent::LivesComponent(GameObject* pParentObject)
 	: m_IconSize{ -1.f,-1.f }
 	, m_pParentObject{ nullptr }
 	, m_pTexture{ nullptr }
+	, m_MaxLives{}
 {
 	if (pParentObject)
 		m_pParentObject = pParentObject;
 	else
 		Logger::GetInstance().LogWarning("LIVESCOMPONENT:\tPARENT OBJECT WAS NOT GIVEN!");
+}
+
+void LivesComponent::LateInit()
+{
+	if (!m_pTexture)
+		Logger::GetInstance().LogError("LIVESCOMPONENT:\tTEXTURE WAS NOT GIVEN!");
+
+	m_CurrentLives = m_MaxLives;
 }
 
 void LivesComponent::SetTexture(const std::string& filename, float sizeX, float sizeY)
@@ -71,12 +80,6 @@ void dae::LivesComponent::Notify(GameObject*, int event)
 
 }
 
-void LivesComponent::LateInit()
-{
-	if (!m_pTexture)
-		Logger::GetInstance().LogError("LIVESCOMPONENT:\tTEXTURE WAS NOT GIVEN!");
-}
-
 void LivesComponent::Render() const
 {
 	const auto& pos = m_pParentObject->GetWorldPosition();
@@ -93,4 +96,9 @@ void LivesComponent::Render() const
 
 		tempY -= offset + textureSize.y;
 	}
+}
+
+void dae::LivesComponent::Reset()
+{
+	m_CurrentLives = m_MaxLives;
 }

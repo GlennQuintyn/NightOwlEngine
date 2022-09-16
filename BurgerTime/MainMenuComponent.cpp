@@ -823,6 +823,7 @@ void dae::MainMenuComponent::LoadLevel1()
 	//
 	auto& peterLivesObj = sceneLevel1.CreateObject("peterLivesObj");
 	auto& livescmpt = peterLivesObj.AddComponent<LivesComponent>();
+	livescmpt.SetMaxLives(3);
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
@@ -1580,10 +1581,12 @@ void dae::MainMenuComponent::LoadLevel2()
 	//
 	auto& peterLivesObj = sceneLevel2.CreateObject("peterLivesObj");
 	auto& livescmpt = peterLivesObj.AddComponent<LivesComponent>();
+	livescmpt.SetMaxLives(3);
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
 	livessubje.AddObserver(levelManagercmpt);
+
 	petterPeppersubje.AddObserver(livescmpt);
 	sallySaltSubje.AddObserver(livescmpt);
 
@@ -2514,13 +2517,14 @@ void dae::MainMenuComponent::LoadLevel3()
 	//
 	auto& peterLivesObj = sceneLevel3.CreateObject("peterLivesObj");
 	auto& livescmpt = peterLivesObj.AddComponent<LivesComponent>();
+	livescmpt.SetMaxLives(3);
 	livescmpt.SetTexture("UI/Peter_Life_Icon.png", 3.25f, 3.25f);
 	peterLivesObj.SetLocalPosition(10.f, windowH - 40.f);
 	auto& livessubje = livescmpt.GetSubject();
 	livessubje.AddObserver(levelManagercmpt);
+
 	petterPeppersubje.AddObserver(livescmpt);
 	sallySaltSubje.AddObserver(livescmpt);
-
 
 	auto& scoreObject = sceneLevel3.CreateObject("scoreObject");
 	auto& scoretextcomp = scoreObject.AddComponent<TextComponent>();

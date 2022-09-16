@@ -6,51 +6,26 @@ using namespace dae;
 void SceneManager::LateInit()
 {
 	m_pScenes[m_ActiveSceneIndex]->LateInit();
-
-	//for (const auto& scene : m_pScenes)
-	//{
-	//	scene->LateInit();
-	//}
 }
 
 void SceneManager::Update()
 {
 	m_pScenes[m_ActiveSceneIndex]->Update();
-
-	//for (const auto& scene : m_pScenes)
-	//{
-	//	scene->Update();
-	//}
 }
 
 void SceneManager::FixedUpdate(float deltaT)
 {
 	m_pScenes[m_ActiveSceneIndex]->FixedUpdate(deltaT);
-
-	//for (const auto& scene : m_pScenes)
-	//{
-	//	scene->FixedUpdate(deltaT);
-	//}
 }
 
 void SceneManager::LateUpdate()
 {
 	m_pScenes[m_ActiveSceneIndex]->LateUpdate();
-
-	//for (const auto& scene : m_pScenes)
-	//{
-	//	scene->LateUpdate();
-	//}
 }
 
 void SceneManager::Render()
 {
 	m_pScenes[m_ActiveSceneIndex]->Render();
-
-	//for (const auto& scene : m_pScenes)
-	//{
-	//	scene->Render();
-	//}
 }
 
 void dae::SceneManager::ResetActiveScene()
